@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuelManagement", "FuelManagement\FuelManagement.csproj", "{49D7BD4B-DDE7-4372-92DA-7047410BB68A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49D7BD4B-DDE7-4372-92DA-7047410BB68A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49D7BD4B-DDE7-4372-92DA-7047410BB68A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49D7BD4B-DDE7-4372-92DA-7047410BB68A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49D7BD4B-DDE7-4372-92DA-7047410BB68A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB8978A9-5686-4EF0-B24A-744E96B8707E}
+	EndGlobalSection
+EndGlobal
