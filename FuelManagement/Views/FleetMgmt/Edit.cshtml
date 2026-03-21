@@ -1,0 +1,75 @@
+﻿@model FuelManagement.Models.FleetEditViewModel
+@{
+    ViewData["Title"] = "Edit Vehicle";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8 animate-slideIn">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Edit Vehicle</h1>
+            <p class="text-sm sm:text-base mt-2 text-gray-600 dark:text-gray-400">Update vehicle information and details</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden animate-fadeIn">
+            <div class="bg-gradient-to-r from-pink-500 to-rose-500 dark:from-pink-700 dark:to-rose-700 px-4 sm:px-6 py-3 sm:py-4">
+                <h2 class="text-base sm:text-lg font-semibold text-white">Vehicle Information - @Model.VehicleId</h2>
+            </div>
+
+            @using (Html.BeginForm("Edit", "FleetMgmt", FormMethod.Post, new { @class = "p-4 sm:p-6" }))
+            {
+                @Html.AntiForgeryToken()
+                <!-- FIXED: Removed HiddenFor Id, added HiddenFor VehicleId -->
+                @Html.HiddenFor(m => m.VehicleId)
+
+                @await Html.PartialAsync("Partials/_FleetForm", Model)
+
+                <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end gap-3">
+                    <a href="@Url.Action("Index")"
+                       class="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-center order-2 sm:order-1">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-pink-500 to-rose-500 dark:from-pink-600 dark:to-rose-600 text-white font-medium rounded-lg hover:from-pink-600 dark:hover:from-pink-700 hover:to-rose-600 dark:hover:to-rose-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl order-1 sm:order-2">
+                        Update Vehicle
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-slideIn {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

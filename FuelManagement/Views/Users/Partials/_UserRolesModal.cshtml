@@ -1,0 +1,168 @@
+﻿@model FuelManagement.Models.UserViewModel
+
+<!-- Roles Management Modal -->
+<div id="rolesModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden transition-all duration-300"
+     onclick="closeRolesModal(event)">
+
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="rolesModalContent">
+        <div class="text-center mb-6">
+            <!-- Header with Icon -->
+            <div class="w-20 h-20 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-user-tag text-3xl text-sky-600"></i>
+            </div>
+
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Manage Roles</h3>
+            <p class="text-gray-500" id="rolesUserInfo">@Model?.FirstName @Model?.LastName</p>
+        </div>
+
+        <input type="hidden" id="rolesUserId" value="@Model?.Id" />
+
+        <!-- Roles List -->
+        <div class="space-y-4 mb-8">
+            <!-- Admin Role -->
+            <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-crown text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">Admin</p>
+                        <p class="text-xs text-gray-500">Full system access</p>
+                    </div>
+                </div>
+                <input type="radio" name="role" value="Admin" class="w-5 h-5 text-sky-600" @(Model?.Role == "Admin" ? "checked" : "")>
+            </label>
+
+            <!-- Manager Role -->
+            <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-briefcase text-blue-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">Manager</p>
+                        <p class="text-xs text-gray-500">Can manage users and view reports</p>
+                    </div>
+                </div>
+                <input type="radio" name="role" value="Manager" class="w-5 h-5 text-sky-600" @(Model?.Role == "Manager" ? "checked" : "")>
+            </label>
+
+            <!-- Operator Role -->
+            <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-tools text-emerald-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">Operator</p>
+                        <p class="text-xs text-gray-500">Can perform daily operations</p>
+                    </div>
+                </div>
+                <input type="radio" name="role" value="Operator" class="w-5 h-5 text-sky-600" @(Model?.Role == "Operator" ? "checked" : "")>
+            </label>
+
+            <!-- Viewer Role -->
+            <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-eye text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">Viewer</p>
+                        <p class="text-xs text-gray-500">Read-only access</p>
+                    </div>
+                </div>
+                <input type="radio" name="role" value="Viewer" class="w-5 h-5 text-sky-600" @(Model?.Role == "Viewer" ? "checked" : "")>
+            </label>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3">
+            <button type="button" onclick="closeRolesModal()"
+                    class="flex-1 px-6 py-3 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium">
+                Cancel
+            </button>
+            <button type="button" onclick="updateUserRole()"
+                    class="flex-1 px-6 py-3 bg-gradient-to-r from-sky-500 to-purple-600 text-white rounded-xl hover:from-sky-600 hover:to-purple-700 transition-all duration-200 font-medium">
+                Update Role
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openRolesModal(userId, userName, currentRole) {
+        document.getElementById('rolesUserId').value = userId;
+        document.getElementById('rolesUserInfo').textContent = userName;
+
+        // Set the selected radio button
+        const radioButtons = document.querySelectorAll('input[name="role"]');
+        radioButtons.forEach(radio => {
+            radio.checked = radio.value === currentRole;
+        });
+
+        const modal = document.getElementById('rolesModal');
+        const modalContent = document.getElementById('rolesModalContent');
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 50);
+    }
+
+    function closeRolesModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+
+        const modal = document.getElementById('rolesModal');
+        const modalContent = document.getElementById('rolesModalContent');
+
+        modalContent.classList.add('scale-95', 'opacity-0');
+        modalContent.classList.remove('scale-100', 'opacity-100');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function updateUserRole() {
+        const userId = document.getElementById('rolesUserId').value;
+        const selectedRole = document.querySelector('input[name="role"]:checked')?.value;
+
+        if (!selectedRole) {
+            alert('Please select a role');
+            return;
+        }
+
+        // Make AJAX call to update role
+        fetch(`/Users/UpdateRole/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+            },
+            body: JSON.stringify({ role: selectedRole })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeRolesModal();
+                // Show success message
+                alert('Role updated successfully');
+                // Optionally refresh the page or update UI
+                location.reload();
+            } else {
+                alert('Failed to update role');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred');
+        });
+    }
+
+    // Make functions globally available
+    window.openRolesModal = openRolesModal;
+    window.closeRolesModal = closeRolesModal;
+    window.updateUserRole = updateUserRole;
+</script>

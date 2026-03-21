@@ -1,0 +1,146 @@
+﻿@model FuelManagement.Models.FuelClient
+@{
+    ViewData["Title"] = "Client Details";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-slideIn">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Client Details</h1>
+                <p class="text-sm sm:text-base mt-2 text-gray-600 dark:text-gray-400">View client information</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2 sm:space-x-3">
+                <a href="@Url.Action("Edit", new { id = Model.Id })"
+                   class="w-full sm:w-auto px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-800 text-white text-sm font-medium rounded-lg hover:from-blue-700 dark:hover:from-blue-800 hover:to-blue-900 dark:hover:to-blue-900 transition-all duration-200 text-center">
+                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Edit
+                </a>
+            </div>
+        </div>
+
+        <!-- Details Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden animate-fadeIn">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 px-4 sm:px-6 py-3 sm:py-4">
+                <h2 class="text-base sm:text-lg font-semibold text-white">Client Information</h2>
+            </div>
+
+            <div class="p-4 sm:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client ID</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100 font-mono">@Model.ClientId</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</h3>
+                        <p class="mt-1">
+                            <span class="px-2 py-1 text-xs rounded-full @(Model.IsActive ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400")">
+                                @(Model.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Full Name</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">@Model.FullName</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Company</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">@(Model.CompanyName ?? "N/A")</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client Type</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">@Model.ClientType</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Phone</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">@Model.Phone</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">@(Model.Email ?? "N/A")</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Address</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">
+                            @Model.Address<br />
+                            @Model.City, @Model.State @Model.PostalCode<br />
+                            @Model.Country
+                        </p>
+                    </div>
+
+                    <div class="col-span-2">
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Notes</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">@(Model.Notes ?? "No notes")</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</h3>
+                        <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">@Model.CreatedAt.ToString("MMM dd, yyyy")</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">by @(Model.CreatedBy ?? "System")</p>
+                    </div>
+
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <div>
+                            <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Last Updated</h3>
+                            <p class="mt-1 text-sm sm:text-base text-gray-900 dark:text-gray-100">@Model.UpdatedAt.Value.ToString("MMM dd, yyyy")</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">by @(Model.UpdatedBy ?? "System")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 sm:mt-8 flex justify-center sm:justify-start animate-fadeIn">
+            <a href="@Url.Action("Index")"
+               class="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-center">
+                Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-slideIn {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

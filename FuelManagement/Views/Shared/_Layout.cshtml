@@ -1,0 +1,1273 @@
+﻿@using System.Security.Claims
+@inject FuelManagement.Services.AuthService AuthService
+@{
+    var isAdmin = AuthService.IsAdmin();
+    var userRole = AuthService.GetCurrentUserRole() ?? "User";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FuelMS Dashboard</title>
+    <!-- Tailwind with dark mode configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom animations and utilities -->
+    <style>
+        /* ======================================
+                                                                                                                                                                               THEME VARIABLES
+                                                                                                                                                                            ====================================== */
+        :root {
+            /* Light mode - Default */
+            --bg-primary: #f3f4f6;
+            --bg-card: #ffffff;
+            --bg-sidebar: linear-gradient(180deg, #1d4ed8 0%, #0ea5e9 100%);
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --hover-bg: #f3f4f6;
+        }
+
+        .dark {
+            /* Dark mode - Global overrides */
+            --bg-primary: #111827;
+            --bg-card: #1f2937;
+            --bg-sidebar: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            --text-primary: #f9fafb;
+            --text-secondary: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #374151;
+            --hover-bg: #2d3748;
+        }
+
+        /* ======================================
+                                                                                                                                                                               GLOBAL BASE
+                                                                                                                                                                            ====================================== */
+        * {
+            font-family: 'Inter', sans-serif;
+            transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+        }
+
+        /* ======================================
+                                                                                                                                                                               THEME-SPECIFIC UTILITIES
+                                                                                                                                                                            ====================================== */
+        .bg-theme-primary {
+            background-color: var(--bg-primary);
+        }
+
+        .bg-theme-card {
+            background-color: var(--bg-card);
+        }
+
+        .text-theme-primary {
+            color: var(--text-primary);
+        }
+
+        .text-theme-secondary {
+            color: var(--text-secondary);
+        }
+
+        .border-theme {
+            border-color: var(--border-color);
+        }
+
+        /* ======================================
+                                                                                                                                                                               MODULE THEMES - LIGHT MODE
+                                                                                                                                                                            ====================================== */
+        .orange-gradient {
+            background: linear-gradient(135deg, #f97316, #f59e0b);
+        }
+
+        .orange-hover:hover {
+            background: linear-gradient(135deg, #ea580c, #d97706);
+        }
+
+        .orange-soft-bg {
+            background: rgba(249, 115, 22, 0.08);
+        }
+
+        .orange-text {
+            color: #f97316;
+        }
+
+        .orange-border {
+            border-color: #f97316;
+        }
+
+        .red-gradient {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+
+        .red-soft-bg {
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .red-text {
+            color: #ef4444;
+        }
+
+        .pink-gradient {
+            background: linear-gradient(135deg, #ec4899, #f9a8d4);
+        }
+
+        .pink-soft-bg {
+            background: rgba(236, 72, 153, 0.08);
+        }
+
+        .pink-text {
+            color: #ec4899;
+        }
+
+        .yellow-gradient {
+            background: linear-gradient(135deg, #eab308, #fde047);
+        }
+
+        .yellow-soft-bg {
+            background: rgba(234, 179, 8, 0.08);
+        }
+
+        .yellow-text {
+            color: #eab308;
+        }
+
+        .green-gradient {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        .green-soft-bg {
+            background: rgba(16, 185, 129, 0.08);
+        }
+
+        .green-text {
+            color: #10b981;
+        }
+
+        .amber-gradient {
+            background: linear-gradient(135deg, #92400e, #b45309);
+        }
+
+        .amber-soft-bg {
+            background: rgba(146, 64, 14, 0.08);
+        }
+
+        .amber-text {
+            color: #92400e;
+        }
+
+        .indigo-gradient {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+        }
+
+        .indigo-soft-bg {
+            background: rgba(79, 70, 229, 0.08);
+        }
+
+        .indigo-text {
+            color: #4f46e5;
+        }
+
+        /* ======================================
+                                                                                                                                                                               MODULE THEMES - DARK MODE
+                                                                                                                                                                            ====================================== */
+        .dark .orange-gradient {
+            background: linear-gradient(135deg, #9a3412, #b45309);
+        }
+
+        .dark .orange-soft-bg {
+            background: rgba(249, 115, 22, 0.2);
+        }
+
+        .dark .orange-text {
+            color: #fb923c;
+        }
+
+        .dark .orange-border {
+            border-color: #b45309;
+        }
+
+        .dark .red-gradient {
+            background: linear-gradient(135deg, #991b1b, #b91c1c);
+        }
+
+        .dark .red-soft-bg {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .dark .red-text {
+            color: #f87171;
+        }
+
+        .dark .pink-gradient {
+            background: linear-gradient(135deg, #831843, #9d174d);
+        }
+
+        .dark .pink-soft-bg {
+            background: rgba(236, 72, 153, 0.2);
+        }
+
+        .dark .pink-text {
+            color: #f472b6;
+        }
+
+        .dark .yellow-gradient {
+            background: linear-gradient(135deg, #854d0e, #a16207);
+        }
+
+        .dark .yellow-soft-bg {
+            background: rgba(234, 179, 8, 0.2);
+        }
+
+        .dark .yellow-text {
+            color: #facc15;
+        }
+
+        .dark .green-gradient {
+            background: linear-gradient(135deg, #065f46, #047857);
+        }
+
+        .dark .green-soft-bg {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .dark .green-text {
+            color: #34d399;
+        }
+
+        .dark .amber-gradient {
+            background: linear-gradient(135deg, #422006, #5c3c0a);
+        }
+
+        .dark .amber-soft-bg {
+            background: rgba(146, 64, 14, 0.2);
+        }
+
+        .dark .amber-text {
+            color: #d97706;
+        }
+
+        .dark .indigo-gradient {
+            background: linear-gradient(135deg, #312e81, #3730a3);
+        }
+
+        .dark .indigo-soft-bg {
+            background: rgba(79, 70, 229, 0.2);
+        }
+
+        .dark .indigo-text {
+            color: #818cf8;
+        }
+
+        /* ======================================
+                                                                                                                                                                               SIDEBAR - Dynamic based on theme
+                                                                                                                                                                            ====================================== */
+        .sidebar-gradient {
+            background: var(--bg-sidebar);
+        }
+
+        /* Mobile sidebar - hidden by default on small screens */
+        @@media (max-width: 768px) {
+            .sidebar-desktop {
+                display: none;
+            }
+        }
+
+        /* ======================================
+                                                                                                                                                                               CORE ANIMATIONS
+                                                                                                                                                                            ====================================== */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @@keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @@keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .animate-slideIn {
+            animation: slideIn 0.4s ease-out forwards;
+        }
+
+        .animate-scaleIn {
+            animation: scaleIn 0.3s ease-out forwards;
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* ======================================
+                                                                                                                                                                               GLASS EFFECT
+                                                                                                                                                                            ====================================== */
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .dark .glass {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ======================================
+                                                                                                                                                                               CARD HOVER
+                                                                                                                                                                            ====================================== */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+            .card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+
+        .dark .card-hover:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ======================================
+                                                                                                                                                                               RIPPLE EFFECT
+                                                                                                                                                                            ====================================== */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .ripple:after {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+                background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+                background-repeat: no-repeat;
+                background-position: 50%;
+                transform: scale(10, 10);
+                opacity: 0;
+                transition: transform .5s, opacity 1s;
+            }
+
+            .ripple:active:after {
+                transform: scale(0, 0);
+                opacity: .3;
+                transition: 0s;
+            }
+
+        /* ======================================
+                                                                                                                                                                               FLOATING LABEL
+                                                                                                                                                                            ====================================== */
+        .floating-group {
+            position: relative;
+        }
+
+            .floating-group input:focus ~ label,
+            .floating-group input:not(:placeholder-shown) ~ label,
+            .floating-group select:focus ~ label,
+            .floating-group select:not([value=""]):valid ~ label {
+                transform: translateY(-1.5rem) scale(0.85);
+                background: white;
+                padding: 0 0.5rem;
+                color: #0ea5e9;
+            }
+
+        .dark .floating-group input:focus ~ label,
+        .dark .floating-group input:not(:placeholder-shown) ~ label,
+        .dark .floating-group select:focus ~ label,
+        .dark .floating-group select:not([value=""]):valid ~ label {
+            background: #1f2937;
+            color: #60a5fa;
+        }
+
+        /* ======================================
+                                                                                                                                                                               SKELETON LOADER
+                                                                                                                                                                            ====================================== */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        .dark .skeleton {
+            background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+        }
+
+        /* ======================================
+                                                                                                                                                                               CUSTOM SCROLLBAR
+                                                                                                                                                                            ====================================== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #0ea5e9, #a855f7);
+            border-radius: 10px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #0284c7, #9333ea);
+            }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+        }
+
+        /* ======================================
+                                                                                                                                                                               TABLE STYLES
+                                                                                                                                                                            ====================================== */
+        .dark table thead {
+            background: #2d3748;
+        }
+
+        .dark table tbody tr {
+            border-color: #374151;
+        }
+
+            .dark table tbody tr:hover {
+                background: rgba(55, 65, 81, 0.5);
+            }
+
+        /* ======================================
+                                                                                                                                                                               MODAL STYLES
+                                                                                                                                                                            ====================================== */
+        .dark .modal-content {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        /* ======================================
+                                                                                                                                                                               INPUT STYLES
+                                                                                                                                                                            ====================================== */
+        .dark input, .dark select, .dark textarea {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f3f4f6;
+        }
+
+            .dark input:focus, .dark select:focus, .dark textarea:focus {
+                border-color: #60a5fa;
+            }
+
+        /* Profile dropdown animation */
+        .dropdown-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .dropdown-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        }
+
+        .dropdown-leave {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .dropdown-leave-active {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+        }
+
+        /* Role badge styles */
+        .role-badge-admin {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+        }
+
+        .role-badge-user {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex flex-col md:flex-row h-screen overflow-hidden">
+        <!-- Mobile Header - Visible only on mobile -->
+        <div class="md:hidden bg-gradient-to-r from-sky-500 to-purple-600 dark:from-sky-800 dark:to-purple-900 px-3 py-2 flex items-center justify-between">
+            <!-- Left side - Menu toggle, Logo icon + FuelMS text + version -->
+            <div class="flex items-center gap-2">
+                <button id="mobileMenuBtn" class="p-2 hover:bg-white/10 rounded-xl transition-colors">
+                    <i class="fas fa-bars text-white text-lg"></i>
+                </button>
+                <a href="/" class="flex items-center gap-2">
+                    <img src="/images/ul.png"
+                         alt="FuelMS Logo"
+                         class="w-7 h-7 rounded-lg object-contain bg-white/20 p-1"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22white%22><path d=%22M3 22l1.5-3h15L21 22H3zM5 4l1.5-3h11L19 4H5zM4 7h16v10H4V7z%22/></svg>';">
+                    <div>
+                        <h1 class="text-white font-bold text-sm">Uniso Fuel</h1>
+                        <p class="text-[10px] text-white/60">v2.4.0</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Right side - All icons: search, dark/light toggle, notifications, settings, avatar profile -->
+            <div class="flex items-center gap-1 relative">
+                <!-- Search icon with dropdown -->
+                <div class="relative">
+                    <button id="mobileSearchToggle" class="p-2 hover:bg-white/10 rounded-xl transition-colors relative" onclick="toggleMobileSearch()">
+                        <i class="fas fa-search text-white text-sm"></i>
+                    </button>
+
+                    <!-- Mobile Search Form (Hidden by default) -->
+                    <div id="mobileSearchForm" class="hidden absolute right-0 top-full mt-2 w-64 z-50">
+                        <form method="get" action="@Url.Action("Index", "Home")" class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                            <input type="text"
+                                   name="searchTerm"
+                                   value="@ViewBag.SearchTerm"
+                                   placeholder="Search invoices, customers..."
+                                   class="w-full pl-9 pr-8 py-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                   onchange="this.form.submit()" />
+                            @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+                            {
+                                <a href="@Url.Action("Index", "Home")" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                                    <i class="fas fa-times text-xs"></i>
+                                </a>
+                            }
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Dark/Light Toggle -->
+                <button id="themeToggleMobile" class="p-2 hover:bg-white/10 rounded-xl transition-colors">
+                    <i id="themeIconMobile" class="fas fa-moon text-white text-sm"></i>
+                </button>
+
+                <!-- Notifications - Mobile with dropdown -->
+                <div class="relative" id="mobileNotificationContainer">
+                    <button id="notificationToggleMobile"
+                            class="relative p-2 hover:bg-white/10 rounded-xl transition-colors"
+                            aria-label="Notifications">
+                        <i class="fas fa-bell text-white text-sm"></i>
+                        <!-- Badge -->
+                        <span id="mobileNotificationBadge"
+                              class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                            3
+                        </span>
+                    </button>
+                    <!-- Mobile Notification Dropdown (Hidden by default) -->
+                    <div id="mobileNotificationDropdown" class="hidden absolute right-0 top-full mt-2 w-80 z-50">
+                        @{
+                            var mobileNotifService = Html.ViewContext.HttpContext.RequestServices
+                            .GetRequiredService<FuelManagement.Services.Interfaces.INotificationService>();
+                            var mobileNotifList = await mobileNotifService.GetRecentNotificationsAsync(5);
+                        }
+                        @await Html.PartialAsync("~/Views/Notification/_PartialDropdown.cshtml", mobileNotifList)
+                    </div>
+                </div>
+                
+                
+
+                <!-- Avatar Profile icon with dropdown -->
+                <div class="relative" id="mobileProfileContainer">
+                    <button class="p-1 hover:bg-white/10 rounded-xl transition-colors" id="mobileProfileBtn">
+                        @{
+                            var mobileUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                            var mobileName = User.Identity?.Name ?? "User";
+                            var mobileInitials = mobileName.Length >= 2 ? mobileName.Substring(0, 2).ToUpper() : mobileName.ToUpper();
+
+                            // Try to get profile image URL from claims or session
+                            var mobileProfileImageUrl = User.FindFirst("ProfileImage")?.Value ?? "/images/avatars/default.jpg";
+                        }
+
+                        <!-- Avatar Image (hidden by default, shown when available) -->
+                        <img src="@mobileProfileImageUrl"
+                             data-userid="@mobileUserId"
+                             class="w-6 h-6 rounded-lg object-cover hidden"
+                             id="mobileAvatarImg"
+                             alt="Profile"
+                             onerror="this.onerror=null; this.style.display='none'; document.getElementById('mobileAvatarInitials').style.display='flex';" />
+
+                        <!-- Avatar Initials (shown when no image) -->
+                        <div class="w-6 h-6 @(isAdmin ? "bg-gradient-to-br from-amber-500 to-amber-600" : "bg-gradient-to-br from-blue-500 to-blue-600") rounded-lg flex items-center justify-center text-white font-semibold text-xs"
+                             id="mobileAvatarInitials">
+                            @mobileInitials
+                        </div>
+                    </button>
+
+                    <!-- Mobile Profile Dropdown Menu -->
+                    <div id="mobileProfileMenu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50 hidden">
+                        <div class="px-4 py-2 bg-gray-50 dark:bg-gray-700 mb-2">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Signed in as</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-gray-200">@(User.Identity?.Name ?? "User")</p>
+                            <span class="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium @(isAdmin ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400")">
+                                @userRole
+                            </span>
+                        </div>
+
+                        <a href="/Profile" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-user text-gray-400 dark:text-gray-500 w-5"></i>
+                            My Profile
+                        </a>
+
+                        <a asp-controller="Profile"
+                           asp-action="Security"
+                           class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-shield-alt text-gray-400 dark:text-gray-500 w-5"></i>
+                            Security
+                        </a>
+
+                        @if (isAdmin)
+                        {
+                            <a href="/Users" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-users-cog text-gray-400 dark:text-gray-500 w-5"></i>
+                                User Management
+                            </a>
+                        }
+
+                        <!-- Switch Account for Mobile -->
+                        <a href="/Account/SwitchAccount" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-exchange-alt text-gray-400 dark:text-gray-500 w-5"></i>
+                            Switch Account
+                        </a>
+
+                        <hr class="my-2 border-gray-200 dark:border-gray-700">
+
+                        <form asp-controller="Account" asp-action="LogoutConfirmed" method="post" class="w-full">
+                            @Html.AntiForgeryToken()
+                            <button type="submit"
+                                    class="flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full text-left">
+                                <i class="fas fa-sign-out-alt text-red-500 dark:text-red-400 w-5"></i>
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar - Hidden on mobile by default -->
+        <aside id="sidebar" class="sidebar-gradient w-72 text-white flex flex-col overflow-y-auto fixed md:relative inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50 md:z-auto">
+            <!-- Close button for mobile -->
+            <div class="md:hidden absolute top-4 right-4">
+                <button id="closeSidebarBtn" class="text-white/60 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Logo Area -->
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+
+                    <img src="/images/ul.png"
+                         alt="Uniso Logo"
+                         class="w-10 h-10 rounded-xl object-contain" />
+
+                    <div>
+                        <h1 class="text-xl font-bold">Uniso Fuel</h1>
+                        <p class="text-xs text-white/60">Dashboard v2.4.0</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- User Role Info in Sidebar -->
+            <div class="px-4 py-3 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 @(isAdmin ? "role-badge-admin" : "role-badge-user") rounded-lg flex items-center justify-center">
+                        <i class="fas @(isAdmin ? "fa-crown" : "fa-user") text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-white">@(User.Identity?.Name ?? "User")</p>
+                        <span class="inline-block mt-0.5 px-2 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                            @userRole
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-4 py-6 overflow-y-auto">
+                <!-- ===================== MANAGEMENT ===================== -->
+                <p class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-4 px-4">
+                    Management
+                </p>
+
+                <ul class="space-y-1">
+                    <!-- Dashboard - Everyone can see -->
+                    <li>
+                        <a href="/"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-chart-pie w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <!-- Users - ONLY ADMIN can see -->
+                    @if (isAdmin)
+                    {
+                        <li>
+                            <a href="/Users"
+                               class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                                <i class="fas fa-users w-5"></i>
+                                <span>Users</span>
+                            </a>
+                        </li>
+                    }
+
+                    <!-- FUEL CLIENTS MODULE - Everyone can see (View only for regular users) -->
+                    <li>
+                        <a href="/FuelClients"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "FuelClients" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-user-tie w-5"></i>
+                            <span>Fuel Clients</span>
+                            @if (!isAdmin)
+                            {
+                                <span class="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">View</span>
+                            }
+                        </a>
+                    </li>
+
+                    <!-- Fuel Sales - Everyone can see -->
+                    <li>
+                        <a href="/FuelSales"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "FuelSales" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-gas-pump w-5"></i>
+                            <span>Fuel Sales</span>
+                        </a>
+                    </li>
+
+                    <!-- Inventory - Everyone can see (View only for regular users) -->
+                    <li>
+                        <a href="/Inventory"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Inventory" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-warehouse w-5"></i>
+                            <span>Inventory</span>
+                            @if (!isAdmin)
+                            {
+                                <span class="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">View</span>
+                            }
+                        </a>
+                    </li>
+
+                    <!-- Fleet Management - Everyone can see -->
+                    <li>
+                        <a href="/FleetMgmt"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "FleetMgmt" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-truck w-5"></i>
+                            <span>Fleet Mgmt</span>
+                        </a>
+                    </li>
+
+                    <!-- TRIPS MODULE - Everyone can see -->
+                    <li>
+                        <a href="/Trips"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Trips" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-route w-5"></i>
+                            <span>Trips</span>
+                        </a>
+                    </li>
+
+                    <!-- Pumps - Everyone can see -->
+                    <li>
+                        <a href="/Pumps"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Pumps" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-oil-can w-5"></i>
+                            <span>Pumps</span>
+                        </a>
+                    </li>
+
+                    <!-- Compensation - ONLY ADMIN can see -->
+                    @if (isAdmin)
+                    {
+                        <li>
+                            <a href="/Compensation"
+                               class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Compensation" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                                <i class="fas fa-hand-holding-usd w-5"></i>
+                                <span>Compensation</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                <!-- ===================== FINANCIAL ===================== -->
+                <p class="text-xs font-semibold text-white/40 uppercase tracking-wider mt-8 mb-4 px-4">
+                    Financial
+                </p>
+
+                <ul class="space-y-1">
+                    <!-- Invoices - Everyone can see -->
+                    <li>
+                        <a href="/Invoices"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoices" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-file-invoice-dollar w-5"></i>
+                            <span>Invoices</span>
+                        </a>
+                    </li>
+
+                    <!-- Receipts - Everyone can see -->
+                    <li>
+                        <a href="/Receipts"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Receipts" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                            <i class="fas fa-receipt w-5"></i>
+                            <span>Receipts</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- ===================== ANALYTICS ===================== -->
+                <p class="text-xs font-semibold text-white/40 uppercase tracking-wider mt-8 mb-4 px-4">
+                    Analytics
+                </p>
+
+                <ul class="space-y-1">
+                    <!-- Reports - ONLY ADMIN can see -->
+                    @if (isAdmin)
+                    {
+                        <li>
+                            <a href="/Reports"
+                               class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "bg-white/20 text-white border-l-4 border-white" : "")">
+                                <i class="fas fa-chart-line w-5"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                <!-- ===================== ROLE INFO FOOTER ===================== -->
+                <div class="mt-8 pt-4 border-t border-white/10">
+                    <div class="px-4 py-2 bg-white/5 rounded-xl">
+                        <div class="flex items-center gap-2">
+                            <i class="fas @(isAdmin ? "fa-crown text-amber-300" : "fa-eye text-blue-300") text-sm"></i>
+                            <span class="text-xs text-white/60">
+                                @if (isAdmin)
+                                {
+                                    <text>You have full administrative access</text>
+                                }
+                                else
+                                {
+                                    <text>You have view-only access to most modules</text>
+                                }
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+            <!-- Header - Desktop only -->
+            <header class="hidden md:block bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+                <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+                    <div class="flex items-center gap-2">
+                        <div>
+                            <h1 class="text-base sm:text-xl lg:text-2xl font-semibold text-gray-800 dark:text-gray-100">Welcome back, @(User.Identity?.Name ?? "Admin")</h1>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 hidden sm:block">@ViewData["Title"]</p>
+                        </div>
+                        <!-- Role Badge in Header -->
+                        <span class="ml-3 px-2 py-1 rounded-full text-xs font-medium @(isAdmin ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400")">
+                            <i class="fas @(isAdmin ? "fa-crown" : "fa-user") mr-1"></i>
+                            @userRole
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 sm:gap-3 lg:gap-4">
+                        <!-- Desktop Search -->
+                        <div class="hidden sm:block relative">
+                            <form method="get" action="@Url.Action("Index")" id="searchForm" class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                                <input type="text"
+                                       name="searchTerm"
+                                       value="@ViewBag.SearchTerm"
+                                       placeholder="Search..."
+                                       class="w-48 lg:w-64 pl-9 pr-3 py-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                       onchange="this.form.submit()" />
+                                @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+                                {
+                                    <a href="@Url.Action("Index")" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                                        <i class="fas fa-times text-xs"></i>
+                                    </a>
+                                }
+                            </form>
+                        </div>
+
+                        <!-- Notifications -->
+                        @await Html.PartialAsync("_NotificationDropdown")
+
+                        <!-- Dark/Light Toggle -->
+                        <button id="themeToggle"
+                                class="hidden sm:block p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors">
+                            <i id="themeIcon" class="fas fa-moon text-gray-600 dark:text-gray-300 text-base sm:text-lg"></i>
+                        </button>
+
+                        <!-- Profile with dropdown -->
+                        <div class="relative hidden sm:block" id="profileDropdown">
+                            <button id="profileButton" class="flex items-center gap-1 sm:gap-2 focus:outline-none">
+                                @{
+                                    var desktopName = User.Identity?.Name ?? "AF";
+                                    var desktopInitials = desktopName.Length >= 2 ? desktopName.Substring(0, 2).ToUpper() : desktopName.ToUpper();
+                                    var desktopUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                                }
+
+                                <!-- Avatar Image -->
+                                <img src="/images/avatars/default.jpg"
+                                     data-userid="@desktopUserId"
+                                     class="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-lg object-cover hidden"
+                                     id="desktopAvatarImg"
+                                     alt="Profile" />
+
+                                <!-- Avatar Initials -->
+                                <div class="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 @(isAdmin ? "bg-gradient-to-br from-amber-500 to-amber-600" : "bg-gradient-to-br from-blue-500 to-blue-600") rounded-lg sm:rounded-lg flex items-center justify-center text-white font-semibold text-xs sm:text-sm"
+                                     id="desktopAvatarInitials">
+                                    @desktopInitials
+                                </div>
+
+                                <div class="hidden lg:block text-left">
+                                    <p class="text-xs font-semibold text-gray-800 dark:text-gray-100">@(User.Identity?.Name ?? "Admin")</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">@userRole</p>
+                                </div>
+                                <i id="profileChevron" class="fas fa-chevron-down text-gray-400 text-xs hidden lg:block transition-transform duration-200"></i>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div id="profileMenu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50 hidden">
+                                <div class="px-4 py-2 bg-gray-50 dark:bg-gray-700 mb-2">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Signed in as</p>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">@(User.Identity?.Name ?? "User")</p>
+                                    <span class="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium @(isAdmin ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400")">
+                                        @userRole
+                                    </span>
+                                </div>
+
+                                <a href="/Profile" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-user text-gray-400 dark:text-gray-500 w-5"></i>
+                                    My Profile
+                                </a>
+
+                                <a asp-controller="Profile"
+                                   asp-action="Security"
+                                   class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-shield-alt text-gray-400 dark:text-gray-500 w-5"></i>
+                                    Security
+                                </a>
+
+                                @if (isAdmin)
+                                {
+                                    <a href="/Users" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                        <i class="fas fa-users-cog text-gray-400 dark:text-gray-500 w-5"></i>
+                                        User Management
+                                    </a>
+                                }
+
+                                <!-- Switch Account Link -->
+                                <a href="/Account/SwitchAccount" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-exchange-alt text-gray-400 dark:text-gray-500 w-5"></i>
+                                    Switch Account
+                                </a>
+
+                                <hr class="my-2 border-gray-200 dark:border-gray-700">
+
+                                <form asp-controller="Account" asp-action="LogoutConfirmed" method="post" class="w-full">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full text-left">
+                                        <i class="fas fa-sign-out-alt text-red-500 dark:text-red-400 w-5"></i>
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- Page Content -->
+            <div class="p-3 sm:p-4 lg:p-6 xl:p-8">
+                @RenderBody()
+            </div>
+
+            <!-- Toast Notifications -->
+            @await Html.PartialAsync("~/Views/Shared/_ToastNotification.cshtml")
+
+            <!-- Footer -->
+            <footer class="border-t border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 text-xs text-gray-500 dark:text-gray-400">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <span>FuelMS Dashboard v2.4.0</span>
+                    <span>© 2026 FUEL MANAGEMENT SYSTEMS INC.</span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Combined Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ========== MOBILE SIDEBAR ==========
+            const sidebar = document.getElementById('sidebar');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+            }
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', openSidebar);
+            }
+
+            if (closeSidebarBtn) {
+                closeSidebarBtn.addEventListener('click', closeSidebar);
+            }
+
+            document.addEventListener('click', (event) => {
+                if (window.innerWidth < 768) {
+                    if (sidebar && !sidebar.contains(event.target) && !mobileMenuBtn?.contains(event.target)) {
+                        closeSidebar();
+                    }
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.remove('-translate-x-full');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+
+            // ========== MOBILE SEARCH FUNCTIONALITY ==========
+            const mobileSearchToggle = document.getElementById('mobileSearchToggle');
+            const mobileSearchForm   = document.getElementById('mobileSearchForm');
+
+            window.toggleMobileSearch = function() {
+                if (mobileSearchForm) {
+                    mobileSearchForm.classList.toggle('hidden');
+                    if (!mobileSearchForm.classList.contains('hidden')) {
+                        setTimeout(function() {
+                            const input = mobileSearchForm.querySelector('input');
+                            if (input) input.focus();
+                        }, 100);
+                    }
+                }
+            };
+
+            document.addEventListener('click', function(event) {
+                const searchContainer = document.getElementById('mobileSearchToggle')?.parentElement;
+                if (searchContainer && mobileSearchForm &&
+                    !searchContainer.contains(event.target) &&
+                    !mobileSearchForm.contains(event.target) &&
+                    !mobileSearchForm.classList.contains('hidden')) {
+                    mobileSearchForm.classList.add('hidden');
+                }
+            });
+
+            // ========== MOBILE PROFILE DROPDOWN ==========
+            const mobileProfileBtn  = document.getElementById('mobileProfileBtn');
+            const mobileProfileMenu = document.getElementById('mobileProfileMenu');
+
+            if (mobileProfileBtn && mobileProfileMenu) {
+                mobileProfileBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mobileProfileMenu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (mobileProfileBtn && mobileProfileMenu &&
+                        !mobileProfileBtn.contains(e.target) &&
+                        !mobileProfileMenu.contains(e.target)) {
+                        mobileProfileMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // ========== PROFILE DROPDOWN ==========
+            const profileButton  = document.getElementById('profileButton');
+            const profileMenu    = document.getElementById('profileMenu');
+            const profileChevron = document.getElementById('profileChevron');
+
+            if (profileButton && profileMenu) {
+                profileButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = profileMenu.classList.contains('hidden');
+                    if (isHidden) {
+                        profileMenu.classList.remove('hidden');
+                        if (profileChevron) profileChevron.style.transform = 'rotate(180deg)';
+                    } else {
+                        profileMenu.classList.add('hidden');
+                        if (profileChevron) profileChevron.style.transform = 'rotate(0deg)';
+                    }
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (profileButton && profileMenu &&
+                        !profileButton.contains(e.target) &&
+                        !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                        if (profileChevron) profileChevron.style.transform = 'rotate(0deg)';
+                    }
+                });
+            }
+
+            // ========== THEME SYNC ==========
+            // site.js already handles the toggle click — just sync icons here
+
+            function updateThemeIcons(isDark) {
+                const themeIcon       = document.getElementById('themeIcon');
+                const themeIconMobile = document.getElementById('themeIconMobile');
+
+                if (themeIcon) {
+                    themeIcon.className = isDark
+                        ? 'fas fa-sun text-gray-600 dark:text-gray-300 text-base sm:text-lg'
+                        : 'fas fa-moon text-gray-600 dark:text-gray-300 text-base sm:text-lg';
+                }
+                if (themeIconMobile) {
+                    themeIconMobile.className = isDark
+                        ? 'fas fa-sun text-white text-sm'
+                        : 'fas fa-moon text-white text-sm';
+                }
+            }
+
+            updateThemeIcons(document.documentElement.classList.contains('dark'));
+
+            window.addEventListener('themeChanged', (e) => {
+                updateThemeIcons(e.detail.theme === 'dark');
+            });
+        // ========== MOBILE NOTIFICATION HANDLER ==========
+        // Handled by notifications.js
+
+        }); // ← single closing of DOMContentLoaded
+
+        // ========== AVATAR ==========
+        async function updateAvatarFromProfile() {
+            try {
+                const response = await fetch('/Profile/GetCurrentUserAvatar');
+                const data     = await response.json();
+
+                if (data.success) {
+                    const desktopImg      = document.getElementById('desktopAvatarImg');
+                    const desktopInitials = document.getElementById('desktopAvatarInitials');
+                    const mobileImg       = document.getElementById('mobileAvatarImg');
+                    const mobileInitials  = document.getElementById('mobileAvatarInitials');
+
+                    if (data.hasAvatar) {
+                        const url = data.avatarUrl + '?t=' + new Date().getTime();
+                        if (desktopImg)      { desktopImg.src = url; desktopImg.style.display = 'block'; }
+                        if (desktopInitials)   desktopInitials.style.display = 'none';
+                        if (mobileImg)       { mobileImg.src = url; mobileImg.classList.remove('hidden'); mobileImg.style.display = 'block'; }
+                        if (mobileInitials)    mobileInitials.style.display = 'none';
+                    } else {
+                        if (desktopInitials) { desktopInitials.textContent = data.initials; desktopInitials.style.display = 'flex'; }
+                        if (desktopImg)        desktopImg.style.display = 'none';
+                        if (mobileInitials)  { mobileInitials.textContent = data.initials; mobileInitials.style.display = 'flex'; }
+                        if (mobileImg)         mobileImg.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading avatar:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateAvatarFromProfile);
+        window.addEventListener('avatarUpdated', updateAvatarFromProfile);
+    </script>
+
+    <!-- Include site.js -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/notifications.js" asp-append-version="true"></script>
+    <script src="~/js/desktop-notifications.js" asp-append-version="true"></script>
+    <script src="~/js/mobile-notifications.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    
+</body>
+</html>

@@ -1,0 +1,262 @@
+﻿@model dynamic
+
+@{
+    var isEdit = Model.GetType().GetProperty("TotalFuelDispensed") != null;
+}
+
+<div class="space-y-4 sm:space-y-6">
+    @if (!isEdit)
+    {
+        <!-- Pump ID - Only shown in Create mode -->
+        <div class="floating-input-group relative">
+            <input type="text"
+                   id="PumpId"
+                   name="PumpId"
+                   value="@(Model.PumpId ?? "")"
+                   required
+                   data-val="true"
+                   data-val-required="Pump ID is required"
+                   data-val-regex-pattern="^PMP-\d{3}$"
+                   data-val-regex="Pump ID must be in format: PMP-001 (e.g., PMP-001, PMP-002)"
+                   data-val-remote-url="@Url.Action("CheckPumpId", "Pumps")"
+                   data-val-remote="Pump ID already exists"
+                   data-val-remote-additionalfields="*.PumpId"
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="PumpId"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Pump ID *
+            </label>
+            <!-- Validation Message -->
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="PumpId" data-valmsg-replace="true"></span>
+        </div>
+    }
+
+    <!-- Pump Name -->
+    <div class="floating-input-group relative">
+        <input type="text"
+               id="PumpName"
+               name="PumpName"
+               value="@(Model.PumpName ?? "")"
+               required
+               class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none"
+               placeholder=" " />
+        <label for="PumpName"
+               class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Pump Name *
+        </label>
+        <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="PumpName" data-valmsg-replace="true"></span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Fuel Type -->
+        <div class="floating-input-group relative">
+            <select id="FuelType"
+                    name="FuelType"
+                    required
+                    class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none appearance-none">
+                <option value="" disabled selected class="dark:bg-gray-700">Select fuel type</option>
+                <option value="Premium Gasoline" selected="@(Model.FuelType == "Premium Gasoline")" class="dark:bg-gray-700">Premium Gasoline</option>
+                <option value="Regular Gasoline" selected="@(Model.FuelType == "Regular Gasoline")" class="dark:bg-gray-700">Regular Gasoline</option>
+                <option value="Diesel" selected="@(Model.FuelType == "Diesel")" class="dark:bg-gray-700">Diesel</option>
+                <option value="Premium Diesel" selected="@(Model.FuelType == "Premium Diesel")" class="dark:bg-gray-700">Premium Diesel</option>
+                <option value="Ethanol" selected="@(Model.FuelType == "Ethanol")" class="dark:bg-gray-700">Ethanol</option>
+            </select>
+            <label for="FuelType"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Fuel Type *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="FuelType" data-valmsg-replace="true"></span>
+        </div>
+
+        <!-- Tank ID -->
+        <div class="floating-input-group relative">
+            <select id="TankId"
+                    name="TankId"
+                    required
+                    class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none appearance-none">
+                <option value="" disabled selected class="dark:bg-gray-700">Select connected tank</option>
+                <option value="TNK-001" selected="@(Model.TankId == "TNK-001")" class="dark:bg-gray-700">TNK-001 (Diesel)</option>
+                <option value="TNK-002" selected="@(Model.TankId == "TNK-002")" class="dark:bg-gray-700">TNK-002 (Premium Gasoline)</option>
+                <option value="TNK-003" selected="@(Model.TankId == "TNK-003")" class="dark:bg-gray-700">TNK-003 (Regular Gasoline)</option>
+                <option value="TNK-004" selected="@(Model.TankId == "TNK-004")" class="dark:bg-gray-700">TNK-004 (Premium Diesel)</option>
+                <option value="TNK-005" selected="@(Model.TankId == "TNK-005")" class="dark:bg-gray-700">TNK-005 (Ethanol)</option>
+            </select>
+            <label for="TankId"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Connected Tank *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="TankId" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Flow Rate -->
+        <div class="floating-input-group relative">
+            <input type="number"
+                   id="FlowRate"
+                   name="FlowRate"
+                   value="@(Model.FlowRate)"
+                   step="0.1"
+                   min="0.1"
+                   max="200"
+                   required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="FlowRate"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Flow Rate (L/min) *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="FlowRate" data-valmsg-replace="true"></span>
+        </div>
+
+        <!-- Installation Date -->
+        <div class="floating-input-group relative">
+            <input type="date"
+                   id="InstallationDate"
+                   name="InstallationDate"
+                   value="@(Model.InstallationDate.ToString("yyyy-MM-dd"))"
+                   required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="InstallationDate"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Installation Date *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="InstallationDate" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Last Maintenance Date -->
+        <div class="floating-input-group relative">
+            <input type="date"
+                   id="LastMaintenanceDate"
+                   name="LastMaintenanceDate"
+                   value="@(Model.LastMaintenanceDate?.ToString("yyyy-MM-dd"))"
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="LastMaintenanceDate"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Last Maintenance Date
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="LastMaintenanceDate" data-valmsg-replace="true"></span>
+        </div>
+
+        <!-- Next Maintenance Due -->
+        <div class="floating-input-group relative">
+            <input type="date"
+                   id="NextMaintenanceDue"
+                   name="NextMaintenanceDue"
+                   value="@(Model.NextMaintenanceDue?.ToString("yyyy-MM-dd"))"
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="NextMaintenanceDue"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Next Maintenance Due
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="NextMaintenanceDue" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    @if (isEdit)
+    {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <!-- Total Fuel Dispensed (Read-only in Edit) -->
+            <div class="floating-input-group relative">
+                <input type="text"
+                       id="TotalFuelDispensed"
+                       value="@Model.TotalFuelDispensed.ToString("N0") L"
+                       readonly
+                       class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                       placeholder=" " />
+                <label for="TotalFuelDispensed"
+                       class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                    Total Fuel Dispensed
+                </label>
+            </div>
+
+            <!-- Transaction Count (Read-only in Edit) -->
+            <div class="floating-input-group relative">
+                <input type="text"
+                       id="TransactionCount"
+                       value="@Model.TransactionCount.ToString("N0")"
+                       readonly
+                       class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                       placeholder=" " />
+                <label for="TransactionCount"
+                       class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                    Transaction Count
+                </label>
+            </div>
+        </div>
+    }
+
+    <!-- Status -->
+    <div class="floating-input-group relative">
+        <select id="Status"
+                name="Status"
+                required
+                class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none appearance-none">
+            <option value="Active" selected="@(Model.Status == "Active")" class="dark:bg-gray-700">Active</option>
+            <option value="Maintenance" selected="@(Model.Status == "Maintenance")" class="dark:bg-gray-700">Maintenance</option>
+            <option value="Inactive" selected="@(Model.Status == "Inactive")" class="dark:bg-gray-700">Inactive</option>
+        </select>
+        <label for="Status"
+               class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Status *
+        </label>
+        <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="Status" data-valmsg-replace="true"></span>
+    </div>
+
+    <!-- Notes -->
+    <div class="floating-input-group relative">
+        <textarea id="Notes"
+                  name="Notes"
+                  rows="3"
+                  class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none resize-none"
+                  placeholder=" ">@(Model.Notes ?? "")</textarea>
+        <label for="Notes"
+               class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Notes (Optional)
+        </label>
+        <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="Notes" data-valmsg-replace="true"></span>
+    </div>
+</div>
+
+<style>
+    .floating-input-group {
+        transition: all 0.2s ease;
+    }
+
+    select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select option {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+
+    /* Validation Styles */
+    .field-validation-error {
+        color: #ef4444;
+        font-size: 0.75rem;
+        line-height: 1rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .input-validation-error {
+        border-color: #ef4444 !important;
+    }
+
+        .input-validation-error:focus {
+            border-color: #ef4444 !important;
+            ring-color: #fecaca !important;
+        }
+</style>

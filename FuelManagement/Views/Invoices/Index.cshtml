@@ -1,0 +1,124 @@
+﻿@model FuelManagement.Models.InvoicesViewModel
+@{
+    ViewData["Title"] = "Invoices Management";
+
+    // Pass pagination info to ViewBag for the table partial
+    ViewBag.PageNumber = ViewBag.PageNumber ?? 1;
+    ViewBag.TotalPages = ViewBag.TotalPages ?? 1;
+    ViewBag.PageSize = ViewBag.PageSize ?? 10;
+    ViewBag.TotalCount = ViewBag.TotalCount ?? 0;
+    ViewBag.CurrentFilter = Model.Filter;
+}
+
+<div class="min-h-screen bg-gradient-to-br from-amber-50 to-stone-50 dark:from-gray-900 dark:to-gray-800">
+    <!-- Header Partial with Brown Milk-Tea Theme -->
+    @await Html.PartialAsync("Partials/_InvoiceHeader")
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <!-- AI Insight Banner -->
+        <div class="mb-6 sm:mb-8 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-4 sm:p-6 border border-amber-200 dark:border-gray-700 animate-fadeIn">
+            <div class="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-amber-200 dark:bg-gray-700 rounded-xl flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-6 sm:h-6 text-amber-800 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xs sm:text-sm font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider">AI INSIGHT</h3>
+                    <p class="mt-1 text-xs sm:text-sm text-stone-700 dark:text-gray-300 leading-relaxed">
+                        "The business demonstrates strong short-term liquidity, having successfully collected approximately
+                        <span class="font-semibold text-amber-700 dark:text-amber-400">@Model.CollectionRate.ToString("F0")%</span>
+                        of its total transaction value from high-volume clients. While the overall revenue stream is healthy,
+                        there is a minor bottleneck with nearly
+                        <span class="font-semibold text-amber-600 dark:text-amber-400">@((Model.TotalPartial + Model.TotalOutstanding).ToString("C"))</span>
+                        in pending and partial payments. The low volume of overdue invoices suggests reliable billing processes."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards Partial -->
+        @await Html.PartialAsync("Partials/_InvoiceSummaryCards", Model)
+
+        <!-- Filters Section -->
+        <div class="mt-6 sm:mt-8 animate-fadeIn" style="animation-delay: 0.2s;">
+            @await Html.PartialAsync("Partials/_InvoiceFilters", Model.Filter)
+        </div>
+
+        <!-- Table Section -->
+        <div class="mt-4 sm:mt-6 animate-fadeIn" style="animation-delay: 0.3s;">
+            @await Html.PartialAsync("Partials/_InvoiceTable", Model.InvoiceItems)
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+@await Html.PartialAsync("Partials/_DeleteInvoiceModal")
+
+<!-- Ensure modal is hidden on page load with JavaScript -->
+<script>
+    (function() {
+        // Immediate execution to ensure modal is hidden
+        var modal = document.getElementById('deleteInvoiceModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+
+        // Also ensure body styles are clean
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    })();
+</script>
+
+<style>
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradient 15s ease infinite;
+    }
+
+    @@keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    /* Additional safeguard for modal overlay */
+    #deleteInvoiceModal {
+        display: none;
+    }
+
+        #deleteInvoiceModal:not(.hidden) {
+            display: block;
+        }
+
+        #deleteInvoiceModal.hidden {
+            display: none !important;
+        }
+</style>

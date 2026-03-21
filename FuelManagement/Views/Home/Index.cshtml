@@ -1,0 +1,620 @@
+﻿@model FuelManagement.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+
+    var currentPage = ViewBag.CurrentPage ?? 1;
+    var totalPages = ViewBag.TotalPages ?? 1;
+    var pageSize = ViewBag.PageSize ?? 10;
+    var totalCount = ViewBag.TotalCount ?? 0;
+    var startIndex = ((currentPage - 1) * pageSize) + 1;
+    var endIndex = Math.Min(currentPage * pageSize, totalCount);
+}
+
+@{
+    string GetCompactRevenue(decimal revenue)
+    {
+        if (revenue >= 1000000000000) return $"${(revenue / 1000000000000):F1}T";
+        else if (revenue >= 1000000000) return $"${(revenue / 1000000000):F1}B";
+        else if (revenue >= 1000000) return $"${(revenue / 1000000):F1}M";
+        else if (revenue >= 1000) return $"${(revenue / 1000):F1}K";
+        else return revenue.ToString("C0");
+    }
+
+    string GetActivePumpsPercentage()
+    {
+        if (Model.TotalPumps == 0) return "0%";
+        var percentage = (Model.ActivePumps * 100.0) / Model.TotalPumps;
+        return percentage.ToString("F1") + "%";
+    }
+}
+
+<!-- Purple Hero Section -->
+<div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 dark:from-purple-800 dark:via-purple-700 dark:to-indigo-800 mb-8 animate-gradient">
+    <div class="absolute inset-0 bg-grid-white/[0.1] bg-grid-16"></div>
+    <div class="absolute -top-24 -right-24 w-64 h-64 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-300 dark:bg-indigo-900 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+
+    <div class="relative px-8 py-12">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div class="animate-slideIn">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold text-white">Dashboard Overview</span>
+                    <span class="px-3 py-1 bg-emerald-400/20 backdrop-blur-sm rounded-full text-xs font-semibold text-emerald-100">Live</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-pink-200">@(User.IsInRole("Admin") ? "Admin" : "User")</span></h1>
+                <p class="text-purple-100 dark:text-purple-300 text-sm md:text-base max-w-2xl">Track your fuel management metrics and performance in real-time</p>
+                <div class="flex items-center gap-4 mt-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                        <span class="text-xs text-purple-200 dark:text-purple-300">All systems operational</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-calendar-alt text-purple-200 dark:text-purple-300 text-xs"></i>
+                        <span class="text-xs text-purple-200 dark:text-purple-300">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mt-8 animate-fadeIn animation-delay-300">
+            <div class="px-4 py-2 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+                <span class="text-xs text-purple-200 dark:text-purple-300">Total Revenue</span>
+                <p class="text-lg font-semibold text-white">@GetCompactRevenue(Model.TotalRevenue)</p>
+            </div>
+            <div class="px-4 py-2 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+                <span class="text-xs text-purple-200 dark:text-purple-300">Active Pumps</span>
+                <p class="text-lg font-semibold text-white">@Model.ActivePumps/@Model.TotalPumps</p>
+            </div>
+            <div class="px-4 py-2 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+                <span class="text-xs text-purple-200 dark:text-purple-300">Today's Sales</span>
+                <p class="text-lg font-semibold text-white">@Model.GetFormattedTodaysRevenue()</p>
+            </div>
+            <div class="px-4 py-2 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+                <span class="text-xs text-purple-200 dark:text-purple-300">Pending Invoices</span>
+                <p class="text-lg font-semibold text-white">@Model.PendingInvoices</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fadeIn animation-delay-100">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-gas-pump text-white text-xl"></i>
+            </div>
+            <span class="text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-lg">
+                @Model.GetFormattedTotalFuelSales()
+            </span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">TOTAL FUEL SALES</p>
+        <p class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">@Model.TotalFuelSales.ToString("C0")</p>
+        <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-500 dark:text-gray-400">SOLD</span>
+            <span class="font-semibold text-gray-800 dark:text-gray-100">@Model.TotalLitersSold.ToString("N0")L</span>
+        </div>
+    </div>
+
+    <div class="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fadeIn animation-delay-200">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-flask text-white text-xl"></i>
+            </div>
+            <span class="text-sm font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2.5 py-1 rounded-lg">
+                @Model.GetFormattedTotalLitersSold()
+            </span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">TOTAL LITERS SOLD</p>
+        <p class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">@Model.TotalLitersSold.ToString("N0")L</p>
+        <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-500 dark:text-gray-400">INVENTORY</span>
+            <span class="font-semibold text-gray-800 dark:text-gray-100">@Model.TotalInventory.ToString("N0")L</span>
+        </div>
+    </div>
+
+    <div class="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fadeIn animation-delay-300">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-oil-can text-white text-xl"></i>
+            </div>
+            <span class="text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-lg">All systems operational</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">ACTIVE PUMPS</p>
+        <p class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">@Model.ActivePumps / @Model.TotalPumps</p>
+        <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-500 dark:text-gray-400">ACTIVE %</span>
+            <span class="font-semibold text-green-600 dark:text-green-400">@GetActivePumpsPercentage()</span>
+        </div>
+        <span class="text-xs text-red-500 dark:text-red-400 block mt-2">
+            <i class="fas fa-exclamation-triangle mr-1"></i>@(Model.TodaysVsAveragePercentage.ToString("+0.0;-#.0"))% low activity today
+        </span>
+    </div>
+
+    <div class="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fadeIn animation-delay-400">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-chart-line text-white text-xl"></i>
+            </div>
+            <span class="text-sm font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-lg">Within Limit</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">FUEL LOSS/VAR</p>
+        <p class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">@Model.FuelLossVariance.ToString("P1")</p>
+        <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-500 dark:text-gray-400">PENDING INVOICES</span>
+            <span class="font-semibold text-red-600 dark:text-red-400">@Model.PendingInvoices</span>
+        </div>
+        <span class="text-xs text-gray-500 dark:text-gray-400 block mt-2">
+            <i class="fas fa-clock mr-1"></i>Requires Action
+        </span>
+    </div>
+</div>
+
+<!-- Second Row Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fadeIn animation-delay-500">
+        <div class="flex items-start justify-between">
+            <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">TODAY'S REVENUE</p>
+                <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">@Model.TodaysRevenue.ToString("C0")</p>
+                <span class="text-sm text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                    <i class="fas fa-arrow-up text-xs"></i>@Model.TodaysVsAveragePercentage.ToString("+0.0;-#.0")% vs avg. day
+                </span>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                <i class="fas fa-dollar-sign text-white text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fadeIn animation-delay-600">
+        <div class="flex items-start justify-between">
+            <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">AVG TRANSACTION</p>
+                <p class="text-2xl font-bold text-gray-800 dark:text-gray-100">@Model.AverageTransaction.ToString("C2")</p>
+                <span class="text-sm text-gray-600 dark:text-gray-300 font-medium flex items-center gap-1">
+                    <i class="fas fa-chart-line text-xs"></i>@Model.TodaysTrend
+                </span>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                <i class="fas fa-receipt text-white text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="group bg-gradient-to-br from-purple-600 to-indigo-700 dark:from-purple-800 dark:to-indigo-900 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fadeIn animation-delay-700">
+        <div class="flex items-start justify-between text-white">
+            <div>
+                <p class="text-purple-200 dark:text-purple-300 text-sm mb-1">ACTIVE SESSIONS</p>
+                <p class="text-2xl font-bold mb-2">@Model.ActiveSessions</p>
+                <span class="text-purple-200 dark:text-purple-300 text-sm flex items-center gap-1">
+                    <i class="fas fa-fire"></i>@Model.FuelingNow fueling now
+                </span>
+            </div>
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm transform group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-users text-white text-xl"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Yearly Sales Overview and Distribution -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fadeIn animation-delay-800">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Yearly Sales Overview</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Revenue performance over the current fiscal year</p>
+            </div>
+            <div class="flex gap-2">
+                <button id="monthlyBtn" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105">Monthly</button>
+                <button id="weeklyBtn" class="px-4 py-2 text-gray-600 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300">Weekly</button>
+            </div>
+        </div>
+        <div class="relative w-full" style="height: 300px;">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fadeIn animation-delay-900">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Distribution</h2>
+            <a href="/FuelSales" class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium flex items-center gap-1 group">
+                View All <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Vendor compensation list</p>
+        <div class="space-y-4">
+            @foreach (var item in Model.DistributionItems)
+            {
+                <div class="flex items-center justify-between p-3 hover:bg-purple-50 dark:hover:bg-gray-700 rounded-xl transition-all duration-300 group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br @item.InitialsColor rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <span class="text-sm font-semibold">@item.Initials</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-800 dark:text-gray-200">@item.ClientName</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">ID: @item.ClientId</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-semibold text-gray-800 dark:text-gray-200">@item.Amount.ToString("C2")</p>
+                        <span class="text-xs @item.StatusColor px-2 py-0.5 rounded-full">@item.Status</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fadeIn animation-delay-1000">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Recent Transactions</h2>
+        <a href="/FuelSales" class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium flex items-center gap-1 group">
+            View All <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </a>
+    </div>
+
+    <!-- ── DESKTOP TABLE (hidden on mobile) ── -->
+    <div class="hidden sm:block overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="text-left text-sm text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                    <th class="pb-3 font-medium">PAYMENT METHOD</th>
+                    <th class="pb-3 font-medium">TRANSACTION ID</th>
+                    <th class="pb-3 font-medium">PUMP</th>
+                    <th class="pb-3 font-medium">LITERS</th>
+                    <th class="pb-3 font-medium">AMOUNT</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                @foreach (var transaction in Model.RecentTransactions)
+                {
+                    <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-purple-50 dark:hover:bg-gray-700 transition-colors duration-300">
+                        <td class="py-3">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium
+                                @(transaction.PaymentMethod == "EvcPlus"   ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
+                                  transaction.PaymentMethod == "Waafi"     ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
+                                  transaction.PaymentMethod == "Somtel"    ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300" :
+                                  transaction.PaymentMethod == "Somnet"    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
+                                  transaction.PaymentMethod == "E-Dahab" || transaction.PaymentMethod == "EDahab" ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300" :
+                                  "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300")">
+                                @transaction.PaymentMethod
+                            </span>
+                        </td>
+                        <td class="py-3 font-mono text-gray-800 dark:text-gray-200">@transaction.TransactionId</td>
+                        <td class="py-3"><span class="bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded-lg text-purple-700 dark:text-purple-300">@transaction.PumpNumber</span></td>
+                        <td class="py-3 font-medium text-gray-800 dark:text-gray-200">@transaction.FormattedLiters</td>
+                        <td class="py-3 font-semibold text-gray-800 dark:text-gray-200">@transaction.FormattedAmount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ── MOBILE CARDS (hidden on sm+) ── -->
+    <div class="sm:hidden space-y-3">
+        @foreach (var transaction in Model.RecentTransactions)
+        {
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-4 border border-gray-100 dark:border-gray-700">
+                <!-- Top row: payment badge + amount -->
+                <div class="flex items-center justify-between mb-3">
+                    <span class="px-3 py-1 rounded-full text-xs font-medium
+                        @(transaction.PaymentMethod == "EvcPlus"   ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
+                          transaction.PaymentMethod == "Waafi"     ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
+                          transaction.PaymentMethod == "Somtel"    ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300" :
+                          transaction.PaymentMethod == "Somnet"    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
+                          transaction.PaymentMethod == "E-Dahab" || transaction.PaymentMethod == "EDahab" ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300" :
+                          "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300")">
+                        @transaction.PaymentMethod
+                    </span>
+                    <span class="text-base font-bold text-gray-800 dark:text-gray-100">@transaction.FormattedAmount</span>
+                </div>
+                <!-- Bottom row: transaction ID, pump, liters -->
+                <div class="grid grid-cols-3 gap-2 text-xs">
+                    <div>
+                        <p class="text-gray-400 dark:text-gray-500 mb-0.5">TXN ID</p>
+                        <p class="font-mono font-semibold text-gray-700 dark:text-gray-200 truncate">@transaction.TransactionId</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 dark:text-gray-500 mb-0.5">PUMP</p>
+                        <span class="bg-purple-100 dark:bg-purple-900 px-2 py-0.5 rounded-lg text-purple-700 dark:text-purple-300 font-medium">@transaction.PumpNumber</span>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 dark:text-gray-500 mb-0.5">LITERS</p>
+                        <p class="font-semibold text-gray-700 dark:text-gray-200">@transaction.FormattedLiters</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 1)
+    {
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 gap-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400 order-2 sm:order-1">
+                Showing <span class="font-medium">@startIndex</span> to
+                <span class="font-medium">@endIndex</span> of
+                <span class="font-medium">@totalCount</span> transactions
+            </p>
+            <div class="flex gap-2 order-1 sm:order-2">
+                @if (currentPage > 1)
+                {
+                    <a href="@Url.Action("Index", new { page = currentPage - 1 })"
+                       class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-gray-600 transition-all duration-200">
+                        <i class="fas fa-chevron-left text-xs"></i>
+                        <span class="hidden sm:inline ml-1">Previous</span>
+                    </a>
+                }
+                else
+                {
+                    <span class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-50">
+                        <i class="fas fa-chevron-left text-xs"></i>
+                        <span class="hidden sm:inline ml-1">Previous</span>
+                    </span>
+                }
+
+                @{
+                    int startPage = Math.Max(1, currentPage - 2);
+                    int endPage = Math.Min(totalPages, startPage + 4);
+                    if (endPage - startPage < 4) startPage = Math.Max(1, endPage - 4);
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    if (i == currentPage)
+                    {
+                        <span class="px-3 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium">@i</span>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Index", new { page = i })"
+                           class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-gray-600 transition-all duration-200">@i</a>
+                    }
+                }
+
+                @if (currentPage < totalPages)
+                {
+                    <a href="@Url.Action("Index", new { page = currentPage + 1 })"
+                       class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-gray-600 transition-all duration-200">
+                        <span class="hidden sm:inline mr-1">Next</span>
+                        <i class="fas fa-chevron-right text-xs"></i>
+                    </a>
+                }
+                else
+                {
+                    <span class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-50">
+                        <span class="hidden sm:inline mr-1">Next</span>
+                        <i class="fas fa-chevron-right text-xs"></i>
+                    </span>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                Showing 1-@Model.RecentTransactions.Count of @Model.TotalTransactions transactions
+            </p>
+        </div>
+    }
+</div>
+
+<style>
+    .animation-delay-100 {
+        animation-delay: 0.1s;
+    }
+
+    .animation-delay-200 {
+        animation-delay: 0.2s;
+    }
+
+    .animation-delay-300 {
+        animation-delay: 0.3s;
+    }
+
+    .animation-delay-400 {
+        animation-delay: 0.4s;
+    }
+
+    .animation-delay-500 {
+        animation-delay: 0.5s;
+    }
+
+    .animation-delay-600 {
+        animation-delay: 0.6s;
+    }
+
+    .animation-delay-700 {
+        animation-delay: 0.7s;
+    }
+
+    .animation-delay-800 {
+        animation-delay: 0.8s;
+    }
+
+    .animation-delay-900 {
+        animation-delay: 0.9s;
+    }
+
+    .animation-delay-1000 {
+        animation-delay: 1s;
+    }
+
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+
+    @@keyframes blob {
+        0% {
+            transform: translate(0px,0px) scale(1);
+        }
+
+        33% {
+            transform: translate(30px,-50px) scale(1.1);
+        }
+
+        66% {
+            transform: translate(-20px,20px) scale(0.9);
+        }
+
+        100% {
+            transform: translate(0px,0px) scale(1);
+        }
+    }
+
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+
+    @@keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradient 15s ease infinite;
+    }
+
+    .bg-grid-white {
+        background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1H15V15H1V1Z' stroke='white' stroke-opacity='0.1' stroke-width='0.5'/%3E%3C/svg%3E");
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const canvas = document.getElementById('salesChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            if (window.salesChart instanceof Chart) {
+                window.salesChart.destroy();
+            }
+
+            const monthlyData   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlySales.Select(m => m.Sales)));
+            const monthlyLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlySales.Select(m => m.Month)));
+            const weeklyData    = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeeklySales.Select(w => w.Sales)));
+            const weeklyLabels  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeeklySales.Select(w => w.DisplayLabel)));
+
+            const isDark = document.documentElement.classList.contains('dark');
+
+            window.salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [{
+                        label: 'Sales',
+                        data: monthlyData,
+                        borderColor: isDark ? '#a78bfa' : '#9333ea',
+                        backgroundColor: isDark ? 'rgba(167,139,250,0.2)' : 'rgba(147,51,234,0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2,
+                        pointBackgroundColor: isDark ? '#a78bfa' : '#9333ea',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 2000, easing: 'easeInOutQuart' },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: isDark ? '#374151' : '#1f2937',
+                            titleColor: '#f3f4f6',
+                            bodyColor: '#d1d5db',
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
+                            ticks: {
+                                callback: function(value) { return '$' + value.toLocaleString(); },
+                                color: isDark ? '#e5e7eb' : '#4b5563'
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: isDark ? '#e5e7eb' : '#4b5563' }
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('monthlyBtn').addEventListener('click', function() {
+                this.className = 'px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105';
+                document.getElementById('weeklyBtn').className = 'px-4 py-2 text-gray-600 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300';
+                window.salesChart.data.labels = monthlyLabels;
+                window.salesChart.data.datasets[0].data = monthlyData;
+                window.salesChart.update();
+            });
+
+            document.getElementById('weeklyBtn').addEventListener('click', function() {
+                this.className = 'px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105';
+                document.getElementById('monthlyBtn').className = 'px-4 py-2 text-gray-600 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300';
+                window.salesChart.data.labels = weeklyLabels;
+                window.salesChart.data.datasets[0].data = weeklyData;
+                window.salesChart.update();
+            });
+
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        const isDarkNow = document.documentElement.classList.contains('dark');
+                        if (window.salesChart) {
+                            window.salesChart.data.datasets[0].borderColor          = isDarkNow ? '#a78bfa' : '#9333ea';
+                            window.salesChart.data.datasets[0].backgroundColor      = isDarkNow ? 'rgba(167,139,250,0.2)' : 'rgba(147,51,234,0.1)';
+                            window.salesChart.data.datasets[0].pointBackgroundColor = isDarkNow ? '#a78bfa' : '#9333ea';
+                            window.salesChart.options.scales.y.grid.color           = isDarkNow ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+                            window.salesChart.options.scales.y.ticks.color          = isDarkNow ? '#e5e7eb' : '#4b5563';
+                            window.salesChart.options.scales.x.ticks.color          = isDarkNow ? '#e5e7eb' : '#4b5563';
+                            window.salesChart.options.plugins.tooltip.backgroundColor = isDarkNow ? '#374151' : '#1f2937';
+                            window.salesChart.update();
+                        }
+                    }
+                });
+            });
+
+            observer.observe(document.documentElement, { attributes: true });
+
+            const observer2 = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('animate-fadeIn');
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.card-hover, .group').forEach((el) => {
+                observer2.observe(el);
+            });
+        });
+    </script>
+}

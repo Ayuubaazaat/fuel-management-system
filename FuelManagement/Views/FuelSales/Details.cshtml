@@ -1,0 +1,134 @@
+﻿@model FuelManagement.Models.FuelSaleListItemViewModel
+@{
+    ViewData["Title"] = "Fuel Sale Details";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8 animate-slideIn">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Sale Details</h1>
+                    <p class="text-sm sm:text-base mt-2 text-gray-600 dark:text-gray-400">View complete information for this transaction</p>
+                </div>
+                <span class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold
+                    @(Model.Status == "Paid" ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400" :
+                      Model.Status == "Pending" ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400" :
+                      "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400") self-start sm:self-auto">
+                    @Model.Status
+                </span>
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 animate-fadeIn">
+            <!-- Invoice Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-2xl p-4 sm:p-6 card-hover border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Invoice Information</h2>
+                </div>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Invoice Number:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.InvoiceNumber</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Customer:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.CustomerName</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Date:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.Date.ToString("MMM dd, yyyy")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuel Details Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-2xl p-4 sm:p-6 card-hover border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Fuel Details</h2>
+                </div>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Liters:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.Liters.ToString("N0")L</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Amount:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.Amount.ToString("C")</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Pump Number:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.PumpNumber</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-2xl p-4 sm:p-6 md:col-span-2 card-hover border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Payment Information</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div class="space-y-2 sm:space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Payment Method:</span>
+                            <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.PaymentMethod</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2 sm:space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Status:</span>
+                            <span class="text-xs sm:text-sm font-semibold @(Model.Status == "Paid" ? "text-green-600 dark:text-green-400" : Model.Status == "Pending" ? "text-yellow-600 dark:text-yellow-400" : "text-red-600 dark:text-red-400")">
+                                @Model.Status
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 animate-fadeIn">
+            <a href="@Url.Action("Edit", new { id = Model.Id })"
+               class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 dark:from-orange-600 dark:to-amber-600 text-white font-medium rounded-lg hover:from-orange-600 dark:hover:from-orange-700 hover:to-amber-600 dark:hover:to-amber-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-center">
+                Edit Sale
+            </a>
+            <a href="@Url.Action("Index")"
+               class="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-center">
+                Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+    .dark .card-hover:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    }
+</style>

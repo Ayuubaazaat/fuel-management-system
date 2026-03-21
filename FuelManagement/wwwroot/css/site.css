@@ -1,0 +1,41 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+/* Dark mode support for any Bootstrap elements if used */
+.dark .btn {
+    color: #e5e7eb;
+    background-color: #374151;
+    border-color: #4b5563;
+}
+
+.dark .form-control {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #e5e7eb;
+}
+
+    .dark .form-control:focus {
+        background-color: #374151;
+        border-color: #60a5fa;
+        color: #e5e7eb;
+    }

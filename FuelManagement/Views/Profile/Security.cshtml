@@ -1,0 +1,270 @@
+﻿@model FuelManagement.Models.SecurityViewModel
+@{
+    ViewData["Title"] = "Security Settings";
+}
+
+<div class="max-w-3xl mx-auto animate-fadeIn">
+    <!-- Header with back button -->
+    <div class="mb-6">
+        <a href="/Profile?t=@DateTime.Now.Ticks" class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 mb-4 transition-colors">
+            <i class="fas fa-arrow-left text-sm"></i>
+            <span>Back to Profile</span>
+        </a>
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Security Settings</h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-1">Manage your account security and active sessions</p>
+    </div>
+
+    <!-- Change Password Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 mb-6 card-hover transition-all duration-300">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Change Password</h2>
+
+        <form id="passwordForm" class="space-y-6">
+            @Html.AntiForgeryToken()
+
+            <!-- Current Password -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Password</label>
+                <div class="relative">
+                    <input type="password" id="CurrentPassword" name="CurrentPassword" class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200" required />
+                    <button type="button" onclick="togglePassword('CurrentPassword')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+                <span class="text-red-500 text-sm hidden" id="CurrentPassword-error"></span>
+            </div>
+
+            <!-- New Password with Strength Meter -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New Password</label>
+                <div class="relative">
+                    <input type="password" id="NewPassword" name="NewPassword" class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200" required minlength="8" />
+                    <button type="button" onclick="togglePassword('NewPassword')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+                <!-- Password Strength Meter -->
+                <div class="mt-3">
+                    <div class="flex gap-2 h-2">
+                        <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full" id="strength-1"></div>
+                        <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full" id="strength-2"></div>
+                        <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full" id="strength-3"></div>
+                        <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full" id="strength-4"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2" id="strengthText">Enter a password</p>
+                </div>
+                <span class="text-red-500 text-sm hidden" id="NewPassword-error"></span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm New Password</label>
+                <div class="relative">
+                    <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200" required />
+                    <button type="button" onclick="togglePassword('ConfirmPassword')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+                <span class="text-red-500 text-sm hidden" id="ConfirmPassword-error"></span>
+            </div>
+
+            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 font-medium flex items-center gap-2" id="passwordBtn">
+                <i class="fas fa-key"></i>
+                Update Password
+            </button>
+        </form>
+    </div>
+
+    <!-- Active Sessions Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 card-hover transition-all duration-300">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Active Sessions</h2>
+
+        <div class="space-y-4">
+            @foreach (var session in Model.ActiveSessions)
+            {
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl session-item" data-id="@session.Id">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-gray-200 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                            <i class="fas @(session.DeviceName.Contains("iPhone") ? "fa-mobile-alt" : session.DeviceName.Contains("Mac") ? "fa-laptop" : "fa-desktop") text-gray-600 dark:text-gray-300"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <p class="font-medium text-gray-800 dark:text-white">@session.DeviceName</p>
+                                @if (session.IsCurrentSession)
+                                {
+                                    <span class="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2 py-0.5 rounded-full">Current</span>
+                                }
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                @session.Location • @session.IpAddress • Last active @session.LastActive.ToString("hh:mm tt")
+                            </p>
+                        </div>
+                    </div>
+                    @if (!session.IsCurrentSession)
+                    {
+                        <button onclick="logoutSession(@session.Id)" class="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium transition-colors duration-200">
+                            Logout
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-3"></div>
+
+@section Scripts {
+    <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const type = field.type === 'password' ? 'text' : 'password';
+            field.type = type;
+        }
+
+        // Password strength meter
+        const passwordInput = document.getElementById('NewPassword');
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                const strength = calculatePasswordStrength(password);
+                updateStrengthMeter(strength);
+            });
+        }
+
+        function calculatePasswordStrength(password) {
+            let score = 0;
+
+            if (password.length >= 8) score++;
+            if (password.length >= 12) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+
+            return Math.min(score, 4);
+        }
+
+        function updateStrengthMeter(strength) {
+            const colors = ['', 'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-emerald-500'];
+            const texts = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+
+            for (let i = 1; i <= 4; i++) {
+                const meter = document.getElementById(`strength-${i}`);
+                if (meter) {
+                    meter.className = `flex-1 h-full rounded-full ${i <= strength ? colors[strength] : 'bg-gray-200 dark:bg-gray-600'}`;
+                }
+            }
+
+            document.getElementById('strengthText').textContent = texts[strength];
+        }
+
+        // Password form submission
+        document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('passwordBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+
+            // Clear previous errors
+            document.querySelectorAll('[id$="-error"]').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+
+            const formData = new FormData();
+            formData.append('currentPassword', document.getElementById('CurrentPassword').value);
+            formData.append('newPassword', document.getElementById('NewPassword').value);
+            formData.append('confirmPassword', document.getElementById('ConfirmPassword').value);
+
+            try {
+                const response = await fetch('/Profile/ChangePassword', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('success', result.message);
+                    document.getElementById('passwordForm').reset();
+                    updateStrengthMeter(0);
+                } else {
+                    if (result.errors) {
+                        result.errors.forEach(error => {
+                            showToast('error', error);
+                        });
+                    } else {
+                        showToast('error', result.message || 'Failed to update password');
+                    }
+                }
+            } catch (error) {
+                showToast('error', 'An error occurred. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-key"></i> Update Password';
+            }
+        });
+
+        // Logout session
+        async function logoutSession(sessionId) {
+            if (!confirm('Are you sure you want to logout this session?')) return;
+
+            try {
+                const response = await fetch('/Profile/LogoutSession', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ id: sessionId })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const sessionElement = document.querySelector(`.session-item[data-id="${sessionId}"]`);
+                    if (sessionElement) {
+                        sessionElement.style.opacity = '0';
+                        setTimeout(() => sessionElement.remove(), 300);
+                    }
+                    showToast('success', result.message);
+                } else {
+                    showToast('error', result.message);
+                }
+            } catch (error) {
+                showToast('error', 'Failed to terminate session');
+            }
+        }
+
+        window.logoutSession = logoutSession;
+
+        // Toast notification function
+        function showToast(type, message) {
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-6 py-4 rounded-xl shadow-lg transform transition-all duration-300 translate-x-full ${
+                type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400' :
+                'bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400'
+            }`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle text-emerald-500 dark:text-emerald-400' : 'fa-exclamation-circle text-red-500 dark:text-red-400'}"></i>
+                <span>${message}</span>
+            `;
+
+            document.getElementById('toastContainer').appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+    </script>
+}

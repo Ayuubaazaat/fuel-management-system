@@ -1,0 +1,325 @@
+﻿@model object
+@{
+    var isEdit = ViewBag.IsEdit ?? false;
+    // Determine which model type we're working with
+    var userEdit = Model as FuelManagement.Models.UserEditViewModel;
+    var userCreate = Model as FuelManagement.Models.UserCreateViewModel;
+}
+
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+    <!-- First Name -->
+    <div class="relative floating-group">
+        @if (isEdit && userEdit != null)
+        {
+            <input type="text" name="FirstName" value="@userEdit.FirstName"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                   required />
+            <label for="FirstName"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500">
+                First Name
+            </label>
+            @if (ViewData.ModelState["FirstName"]?.Errors?.Count > 0)
+            {
+                <span class="text-red-500 dark:text-red-400 text-xs mt-1">@ViewData.ModelState["FirstName"].Errors[0].ErrorMessage</span>
+            }
+        }
+        else
+        {
+            <input type="text" name="FirstName" value="@(userCreate?.FirstName)"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                   required />
+            <label for="FirstName"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500">
+                First Name
+            </label>
+            @if (ViewData.ModelState["FirstName"]?.Errors?.Count > 0)
+            {
+                <span class="text-red-500 dark:text-red-400 text-xs mt-1">@ViewData.ModelState["FirstName"].Errors[0].ErrorMessage</span>
+            }
+        }
+    </div>
+
+    <!-- Last Name -->
+    <div class="relative floating-group">
+        @if (isEdit && userEdit != null)
+        {
+            <input type="text" name="LastName" value="@userEdit.LastName"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                   required />
+            <label for="LastName"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500">
+                Last Name
+            </label>
+            @if (ViewData.ModelState["LastName"]?.Errors?.Count > 0)
+            {
+                <span class="text-red-500 dark:text-red-400 text-xs mt-1">@ViewData.ModelState["LastName"].Errors[0].ErrorMessage</span>
+            }
+        }
+        else
+        {
+            <input type="text" name="LastName" value="@(userCreate?.LastName)"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                   required />
+            <label for="LastName"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500">
+                Last Name
+            </label>
+            @if (ViewData.ModelState["LastName"]?.Errors?.Count > 0)
+            {
+                <span class="text-red-500 dark:text-red-400 text-xs mt-1">@ViewData.ModelState["LastName"].Errors[0].ErrorMessage</span>
+            }
+        }
+    </div>
+
+    <!-- Email -->
+    <div class="relative floating-group sm:col-span-2">
+        @if (isEdit && userEdit != null)
+        {
+            <input type="email" name="Email" value="@userEdit.Email"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                   required />
+            <label for="Email"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500">
+                Email Address
+            </label>
+            @if (ViewData.ModelState["Email"]?.Errors?.Count > 0)
+            {
+                <span class="text-red-500 dark:text-red-400 text-xs mt-1">@ViewData.ModelState["Email"].Errors[0].ErrorMessage</span>
+            }
+        }
+        else
+        {
+            <input type="email" name="Email" value="@(userCreate?.Email)"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                   required />
+            <label for="Email"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500">
+                Email Address
+            </label>
+            @if (ViewData.ModelState["Email"]?.Errors?.Count > 0)
+            {
+                <span class="text-red-500 dark:text-red-400 text-xs mt-1">@ViewData.ModelState["Email"].Errors[0].ErrorMessage</span>
+            }
+        }
+    </div>
+
+    <!-- Phone - READ ONLY in Edit mode -->
+    <div class="relative floating-group">
+        @if (isEdit && userEdit != null)
+        {
+            <!-- Edit mode phone (read-only) -->
+            <input type="tel" name="Phone" value="@userEdit.Phone"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-xl cursor-not-allowed"
+                   readonly />
+            <label for="Phone"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                Phone Number
+            </label>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Phone number cannot be changed</p>
+        }
+        else
+        {
+            <!-- Create mode phone - FIXED -->
+            <input type="tel" name="Phone" value="@(userCreate?.Phone)"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200" />
+
+            <!-- FIXED: Moved comment BEFORE the label tag, not inside it -->
+            <label for="Phone"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500">
+                Phone Number
+            </label>
+
+            @if (ViewData.ModelState["Phone"]?.Errors?.Count > 0)
+            {
+                <span class="text-red-500 dark:text-red-400 text-xs mt-1">@ViewData.ModelState["Phone"].Errors[0].ErrorMessage</span>
+            }
+        }
+    </div>
+
+    <!-- Role -->
+    <div class="relative floating-group">
+        @{
+            string selectedRole = null;
+
+            if (isEdit && userEdit != null)
+            {
+                selectedRole = userEdit.Role.ToString();
+            }
+            else if (userCreate != null)
+            {
+                selectedRole = userCreate.Role.ToString();
+            }
+        }
+
+        <select name="Role"
+                class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                required>
+            <option value="" disabled class="dark:bg-gray-700">Select a role</option>
+            <option value="Admin" selected="@(selectedRole == "Admin" ? "selected" : null)" class="dark:bg-gray-700">Admin</option>
+            <option value="User" selected="@(selectedRole == "User" ? "selected" : null)" class="dark:bg-gray-700">User</option>
+        </select>
+
+        <label for="Role"
+               class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 transition-all duration-200">
+            Role
+        </label>
+
+        @if (ViewData.ModelState["Role"]?.Errors?.Count > 0)
+        {
+            <span class="text-red-500 dark:text-red-400 text-xs mt-1">
+                @ViewData.ModelState["Role"].Errors[0].ErrorMessage
+            </span>
+        }
+    </div>
+    @if (!isEdit)
+    {
+        <!-- Password -->
+        <div class="relative floating-group">
+            <input type="password" name="Password" id="Password"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200 pr-10 sm:pr-12"
+                   required />
+            <button type="button"
+                    onclick="togglePasswordVisibility('Password', 'eyeIcon1')"
+                    class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400 focus:outline-none z-10"
+                    tabindex="-1">
+                <i id="eyeIcon1" class="fas fa-eye text-sm sm:text-base"></i>
+            </button>
+            <label for="Password"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 transition-all duration-200 pointer-events-none peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4">
+                Password
+            </label>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="relative floating-group">
+            <input type="password" name="ConfirmPassword" id="ConfirmPassword"
+                   placeholder=" "
+                   class="w-full px-3 sm:px-4 pt-5 sm:pt-6 pb-1 sm:pb-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl peer focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200 pr-10 sm:pr-12"
+                   required />
+            <button type="button"
+                    onclick="togglePasswordVisibility('ConfirmPassword', 'eyeIcon2')"
+                    class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400 focus:outline-none z-10"
+                    tabindex="-1">
+                <i id="eyeIcon2" class="fas fa-eye text-sm sm:text-base"></i>
+            </button>
+            <label for="ConfirmPassword"
+                   class="absolute left-3 sm:left-4 top-3 sm:top-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 transition-all duration-200 pointer-events-none peer-focus:text-xs peer-focus:-top-2.5 peer-focus:left-2 sm:peer-focus:left-3 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4">
+                Confirm Password
+            </label>
+        </div>
+    }
+    else
+    {
+        <!-- Status Toggle (only for Edit) -->
+        <div class="sm:col-span-2 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-1">Account Status</h4>
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                        Activate or deactivate this user account
+                    </p>
+                </div>
+
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" name="IsActive" class="sr-only peer" value="true"
+                    @(userEdit?.IsActive == true ? "checked" : "") />
+                    <input type="hidden" name="IsActive" value="false" />
+                    <div class="w-12 sm:w-14 h-6 sm:h-7 bg-gray-200 dark:bg-gray-600 rounded-full"></div>
+                    <span class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        @(userEdit?.IsActive == true ? "Active" : "Inactive")
+                    </span>
+                </label>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .floating-group {
+        transition: all 0.2s ease;
+    }
+
+        .floating-group input:focus ~ label,
+        .floating-group input:not(:placeholder-shown) ~ label,
+        .floating-group select:focus ~ label,
+        .floating-group select:not([value=""]):valid ~ label {
+            transform: translateY(-0.5rem);
+            font-size: 0.7rem;
+            background: white;
+            padding: 0 0.5rem;
+            left: 0.75rem;
+            color: #9333ea;
+        }
+
+    .dark .floating-group input:focus ~ label,
+    .dark .floating-group input:not(:placeholder-shown) ~ label,
+    .dark .floating-group select:focus ~ label,
+    .dark .floating-group select:not([value=""]):valid ~ label {
+        background: #1f2937;
+        color: #a78bfa;
+    }
+
+    @@media (min-width: 640px) {
+        .floating-group input:focus ~ label,
+        .floating-group input:not(:placeholder-shown) ~ label,
+        .floating-group select:focus ~ label,
+        .floating-group select:not([value=""]):valid ~ label {
+            font-size: 0.75rem;
+        }
+    }
+
+    select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select option {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+</style>
+
+<script>
+    // Update status text when toggle changes (for Edit form)
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusToggle = document.querySelector('input[name="IsActive"][type="checkbox"]');
+        const statusText = document.getElementById('statusText');
+
+        if (statusToggle && statusText) {
+            statusToggle.addEventListener('change', function() {
+                statusText.textContent = this.checked ? 'Active' : 'Inactive';
+            });
+        }
+    });
+</script>
+
+<script>
+    // Toggle password visibility
+    function togglePasswordVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>

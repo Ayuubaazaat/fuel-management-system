@@ -1,0 +1,161 @@
+﻿@model FuelManagement.Models.ReceiptsViewModel
+@{
+    ViewData["Title"] = "Receipts Management";
+}
+
+<!-- Success Message Notification -->
+@if (TempData["Success"] != null)
+{
+    <div class="fixed top-4 right-4 z-50 animate-slideIn">
+        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-green-700">@TempData["Success"]</p>
+                </div>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" class="ml-auto pl-3">
+                    <svg class="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <!-- Header Partial with Dark Theme -->
+    @await Html.PartialAsync("Partials/_ReceiptHeader")
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <!-- AI Insight Banner -->
+        <div class="mb-6 sm:mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-4 sm:p-6 border border-indigo-100 dark:border-gray-700 animate-fadeIn">
+            <div class="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-100 dark:bg-gray-700 rounded-xl flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xs sm:text-sm font-semibold text-indigo-800 dark:text-indigo-400 uppercase tracking-wider">AI INSIGHT</h3>
+                    <p class="mt-1 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        "The business demonstrates strong short-term liquidity, having successfully collected approximately
+                        <span class="font-semibold text-indigo-600 dark:text-indigo-400">@Model.CollectionRate.ToString("F0")%</span>
+                        of its total transaction value from high-volume clients. While the overall revenue stream is healthy,
+                        there is a minor bottleneck with nearly
+                        <span class="font-semibold text-amber-600 dark:text-amber-400">@((Model.PendingAmount + Model.PartialAmount).ToString("C"))</span>
+                        in pending and partial payments. The low volume of voided transactions suggests high operational
+                        accuracy and reliable billing processes."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards Partial -->
+        @await Html.PartialAsync("Partials/_ReceiptSummaryCards", Model)
+
+        <!-- Filters Section -->
+        <div class="mt-6 sm:mt-8 animate-fadeIn" style="animation-delay: 0.2s;">
+            @await Html.PartialAsync("Partials/_ReceiptFilters", Model.Filter)
+        </div>
+
+        <!-- Table Section or Empty State -->
+        <div class="mt-4 sm:mt-6 animate-fadeIn" style="animation-delay: 0.3s;">
+            @if (Model.ReceiptItems != null && Model.ReceiptItems.Any())
+            {
+                @await Html.PartialAsync("Partials/_ReceiptTable", Model.ReceiptItems)
+            }
+            else
+            {
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 sm:p-12 text-center border border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col items-center justify-center space-y-4">
+                        <!-- Empty State Icon -->
+                        <div class="w-24 h-24 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
+                            <svg class="w-12 h-12 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+
+                        <!-- Empty State Text -->
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">No Receipts Found</h3>
+                        <p class="text-gray-500 dark:text-gray-400 max-w-md">
+                            Get started by adding a new receipt record.
+                        </p>
+
+                        <!-- Add Receipt Button -->
+                        <a href="@Url.Action("Create")"
+                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-slate-800 to-zinc-900 dark:from-slate-700 dark:to-zinc-700 text-white font-medium rounded-xl hover:from-slate-900 dark:hover:from-slate-800 hover:to-zinc-950 dark:hover:to-zinc-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            + Add Receipt
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+@await Html.PartialAsync("Partials/_DeleteReceiptModal")
+
+<style>
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    .animate-slideIn {
+        animation: slideIn 0.3s ease-out forwards;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradient 15s ease infinite;
+    }
+
+    @@keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+</style>

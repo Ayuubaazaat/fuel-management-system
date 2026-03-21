@@ -1,0 +1,97 @@
+﻿@model FuelManagement.Models.PumpsViewModel
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <!-- Total Pumps Card -->
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 card-hover animate-fadeIn border border-yellow-100 dark:border-yellow-900/30" style="animation-delay: 0.1s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 dark:bg-yellow-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 sm:px-2.5 py-1 rounded-full">+1 this month</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Total Pumps</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.TotalPumps</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2">Across all stations</p>
+    </div>
+
+    <!-- Active Pumps Card -->
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 card-hover animate-fadeIn border border-yellow-100 dark:border-yellow-900/30" style="animation-delay: 0.2s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.ActivePumps active</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Active Pumps</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.ActivePumps</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2">Currently operational</p>
+    </div>
+
+    <!-- Maintenance Pumps Card -->
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 card-hover animate-fadeIn border border-yellow-100 dark:border-yellow-900/30" style="animation-delay: 0.3s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 dark:bg-yellow-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.PumpsDueForMaintenance due soon</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Under Maintenance</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.MaintenancePumps</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2">@Model.PumpsDueForMaintenance due in 7 days</p>
+    </div>
+
+    <!-- Total Dispensed Card -->
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 card-hover animate-fadeIn border border-yellow-100 dark:border-yellow-900/30" style="animation-delay: 0.4s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 sm:px-2.5 py-1 rounded-full">
+                @Model.FormattedAverageFlowRate avg
+            </span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Total Fuel Dispensed</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.FormattedTotalFuelDispensed</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2">@Model.FormattedTotalTransactions transactions</p>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(250, 204, 21, 0.1), 0 10px 10px -5px rgba(250, 204, 21, 0.04);
+        }
+
+    .dark .card-hover:hover {
+        box-shadow: 0 20px 25px -5px rgba(250, 204, 21, 0.2), 0 10px 10px -5px rgba(250, 204, 21, 0.1);
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

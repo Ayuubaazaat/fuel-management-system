@@ -1,0 +1,159 @@
+﻿@model FuelManagement.Models.TripListItemViewModel
+@{
+    ViewData["Title"] = "Trip Details";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8 animate-slideIn">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Trip Details</h1>
+                    <p class="text-sm sm:text-base mt-2 text-gray-600 dark:text-gray-300">Complete information for trip #@Model.TripId</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 animate-fadeIn">
+            <!-- Trip Info Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 card-hover">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A2 2 0 013 15.382V4a1 1 0 011-1h4a1 1 0 011 1v1m0 0h8m-8 0V4a1 1 0 00-1-1H8m10 6v9a2 2 0 01-2 2H6a2 2 0 01-2-2v-9m14 0h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Trip Information</h2>
+                </div>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Trip ID:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.TripId</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Vehicle:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.VehicleName</span>  <!-- Removed VehicleId -->
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">License Plate:</span>  <!-- Added License Plate -->
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.LicensePlate</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Driver:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.DriverName</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Date:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedDate</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trip Stats Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 card-hover">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Trip Statistics</h2>
+                </div>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Distance:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedDistance</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Fuel Used:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedFuelUsed</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Efficiency:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedEfficiency</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Cost:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedCost</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 card-hover md:col-span-2">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 dark:bg-purple-900/50 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Notes</h2>
+                </div>
+                <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 sm:p-4 rounded-lg">
+                    @(string.IsNullOrEmpty(Model.Notes) ? "No notes provided for this trip." : Model.Notes)
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 animate-fadeIn">
+            <a href="@Url.Action("Edit", new { id = Model.TripId })"
+               class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-blue-600 dark:to-indigo-600 text-white font-medium rounded-lg hover:from-blue-500 dark:hover:from-blue-700 hover:to-indigo-600 dark:hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-center">
+                Edit Trip
+            </a>
+            <a href="@Url.Action("Index")"
+               class="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-center">
+                Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
+        }
+
+    .dark .card-hover:hover {
+        box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2), 0 10px 10px -5px rgba(59, 130, 246, 0.1);
+    }
+
+    .animate-slideIn {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

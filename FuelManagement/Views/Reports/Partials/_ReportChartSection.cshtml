@@ -1,0 +1,194 @@
+﻿@model FuelManagement.Models.ReportChartViewModel
+@using System.Text.Json
+
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 border border-indigo-100 dark:border-indigo-800">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h3 class="text-base sm:text-lg font-semibold text-slate-800 dark:text-gray-200">Revenue Overview</h3>
+        <div class="flex flex-wrap gap-3">
+            <span class="flex items-center text-xs text-slate-600 dark:text-gray-300">
+                <span class="w-2 h-2 sm:w-3 sm:h-3 bg-indigo-600 dark:bg-indigo-400 rounded-full mr-1"></span>
+                Revenue
+            </span>
+            <span class="flex items-center text-xs text-slate-600 dark:text-gray-300">
+                <span class="w-2 h-2 sm:w-3 sm:h-3 bg-blue-400 dark:bg-blue-400 rounded-full mr-1"></span>
+                VAT
+            </span>
+            <span class="flex items-center text-xs text-slate-600 dark:text-gray-300">
+                <span class="w-2 h-2 sm:w-3 sm:h-3 bg-amber-400 dark:bg-amber-400 rounded-full mr-1"></span>
+                Outstanding
+            </span>
+        </div>
+    </div>
+
+    @if (Model.Labels != null && Model.Labels.Any())
+    {
+        <div class="h-60 sm:h-80 relative">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    }
+    else
+    {
+        <div class="h-60 sm:h-80 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-xl">
+            <p class="text-gray-500 dark:text-gray-400">No data available for the selected period</p>
+        </div>
+    }
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    @if (Model.Labels != null && Model.Labels.Any())
+    {
+        @:const ctx = document.getElementById('revenueChart').getContext('2d');
+        @:
+        @:// Check if dark mode is active
+        @:const isDark = document.documentElement.classList.contains('dark');
+        @:
+        @:// Create chart
+        @:const chart = new Chart(ctx, {
+        @:    type: 'bar',
+        @:    data: {
+        @:        labels: @Html.Raw(JsonSerializer.Serialize(Model.Labels)),
+        @:        datasets: [
+        @:            {
+        @:                label: 'Revenue ($)',
+        @:                data: @Html.Raw(JsonSerializer.Serialize(Model.RevenueData)),
+        @:                backgroundColor: isDark ? 'rgba(129, 140, 248, 0.8)' : 'rgba(79, 70, 229, 0.8)',
+        @:                borderColor: isDark ? 'rgb(129, 140, 248)' : 'rgb(79, 70, 229)',
+        @:                borderWidth: 1,
+        @:                borderRadius: 6,
+        @:                barPercentage: window.innerWidth < 640 ? 0.8 : 0.6,
+        @:                categoryPercentage: window.innerWidth < 640 ? 0.9 : 0.8
+        @:            },
+        @:            {
+        @:                label: 'VAT ($)',
+        @:                data: @Html.Raw(JsonSerializer.Serialize(Model.VATData)),
+        @:                backgroundColor: isDark ? 'rgba(96, 165, 250, 0.8)' : 'rgba(96, 165, 250, 0.8)',
+        @:                borderColor: isDark ? 'rgb(96, 165, 250)' : 'rgb(96, 165, 250)',
+        @:                borderWidth: 1,
+        @:                borderRadius: 6,
+        @:                barPercentage: window.innerWidth < 640 ? 0.8 : 0.6,
+        @:                categoryPercentage: window.innerWidth < 640 ? 0.9 : 0.8
+        @:            },
+        @:            {
+        @:                label: 'Outstanding ($)',
+        @:                data: @Html.Raw(JsonSerializer.Serialize(Model.OutstandingData)),
+        @:                backgroundColor: isDark ? 'rgba(251, 191, 36, 0.8)' : 'rgba(251, 191, 36, 0.8)',
+        @:                borderColor: isDark ? 'rgb(251, 191, 36)' : 'rgb(251, 191, 36)',
+        @:                borderWidth: 1,
+        @:                borderRadius: 6,
+        @:                barPercentage: window.innerWidth < 640 ? 0.8 : 0.6,
+        @:                categoryPercentage: window.innerWidth < 640 ? 0.9 : 0.8
+        @:            }
+        @:        ]
+        @:    },
+        @:    options: {
+        @:        responsive: true,
+        @:        maintainAspectRatio: false,
+        @:        plugins: {
+        @:            legend: {
+        @:                display: false
+        @:            },
+        @:            tooltip: {
+        @:                backgroundColor: isDark ? '#374151' : '#1f2937',
+        @:                titleColor: '#f3f4f6',
+        @:                bodyColor: '#d1d5db',
+        @:                callbacks: {
+        @:                    label: function (context) {
+        @:                        let label = context.dataset.label || '';
+        @:                        if (label) {
+        @:                            label += ': ';
+        @:                        }
+        @:                        if (context.parsed.y !== null) {
+        @:                            label += new Intl.NumberFormat('en-US', {
+        @:                                style: 'currency',
+        @:                                currency: 'USD',
+        @:                                minimumFractionDigits: 0,
+        @:                                maximumFractionDigits: 0
+        @:                            }).format(context.parsed.y);
+        @:                        }
+        @:                        return label;
+        @:                    }
+        @:                }
+        @:            }
+        @:        },
+        @:        scales: {
+        @:            y: {
+        @:                beginAtZero: true,
+        @:                grid: {
+        @:                    color: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
+        @:                },
+        @:                ticks: {
+        @:                    callback: function (value) {
+        @:                        if (value >= 1000000) {
+        @:                            return '$' + (value / 1000000).toFixed(1) + 'M';
+        @:                        } else if (value >= 1000) {
+        @:                            return '$' + (value / 1000).toFixed(1) + 'K';
+        @:                        }
+        @:                        return '$' + value;
+        @:                    },
+        @:                    color: isDark ? '#e5e7eb' : '#4b5563',
+        @:                    maxTicksLimit: window.innerWidth < 640 ? 5 : 8
+        @:                }
+        @:            },
+        @:            x: {
+        @:                grid: {
+        @:                    display: false
+        @:                },
+        @:                ticks: {
+        @:                    maxRotation: window.innerWidth < 640 ? 45 : 0,
+        @:                    minRotation: window.innerWidth < 640 ? 45 : 0,
+        @:                    color: isDark ? '#e5e7eb' : '#4b5563',
+        @:                    font: {
+        @:                        size: window.innerWidth < 640 ? 10 : 12
+        @:                    }
+        @:                }
+        @:            }
+        @:        }
+        @:    }
+        @:});
+        @:
+        @:// Handle window resize
+        @:window.addEventListener('resize', function() {
+        @:    if (chart) {
+        @:        chart.options.scales.x.ticks.maxRotation = window.innerWidth < 640 ? 45 : 0;
+        @:        chart.options.scales.x.ticks.minRotation = window.innerWidth < 640 ? 45 : 0;
+        @:        chart.options.scales.x.ticks.font.size = window.innerWidth < 640 ? 10 : 12;
+        @:        chart.options.scales.y.ticks.maxTicksLimit = window.innerWidth < 640 ? 5 : 8;
+        @:        chart.data.datasets.forEach(dataset => {
+        @:            dataset.barPercentage = window.innerWidth < 640 ? 0.8 : 0.6;
+        @:            dataset.categoryPercentage = window.innerWidth < 640 ? 0.9 : 0.8;
+        @:        });
+        @:        chart.update();
+        @:    }
+        @:});
+        @:
+        @:// Watch for theme changes
+        @:const observer = new MutationObserver((mutations) => {
+        @:    mutations.forEach((mutation) => {
+        @:        if (mutation.attributeName === 'class') {
+        @:            const isDarkNow = document.documentElement.classList.contains('dark');
+        @:            if (chart) {
+        @:                // Update dataset colors
+        @:                chart.data.datasets[0].backgroundColor = isDarkNow ? 'rgba(129, 140, 248, 0.8)' : 'rgba(79, 70, 229, 0.8)';
+        @:                chart.data.datasets[0].borderColor = isDarkNow ? 'rgb(129, 140, 248)' : 'rgb(79, 70, 229)';
+        @:                chart.data.datasets[1].backgroundColor = isDarkNow ? 'rgba(96, 165, 250, 0.8)' : 'rgba(96, 165, 250, 0.8)';
+        @:                chart.data.datasets[1].borderColor = isDarkNow ? 'rgb(96, 165, 250)' : 'rgb(96, 165, 250)';
+        @:                chart.data.datasets[2].backgroundColor = isDarkNow ? 'rgba(251, 191, 36, 0.8)' : 'rgba(251, 191, 36, 0.8)';
+        @:                chart.data.datasets[2].borderColor = isDarkNow ? 'rgb(251, 191, 36)' : 'rgb(251, 191, 36)';
+        @:
+        @:                // Update grid and tick colors
+        @:                chart.options.scales.y.grid.color = isDarkNow ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+        @:                chart.options.scales.y.ticks.color = isDarkNow ? '#e5e7eb' : '#4b5563';
+        @:                chart.options.scales.x.ticks.color = isDarkNow ? '#e5e7eb' : '#4b5563';
+        @:
+        @:                chart.update();
+        @:            }
+        @:        }
+        @:    });
+        @:});
+        @:
+        @:observer.observe(document.documentElement, { attributes: true });
+    }
+    });
+</script>

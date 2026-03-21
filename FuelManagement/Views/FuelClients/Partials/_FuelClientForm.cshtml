@@ -1,0 +1,325 @@
+﻿@model FuelManagement.Models.FuelClientViewModel
+
+@{
+    var isEdit = Model.Id > 0;
+}
+
+<div class="space-y-4 sm:space-y-6">
+    @if (isEdit)
+    {
+        <!-- Client ID (Read-only in Edit mode) -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800 mb-2">
+            <div class="floating-input-group relative">
+                <input type="text"
+                       id="ClientId"
+                       value="@Model.ClientId"
+                       readonly
+                       disabled
+                       class="peer w-full px-3 sm:px-4 py-3 text-base rounded-xl border-2 border-blue-300 dark:border-blue-700 bg-blue-100 dark:bg-gray-700 text-blue-800 dark:text-blue-300 cursor-not-allowed font-medium"
+                       placeholder=" " />
+                <input type="hidden" name="ClientId" value="@Model.ClientId" />
+                <label for="ClientId"
+                       class="absolute left-3 sm:left-4 -top-3 bg-white dark:bg-gray-800 px-2 text-xs text-blue-600 dark:text-blue-400 font-semibold">
+                    Client ID
+                </label>
+            </div>
+        </div>
+    }
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- First Name -->
+        <div class="floating-input-group relative">
+            <input type="text"
+                   id="FirstName"
+                   name="FirstName"
+                   value="@Model.FirstName"
+                   required
+                   class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none @((ViewData.ModelState["FirstName"]?.Errors.Count > 0) ? "border-red-500 focus:border-red-500 focus:ring-red-200" : "")"
+                   placeholder=" " />
+            <label for="FirstName"
+                   class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                First Name *
+            </label>
+            @if (ViewData.ModelState["FirstName"]?.Errors.Count > 0)
+            {
+                <span class="text-red-500 text-xs mt-1 block">@ViewData.ModelState["FirstName"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+
+        <!-- Last Name -->
+        <div class="floating-input-group relative">
+            <input type="text"
+                   id="LastName"
+                   name="LastName"
+                   value="@Model.LastName"
+                   required
+                   class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none @((ViewData.ModelState["LastName"]?.Errors.Count > 0) ? "border-red-500 focus:border-red-500 focus:ring-red-200" : "")"
+                   placeholder=" " />
+            <label for="LastName"
+                   class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Last Name *
+            </label>
+            @if (ViewData.ModelState["LastName"]?.Errors.Count > 0)
+            {
+                <span class="text-red-500 text-xs mt-1 block">@ViewData.ModelState["LastName"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+    </div>
+
+    <!-- Company Name -->
+    <div class="floating-input-group relative">
+        <input type="text"
+               id="CompanyName"
+               name="CompanyName"
+               value="@Model.CompanyName"
+               class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+               placeholder=" " />
+        <label for="CompanyName"
+               class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Company Name
+        </label>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Client Type -->
+        <div class="floating-input-group relative">
+            <select id="ClientType"
+                    name="ClientType"
+                    required
+                    class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none appearance-none @((ViewData.ModelState["ClientType"]?.Errors.Count > 0) ? "border-red-500 focus:border-red-500 focus:ring-red-200" : "")">
+                <option value="" disabled selected="@(string.IsNullOrEmpty(Model.ClientType))" class="dark:bg-gray-700">Select client type</option>
+                <option value="Individual" selected="@(Model.ClientType == "Individual")" class="dark:bg-gray-700">Individual</option>
+                <option value="Fleet" selected="@(Model.ClientType == "Fleet")" class="dark:bg-gray-700">Fleet</option>
+                <option value="Corporate" selected="@(Model.ClientType == "Corporate")" class="dark:bg-gray-700">Corporate</option>
+            </select>
+            <label for="ClientType"
+                   class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Client Type *
+            </label>
+            @if (ViewData.ModelState["ClientType"]?.Errors.Count > 0)
+            {
+                <span class="text-red-500 text-xs mt-1 block">@ViewData.ModelState["ClientType"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+
+        <!-- Phone -->
+        @if (isEdit)
+        {
+            <!-- Edit Mode - Read-only -->
+            <div class="floating-input-group relative">
+                <input type="tel"
+                       id="Phone"
+                       name="Phone"
+                       value="@Model.Phone"
+                       required
+                       readonly
+                       class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none cursor-not-allowed @((ViewData.ModelState["Phone"]?.Errors.Count > 0) ? "border-red-500 focus:border-red-500 focus:ring-red-200" : "")"
+                       placeholder=" " />
+                <!-- Hidden field to ensure value is submitted -->
+                <input type="hidden" name="Phone" value="@Model.Phone" />
+                <!-- Lock icon -->
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-gray-400 dark:text-gray-500 text-sm"></i>
+                </div>
+                <label for="Phone"
+                       class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                    Phone Number *
+                    <span class="ml-1 text-xs text-gray-400 dark:text-gray-500">(cannot be changed)</span>
+                </label>
+                @if (ViewData.ModelState["Phone"]?.Errors.Count > 0)
+                {
+                    <span class="text-red-500 text-xs mt-1 block">@ViewData.ModelState["Phone"]?.Errors[0].ErrorMessage</span>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Create Mode - Editable -->
+            <div class="floating-input-group relative">
+                <input type="tel"
+                       id="Phone"
+                       name="Phone"
+                       value="@Model.Phone"
+                       required
+                       class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none @((ViewData.ModelState["Phone"]?.Errors.Count > 0) ? "border-red-500 focus:border-red-500 focus:ring-red-200" : "")"
+                       placeholder=" " />
+                <label for="Phone"
+                       class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                    Phone Number *
+                </label>
+                @if (ViewData.ModelState["Phone"]?.Errors.Count > 0)
+                {
+                    <span class="text-red-500 text-xs mt-1 block">@ViewData.ModelState["Phone"]?.Errors[0].ErrorMessage</span>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Email -->
+    <div class="floating-input-group relative">
+        <input type="email"
+               id="Email"
+               name="Email"
+               value="@Model.Email"
+               class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+               placeholder=" " />
+        <label for="Email"
+               class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Email Address
+        </label>
+        @if (ViewData.ModelState["Email"]?.Errors.Count > 0)
+        {
+            <span class="text-red-500 text-xs mt-1 block">@ViewData.ModelState["Email"]?.Errors[0].ErrorMessage</span>
+        }
+    </div>
+
+    <!-- Address -->
+    <div class="floating-input-group relative">
+        <input type="text"
+               id="Address"
+               name="Address"
+               value="@Model.Address"
+               class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+               placeholder=" " />
+        <label for="Address"
+               class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Street Address
+        </label>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <!-- City -->
+        <div class="floating-input-group relative col-span-1">
+            <input type="text"
+                   id="City"
+                   name="City"
+                   value="@Model.City"
+                   class="peer w-full px-3 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="City"
+                   class="absolute left-3 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                City
+            </label>
+        </div>
+
+        <!-- State -->
+        <div class="floating-input-group relative col-span-1">
+            <input type="text"
+                   id="State"
+                   name="State"
+                   value="@Model.State"
+                   class="peer w-full px-3 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="State"
+                   class="absolute left-3 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                State
+            </label>
+        </div>
+
+        <!-- Postal Code -->
+        <div class="floating-input-group relative col-span-1">
+            <input type="text"
+                   id="PostalCode"
+                   name="PostalCode"
+                   value="@Model.PostalCode"
+                   class="peer w-full px-3 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="PostalCode"
+                   class="absolute left-3 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                Postal Code
+            </label>
+        </div>
+
+        <!-- Country -->
+        <div class="floating-input-group relative col-span-1">
+            <input type="text"
+                   id="Country"
+                   name="Country"
+                   value="@Model.Country"
+                   class="peer w-full px-3 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="Country"
+                   class="absolute left-3 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                Country
+            </label>
+        </div>
+    </div>
+
+    <!-- Active Status -->
+    <div class="flex items-center gap-3 py-2">
+        <input type="checkbox"
+               id="IsActive"
+               name="IsActive"
+               value="true"
+               checked="@Model.IsActive"
+               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+        <input type="hidden" name="IsActive" value="false" />
+        <label for="IsActive" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Active Client
+        </label>
+    </div>
+
+    <!-- Notes -->
+    <div class="floating-input-group relative">
+        <textarea id="Notes"
+                  name="Notes"
+                  rows="3"
+                  class="peer w-full px-3 sm:px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none resize-none"
+                  placeholder=" ">@Model.Notes</textarea>
+        <label for="Notes"
+               class="absolute left-3 sm:left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Notes (Optional)
+        </label>
+    </div>
+</div>
+
+<style>
+    .floating-input-group {
+        transition: all 0.2s ease;
+    }
+
+        .floating-input-group input:focus ~ label,
+        .floating-input-group input:not(:placeholder-shown) ~ label,
+        .floating-input-group select:focus ~ label,
+        .floating-input-group select:has(option:checked:not([value=""])) ~ label,
+        .floating-input-group textarea:focus ~ label,
+        .floating-input-group textarea:not(:placeholder-shown) ~ label {
+            transform: translateY(-0.5rem);
+            font-size: 0.7rem;
+            color: #3b82f6;
+        }
+
+    .dark .floating-input-group input:focus ~ label,
+    .dark .floating-input-group input:not(:placeholder-shown) ~ label,
+    .dark .floating-input-group select:focus ~ label,
+    .dark .floating-input-group select:has(option:checked:not([value=""])) ~ label,
+    .dark .floating-input-group textarea:focus ~ label,
+    .dark .floating-input-group textarea:not(:placeholder-shown) ~ label {
+        color: #60a5fa;
+        background: #1f2937;
+    }
+
+    @@media (min-width: 640px) {
+        .floating-input-group input:focus ~ label,
+        .floating-input-group input:not(:placeholder-shown) ~ label,
+        .floating-input-group select:focus ~ label,
+        .floating-input-group select:has(option:checked:not([value=""])) ~ label,
+        .floating-input-group textarea:focus ~ label,
+        .floating-input-group textarea:not(:placeholder-shown) ~ label {
+            font-size: 0.75rem;
+        }
+    }
+
+    select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select option {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+</style>

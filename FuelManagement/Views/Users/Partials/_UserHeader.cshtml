@@ -1,0 +1,41 @@
+﻿@model FuelManagement.Models.UserViewModel
+
+<div class="bg-gradient-to-r from-sky-500 to-purple-600 rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1" />
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+    </div>
+
+    <!-- Header Content -->
+    <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-bold mb-2">@ViewBag.Title</h1>
+            <p class="text-white/80">@ViewBag.Subtitle</p>
+        </div>
+
+        @if (ViewBag.ShowCreateButton != false)
+        {
+            <a asp-controller="Users" asp-action="Create"
+               class="px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/30 transition-all duration-300 flex items-center gap-2 group">
+                <i class="fas fa-plus group-hover:rotate-90 transition-transform duration-300"></i>
+                @(ViewBag.ButtonText ?? "Create New User")
+            </a>
+        }
+
+        @if (ViewBag.ShowBackButton == true)
+        {
+            <a asp-controller="Users" asp-action="Index"
+               class="px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/30 transition-all duration-300 flex items-center gap-2 group">
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform duration-200"></i>
+                Back to Users
+            </a>
+        }
+    </div>
+</div>

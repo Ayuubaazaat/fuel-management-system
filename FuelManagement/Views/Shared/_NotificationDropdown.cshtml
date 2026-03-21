@@ -1,0 +1,18 @@
+﻿@using FuelManagement.Services.Interfaces
+@inject INotificationService NotificationService
+@{
+    var recentNotifications = await NotificationService.GetRecentNotificationsAsync(5);
+    var unreadCount = await NotificationService.GetUnreadCountAsync();
+}
+<div class="relative" id="notificationContainer">
+    <button id="notificationBell" data-notification-bell class="relative p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors">
+        <i class="fas fa-bell text-gray-600 dark:text-gray-300 text-base sm:text-lg"></i>
+        @if (unreadCount > 0)
+        {
+            <span class="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 rounded-full text-white text-xs flex items-center justify-center px-1" id="notificationBadge">
+                @unreadCount
+            </span>
+        }
+    </button>
+    @await Html.PartialAsync("~/Views/Notification/_PartialDropdown.cshtml", recentNotifications)
+</div>

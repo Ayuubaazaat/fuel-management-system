@@ -1,0 +1,46 @@
+﻿@model FuelManagement.Models.FuelClientIndexViewModel
+@{
+    ViewData["Title"] = "Fuel Clients";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+    <!-- Header Partial -->
+    @await Html.PartialAsync("Partials/_FuelClientHeader")
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <!-- Summary Cards Partial -->
+        @await Html.PartialAsync("Partials/_FuelClientSummaryCards", Model)
+
+        <!-- Filters Section -->
+        <div class="mt-6 sm:mt-8 animate-fadeIn" style="animation-delay: 0.2s;">
+            @await Html.PartialAsync("Partials/_FuelClientFilters", Model.Filter)
+        </div>
+
+        <!-- Table Section -->
+        <div class="mt-4 sm:mt-6 animate-fadeIn" style="animation-delay: 0.3s;">
+            @await Html.PartialAsync("Partials/_FuelClientTable", Model)
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+@await Html.PartialAsync("Partials/_DeleteFuelClientModal")
+
+@section Scripts {
+    <script>
+        // Smooth animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fadeIn');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.card-hover').forEach((card) => {
+                observer.observe(card);
+            });
+        });
+    </script>
+}

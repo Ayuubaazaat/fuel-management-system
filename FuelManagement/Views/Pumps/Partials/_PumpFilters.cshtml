@@ -1,0 +1,133 @@
+﻿@model FuelManagement.Models.PumpFilterViewModel
+
+<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 border border-yellow-100 dark:border-yellow-900/30">
+    <form method="get" asp-action="Index" asp-controller="Pumps" class="space-y-4" id="filterForm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-4">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Filter Pumps</h3>
+            <button type="button" onclick="clearAllFilters()"
+                    class="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium text-left sm:text-right">
+                Clear All
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <!-- Date Range -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">From</label>
+                <input type="date" name="StartDate" id="StartDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200" />
+            </div>
+
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">To</label>
+                <input type="date" name="EndDate" id="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200" />
+            </div>
+
+            <!-- Pump Input -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Enter Pump ID</label>
+                <input type="text" name="PumpId" id="PumpId" value="@Model.PumpId"
+                       placeholder="e.g. PMP-001"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200" />
+            </div>
+
+            <!-- Fuel Type -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Fuel Type</label>
+                <select name="FuelType" id="FuelType"
+                        class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200">
+                    <option value="" class="bg-white dark:bg-gray-700">All Types</option>
+                    @if (Model.AvailableFuelTypes != null)
+                    {
+                        foreach (var type in Model.AvailableFuelTypes)
+                        {
+                            <option value="@type" selected="@(Model.FuelType == type)" class="bg-white dark:bg-gray-700">@type</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Status -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                <select name="Status" id="Status"
+                        class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200">
+                    <option value="" class="bg-white dark:bg-gray-700">All Status</option>
+                    @if (Model.AvailableStatuses != null)
+                    {
+                        foreach (var status in Model.AvailableStatuses)
+                        {
+                            <option value="@status" selected="@(Model.Status == status)" class="bg-white dark:bg-gray-700">@status</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-2 sm:pt-4">
+            <button type="submit"
+                    class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-2.5 bg-gradient-to-r from-yellow-400 to-amber-500 dark:from-yellow-600 dark:to-amber-600 text-white font-medium rounded-xl hover:from-yellow-500 dark:hover:from-yellow-700 hover:to-amber-600 dark:hover:to-amber-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function clearAllFilters() {
+        // Clear all date inputs
+        document.getElementById('StartDate').value = '';
+        document.getElementById('EndDate').value = '';
+
+        // Clear the pump input field
+        document.getElementById('PumpId').value = '';
+
+        // Reset selects to first option (All)
+        document.getElementById('FuelType').selectedIndex = 0;
+        document.getElementById('Status').selectedIndex = 0;
+
+        // Submit the form to apply cleared filters
+        document.getElementById('filterForm').submit();
+    }
+
+    // Add validation to ensure "From" date is not after "To" date
+    document.getElementById('StartDate')?.addEventListener('change', function() {
+        const toDate = document.getElementById('EndDate');
+        if (toDate.value && this.value > toDate.value) {
+            alert('From date cannot be after To date');
+            this.value = '';
+        }
+    });
+
+    document.getElementById('EndDate')?.addEventListener('change', function() {
+        const fromDate = document.getElementById('StartDate');
+        if (fromDate.value && this.value < fromDate.value) {
+            alert('To date cannot be before From date');
+            this.value = '';
+        }
+    });
+
+    // Add validation for Pump ID format
+    document.getElementById('PumpId')?.addEventListener('blur', function() {
+        const pumpId = this.value;
+        if (pumpId && !/^PMP-\d{3}$/.test(pumpId)) {
+            this.classList.add('border-red-500', 'dark:border-red-500');
+            this.classList.remove('border-gray-200', 'dark:border-gray-600');
+        } else {
+            this.classList.remove('border-red-500', 'dark:border-red-500');
+            this.classList.add('border-gray-200', 'dark:border-gray-600');
+        }
+    });
+
+    // Prevent form submission if dates are invalid
+    document.getElementById('filterForm')?.addEventListener('submit', function(e) {
+        const startDate = document.getElementById('StartDate');
+        const endDate = document.getElementById('EndDate');
+
+        if (startDate.value && endDate.value && startDate.value > endDate.value) {
+            e.preventDefault();
+            alert('From date cannot be after To date');
+        }
+    });
+</script>

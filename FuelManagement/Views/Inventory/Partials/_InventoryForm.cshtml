@@ -1,0 +1,299 @@
+﻿@model dynamic
+
+@{
+    // Check if this is Edit mode by seeing if Status property exists (for Edit) or checking route
+    var isEdit = ViewContext.RouteData.Values["action"]?.ToString() == "Edit";
+    var tankId = Model?.TankId?.ToString() ?? "";
+}
+
+<div class="space-y-6">
+    <!-- Tank ID - Read-only in Edit mode -->
+    <div class="floating-input-group relative">
+        @if (isEdit)
+        {
+            <!-- Edit mode: Display as read-only disabled field -->
+            <input type="text"
+                   id="TankId"
+                   name="TankId"
+                   value="@tankId"
+                   readonly
+                   disabled
+                   class="peer w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 cursor-not-allowed"
+                   placeholder=" " />
+            <!-- Hidden field to submit the value -->
+            <input type="hidden" name="TankId" value="@tankId" />
+        }
+        else
+        {
+            <!-- Create mode: Normal editable field -->
+            <input type="text"
+                   id="TankId"
+                   name="TankId"
+                   value="@tankId"
+                   required
+                   class="peer w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+        }
+        <label for="TankId"
+               class="absolute left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Tank ID *
+        </label>
+        @if (ViewData.ModelState["TankId"]?.Errors.Any() == true)
+        {
+            <span class="text-red-500 text-xs mt-1 block">
+                @ViewData.ModelState["TankId"].Errors.First().ErrorMessage
+            </span>
+        }
+        @if (isEdit)
+        {
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tank ID cannot be changed after creation</p>
+        }
+    </div>
+
+    <!-- Fuel Type -->
+    <div class="floating-input-group relative">
+        <select id="FuelType"
+                name="FuelType"
+                required
+                class="peer w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none appearance-none">
+            <option value="" disabled selected="@(string.IsNullOrEmpty(Model?.FuelType?.ToString()))" class="dark:bg-gray-700">Select fuel type</option>
+            <option value="Premium Gasoline" selected="@(Model?.FuelType == "Premium Gasoline")" class="dark:bg-gray-700">Premium Gasoline</option>
+            <option value="Regular Gasoline" selected="@(Model?.FuelType == "Regular Gasoline")" class="dark:bg-gray-700">Regular Gasoline</option>
+            <option value="Diesel" selected="@(Model?.FuelType == "Diesel")" class="dark:bg-gray-700">Diesel</option>
+            <option value="Premium Diesel" selected="@(Model?.FuelType == "Premium Diesel")" class="dark:bg-gray-700">Premium Diesel</option>
+            <option value="Ethanol" selected="@(Model?.FuelType == "Ethanol")" class="dark:bg-gray-700">Ethanol</option>
+        </select>
+        <label for="FuelType"
+               class="absolute left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Fuel Type *
+        </label>
+        @if (ViewData.ModelState["FuelType"]?.Errors.Any() == true)
+        {
+            <span class="text-red-500 text-xs mt-1 block">
+                @ViewData.ModelState["FuelType"].Errors.First().ErrorMessage
+            </span>
+        }
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Capacity -->
+        <div class="floating-input-group relative">
+            <input type="number"
+                   id="Capacity"
+                   name="Capacity"
+                   value="@Model?.Capacity"
+                   min="1"
+                   step="1"
+                   required
+                   class="peer w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="Capacity"
+                   class="absolute left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Capacity (Liters) *
+            </label>
+            @if (ViewData.ModelState["Capacity"]?.Errors.Any() == true)
+            {
+                <span class="text-red-500 text-xs mt-1 block">
+                    @ViewData.ModelState["Capacity"].Errors.First().ErrorMessage
+                </span>
+            }
+        </div>
+
+        <!-- Current Stock -->
+        <div class="floating-input-group relative">
+            <input type="number"
+                   id="CurrentStock"
+                   name="CurrentStock"
+                   value="@Model?.CurrentStock"
+                   min="0"
+                   step="1"
+                   required
+                   class="peer w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="CurrentStock"
+                   class="absolute left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Current Stock (Liters) *
+            </label>
+            @if (ViewData.ModelState["CurrentStock"]?.Errors.Any() == true)
+            {
+                <span class="text-red-500 text-xs mt-1 block">
+                    @ViewData.ModelState["CurrentStock"].Errors.First().ErrorMessage
+                </span>
+            }
+        </div>
+    </div>
+
+    <!-- Fill Level Indicator -->
+    <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4 border border-emerald-200 dark:border-emerald-800">
+        <div class="flex items-center justify-between mb-2">
+            <label class="text-sm font-medium text-emerald-800 dark:text-emerald-300">Fill Level</label>
+            <span id="fillLevelText" class="text-sm font-bold text-emerald-600 dark:text-emerald-400">0%</span>
+        </div>
+        <div class="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div id="fillLevelBar" class="h-full transition-all duration-300" style="width: 0%;"></div>
+        </div>
+        <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-2">Current stock level based on capacity</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Last Refill Date -->
+        <div class="floating-input-group relative">
+            <input type="date"
+                   id="LastRefillDate"
+                   name="LastRefillDate"
+                   value="@(Model?.LastRefillDate == null || Model?.LastRefillDate == default(DateTime) ? "" : ((DateTime)Model?.LastRefillDate).ToString("yyyy-MM-dd"))"
+                   required
+                   class="peer w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="LastRefillDate"
+                   class="absolute left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Last Refill Date *
+            </label>
+            @if (ViewData.ModelState["LastRefillDate"]?.Errors.Any() == true)
+            {
+                <span class="text-red-500 text-xs mt-1 block">
+                    @ViewData.ModelState["LastRefillDate"].Errors.First().ErrorMessage
+                </span>
+            }
+        </div>
+
+        <!-- Status (Only for Edit) -->
+        @if (isEdit)
+        {
+            <div class="floating-input-group relative">
+                <select id="Status"
+                        name="Status"
+                        required
+                        class="peer w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none appearance-none">
+                    <option value="Available" selected="@(Model?.Status == "Available")" class="dark:bg-gray-700">Available</option>
+                    <option value="Low" selected="@(Model?.Status == "Low")" class="dark:bg-gray-700">Low</option>
+                    <option value="Critical" selected="@(Model?.Status == "Critical")" class="dark:bg-gray-700">Critical</option>
+                </select>
+                <label for="Status"
+                       class="absolute left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                    Status *
+                </label>
+                @if (ViewData.ModelState["Status"]?.Errors.Any() == true)
+                {
+                    <span class="text-red-500 text-xs mt-1 block">
+                        @ViewData.ModelState["Status"].Errors.First().ErrorMessage
+                    </span>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Notes -->
+    <div class="floating-input-group relative">
+        <textarea id="Notes"
+                  name="Notes"
+                  rows="3"
+                  class="peer w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none resize-none"
+                  placeholder=" ">@Model?.Notes</textarea>
+        <label for="Notes"
+               class="absolute left-4 -top-2.5 bg-white dark:bg-gray-800 px-2 text-xs font-medium text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Notes (Optional)
+        </label>
+        @if (ViewData.ModelState["Notes"]?.Errors.Any() == true)
+        {
+            <span class="text-red-500 text-xs mt-1 block">
+                @ViewData.ModelState["Notes"].Errors.First().ErrorMessage
+            </span>
+        }
+    </div>
+</div>
+
+<script>
+    // Calculate fill level percentage
+    document.addEventListener('DOMContentLoaded', function() {
+        const capacityInput = document.getElementById('Capacity');
+        const stockInput = document.getElementById('CurrentStock');
+        const fillLevelBar = document.getElementById('fillLevelBar');
+        const fillLevelText = document.getElementById('fillLevelText');
+
+        function updateFillLevel() {
+            const capacity = parseFloat(capacityInput?.value) || 0;
+            const stock = parseFloat(stockInput?.value) || 0;
+            let percentage = 0;
+
+            if (capacity > 0) {
+                percentage = Math.min(100, (stock / capacity) * 100);
+            }
+
+            if (fillLevelBar) {
+                fillLevelBar.style.width = percentage + '%';
+            }
+            if (fillLevelText) {
+                fillLevelText.textContent = percentage.toFixed(1) + '%';
+            }
+
+            // Update color based on percentage
+            if (fillLevelBar) {
+                if (percentage <= 10) {
+                    fillLevelBar.className = 'h-full bg-gradient-to-r from-red-500 to-rose-500';
+                } else if (percentage <= 25) {
+                    fillLevelBar.className = 'h-full bg-gradient-to-r from-yellow-500 to-amber-500';
+                } else {
+                    fillLevelBar.className = 'h-full bg-gradient-to-r from-green-500 to-emerald-500';
+                }
+            }
+        }
+
+        if (capacityInput && stockInput) {
+            capacityInput.addEventListener('input', updateFillLevel);
+            stockInput.addEventListener('input', updateFillLevel);
+            updateFillLevel();
+        }
+    });
+</script>
+
+<style>
+    .floating-input-group {
+        transition: all 0.2s ease;
+    }
+
+        .floating-input-group input:focus ~ label,
+        .floating-input-group input:not(:placeholder-shown) ~ label,
+        .floating-input-group select:focus ~ label,
+        .floating-input-group select:not([value=""]):valid ~ label,
+        .floating-input-group textarea:focus ~ label,
+        .floating-input-group textarea:not(:placeholder-shown) ~ label {
+            transform: translateY(-0.5rem);
+            font-size: 0.7rem;
+            color: #10b981;
+        }
+
+    .dark .floating-input-group input:focus ~ label,
+    .dark .floating-input-group input:not(:placeholder-shown) ~ label,
+    .dark .floating-input-group select:focus ~ label,
+    .dark .floating-input-group select:not([value=""]):valid ~ label,
+    .dark .floating-input-group textarea:focus ~ label,
+    .dark .floating-input-group textarea:not(:placeholder-shown) ~ label {
+        color: #34d399;
+        background: #1f2937;
+    }
+
+    @@media (min-width: 640px) {
+        .floating-input-group input:focus ~ label,
+        .floating-input-group input:not(:placeholder-shown) ~ label,
+        .floating-input-group select:focus ~ label,
+        .floating-input-group select:not([value=""]):valid ~ label,
+        .floating-input-group textarea:focus ~ label,
+        .floating-input-group textarea:not(:placeholder-shown) ~ label {
+            font-size: 0.75rem;
+        }
+    }
+
+    select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select option {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+</style>

@@ -1,0 +1,112 @@
+﻿@model int
+@{
+    var userId = Model;
+    var userName = ViewBag.UserName ?? "this user";
+}
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden transition-all duration-300 px-4"
+     onclick="closeDeleteModal(event)">
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+        <div class="text-center">
+            <!-- Animated Warning Icon -->
+            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                <i class="fas fa-exclamation-triangle text-2xl sm:text-3xl text-red-600 dark:text-red-400"></i>
+            </div>
+
+            <h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Delete User</h3>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-6" id="deleteUserMessage">Are you sure you want to delete @userName? This action cannot be undone.</p>
+
+            <input type="hidden" id="deleteUserId" value="@userId" />
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button type="button" onclick="closeDeleteModal()"
+                        class="w-full sm:flex-1 px-4 sm:px-6 py-3 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 font-medium text-sm sm:text-base order-2 sm:order-1">
+                    Cancel
+                </button>
+
+                <form asp-controller="Users" asp-action="Delete" method="post" id="deleteForm" class="w-full sm:flex-1 order-1 sm:order-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@userId" />
+                    <button type="submit"
+                            class="w-full px-4 sm:px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-700 dark:to-red-800 text-white rounded-xl hover:from-red-600 dark:hover:from-red-800 hover:to-red-700 dark:hover:to-red-900 transition-all duration-200 font-medium text-sm sm:text-base">
+                        Delete User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openDeleteModal(userId, userName) {
+        document.getElementById('deleteUserId').value = userId;
+        document.querySelector('#deleteForm input[name="id"]').value = userId;
+        document.getElementById('deleteUserMessage').textContent = `Are you sure you want to delete ${userName}? This action cannot be undone.`;
+
+        const modal = document.getElementById('deleteModal');
+        const modalContent = document.getElementById('modalContent');
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = window.innerWidth - document.documentElement.clientWidth + 'px';
+
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 50);
+    }
+
+    function closeDeleteModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+
+        const modal = document.getElementById('deleteModal');
+        const modalContent = document.getElementById('modalContent');
+
+        modalContent.classList.add('scale-95', 'opacity-0');
+        modalContent.classList.remove('scale-100', 'opacity-100');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, 300);
+    }
+
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDeleteModal();
+        }
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+
+    // Make functions globally available
+    window.openDeleteModal = openDeleteModal;
+    window.closeDeleteModal = closeDeleteModal;
+</script>
+
+<style>
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slideUp {
+        animation: slideUp 0.3s ease-out;
+    }
+</style>

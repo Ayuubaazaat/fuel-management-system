@@ -1,0 +1,66 @@
+﻿@{
+    var currentDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+}
+
+<div class="bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-400 text-gray-900 animate-gradient">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-slideIn">
+            <div>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">Pumps Management</h1>
+                <p class="text-yellow-800 text-sm sm:text-base">Monitor and manage all fuel dispensing pumps</p>
+                <p class="text-xs sm:text-sm text-yellow-700 mt-2">
+                    <svg class="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    @currentDate
+                </p>
+            </div>
+            <div>
+                <a href="@Url.Action("Create")"
+                   class="inline-flex w-full sm:w-auto items-center justify-center px-4 sm:px-6 py-3 bg-white text-amber-600 rounded-xl font-semibold hover:bg-amber-50 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl group text-sm sm:text-base">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Add New Pump
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradient 15s ease infinite;
+    }
+
+    @@keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .animate-slideIn {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

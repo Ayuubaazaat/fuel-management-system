@@ -1,0 +1,77 @@
+﻿@model FuelManagement.Models.InventoryFilterViewModel
+
+<div class="bg-white dark:bg-gray-800 backdrop-blur-lg rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 border border-red-100 dark:border-gray-700">
+    <form method="get" action="@Url.Action("Index")" class="space-y-4" id="filterForm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-4">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Filter Inventory</h3>
+            <button type="button" onclick="clearFilters()"
+                    class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium text-left sm:text-right">
+                Clear All
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <!-- Date Range -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">From</label>
+                <input type="date" name="StartDate" id="StartDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-red-500 dark:focus:border-red-400 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-800 transition-all duration-200" />
+            </div>
+
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">To</label>
+                <input type="date" name="EndDate" id="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-red-500 dark:focus:border-red-400 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-800 transition-all duration-200" />
+            </div>
+
+            <!-- Tank ID - Changed from dropdown to input field -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Tank ID</label>
+                <input type="text" name="TankId" id="TankId" value="@Model.TankId" placeholder="Enter Tank ID"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-red-500 dark:focus:border-red-400 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-800 transition-all duration-200" />
+            </div>
+
+            <!-- Fuel Type - Hardcoded options instead of AvailableFuelTypes -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Fuel Type</label>
+                <select name="FuelType" id="FuelType" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-red-500 dark:focus:border-red-400 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-800 transition-all duration-200">
+                    <option value="">All Types</option>
+                    <option value="Premium Gasoline" selected="@(Model.FuelType == "Premium Gasoline")">Premium Gasoline</option>
+                    <option value="Regular Gasoline" selected="@(Model.FuelType == "Regular Gasoline")">Regular Gasoline</option>
+                    <option value="Diesel" selected="@(Model.FuelType == "Diesel")">Diesel</option>
+                    <option value="Premium Diesel" selected="@(Model.FuelType == "Premium Diesel")">Premium Diesel</option>
+                    <option value="Ethanol" selected="@(Model.FuelType == "Ethanol")">Ethanol</option>
+                </select>
+            </div>
+
+            <!-- Status - Hardcoded options instead of AvailableStatuses -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                <select name="Status" id="Status" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-red-500 dark:focus:border-red-400 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-800 transition-all duration-200">
+                    <option value="">All Status</option>
+                    <option value="Critical" selected="@(Model.Status == "Critical")">Critical</option>
+                    <option value="Low" selected="@(Model.Status == "Low")">Low</option>
+                    <option value="Available" selected="@(Model.Status == "Available")">Available</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-2 sm:pt-4">
+            <button type="submit"
+                    class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-2.5 bg-gradient-to-r from-red-500 to-rose-600 dark:from-red-600 dark:to-rose-700 text-white font-medium rounded-xl hover:from-red-600 dark:hover:from-red-700 hover:to-rose-700 dark:hover:to-rose-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function clearFilters() {
+        document.getElementById('StartDate').value = '';
+        document.getElementById('EndDate').value = '';
+        document.getElementById('TankId').value = '';
+        document.getElementById('FuelType').value = '';
+        document.getElementById('Status').value = '';
+        document.getElementById('filterForm').submit();
+    }
+</script>

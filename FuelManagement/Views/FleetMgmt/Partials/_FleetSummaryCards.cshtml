@@ -1,0 +1,97 @@
+﻿@model FuelManagement.Models.FleetMgmtViewModel
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <!-- Total Vehicles Card -->
+    <div class="bg-white dark:bg-gray-800 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 card-hover animate-fadeIn border border-pink-100 dark:border-gray-700" style="animation-delay: 0.1s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 dark:bg-pink-900/30 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 sm:px-2.5 py-1 rounded-full">
+                +@Model.NewVehiclesThisMonth this month
+            </span>
+        </div>
+        <h3 class="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-1">Total Vehicles</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.TotalVehicles</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-500 mt-2">Across all fleets</p>
+    </div>
+
+    <!-- Active Vehicles Card -->
+    <div class="bg-white dark:bg-gray-800 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 card-hover animate-fadeIn border border-pink-100 dark:border-gray-700" style="animation-delay: 0.2s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.ActiveVehicles active</span>
+        </div>
+        <h3 class="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-1">Active Vehicles</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.ActiveVehicles</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-500 mt-2">Currently operational</p>
+    </div>
+
+    <!-- Maintenance Vehicles Card -->
+    <div class="bg-white dark:bg-gray-800 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 card-hover animate-fadeIn border border-pink-100 dark:border-gray-700" style="animation-delay: 0.3s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.VehiclesDueForService due soon</span>
+        </div>
+        <h3 class="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-1">Under Maintenance</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.MaintenanceVehicles</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-500 mt-2">@Model.VehiclesDueForService due in 7 days</p>
+    </div>
+
+    <!-- Total Fuel Consumption Card -->
+    <div class="bg-white dark:bg-gray-800 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 card-hover animate-fadeIn border border-pink-100 dark:border-gray-700" style="animation-delay: 0.4s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.AverageFuelEfficiency.ToString("F1") L/100km avg</span>
+        </div>
+        <h3 class="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-1">Total Fuel Consumption</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.TotalFuelConsumption.ToString("N1") L</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-500 mt-2">All time consumption</p>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(236, 72, 153, 0.1), 0 10px 10px -5px rgba(236, 72, 153, 0.04);
+        }
+
+    .dark .card-hover:hover {
+        box-shadow: 0 20px 25px -5px rgba(236, 72, 153, 0.3), 0 10px 10px -5px rgba(236, 72, 153, 0.2);
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

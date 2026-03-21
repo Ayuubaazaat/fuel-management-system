@@ -1,0 +1,405 @@
+﻿@model IEnumerable<FuelManagement.Models.UserViewModel>
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="animate-fadeIn px-4 sm:px-0">
+    <!-- Header Card -->
+    <div class="bg-gradient-to-r from-sky-500 to-purple-600 dark:from-sky-800 dark:to-purple-900 rounded-2xl p-6 sm:p-8 mb-8 text-white relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+        </div>
+
+        <!-- Header Content -->
+        <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold mb-2">User Management</h1>
+                <p class="text-white/80 text-sm sm:text-base">Manage system users, roles, and permissions</p>
+            </div>
+            <a asp-controller="Users" asp-action="Create"
+               class="w-full sm:w-auto px-4 sm:px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl hover:bg-white/30 transition-all duration-300 flex items-center justify-center sm:justify-start gap-2 group text-sm sm:text-base">
+                <i class="fas fa-plus group-hover:rotate-90 transition-transform duration-300"></i>
+                Create New User
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sm:p-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Search -->
+            <div class="sm:col-span-2">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+                    <input type="text" id="searchInput" placeholder="Search users by name, email, or role..."
+                           class="w-full pl-12 pr-4 py-3 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200">
+                </div>
+            </div>
+
+            <!-- Role Filter -->
+            <div>
+                <select id="roleFilter" class="w-full px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200">
+                    <option value="">All Roles</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                </select>
+            </div>
+
+            <!-- Status Filter -->
+            <div>
+                <select id="statusFilter" class="w-full px-4 py-3 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200">
+                    <option value="">All Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" id="usersGrid">
+        @foreach (var user in Model)
+        {
+            <div class="user-card bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sm:p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                 data-name="@($"{user.FirstName} {user.LastName}".ToLower())"
+                 data-email="@user.Email.ToLower()"
+                 data-role="@user.Role"
+                 data-status="@user.Status">
+
+                <!-- Card Header with Actions -->
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <!-- Avatar with Profile Image or Initials -->
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-sky-500 to-purple-600 dark:from-sky-700 dark:to-purple-800 flex items-center justify-center text-white font-semibold text-base sm:text-lg flex-shrink-0 overflow-hidden">
+                            @if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                            {
+                                <img src="@user.ProfileImageUrl" alt="@user.FirstName" class="w-full h-full object-cover" />
+                            }
+                            else
+                            {
+                                @(user.FirstName?.Length > 0 ? user.FirstName[0].ToString() : "")
+
+                                @(user.LastName?.Length > 0 ? user.LastName[0].ToString() : "")
+                            }
+                        </div>
+                        <div class="min-w-0">
+                            <h3 class="font-semibold text-gray-800 dark:text-gray-100 truncate">@user.FirstName @user.LastName</h3>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">@user.Email</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Dropdown -->
+                    <div class="relative flex-shrink-0" x-data="{ open: false }">
+                        <button @@click="open = !open" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <i class="fas fa-ellipsis-v text-gray-500 dark:text-gray-400"></i>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div x-show="open" @@click.away="open = false"
+                             class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-2 z-50"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             style="display: none;">
+
+                            <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id"
+                               class="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                                <i class="fas fa-eye w-5 text-gray-400 dark:text-gray-500"></i>
+                                View Details
+                            </a>
+
+                            <a asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id"
+                               class="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                                <i class="fas fa-edit w-5 text-gray-400 dark:text-gray-500"></i>
+                                Edit User
+                            </a>
+
+                            <hr class="my-2 border-gray-100 dark:border-gray-700">
+
+                            <button type="button" onclick="openDeleteModal(@user.Id, '@user.FirstName @user.LastName')"
+                                    class="w-full flex items-center gap-3 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors text-sm">
+                                <i class="fas fa-trash-alt w-5"></i>
+                                Delete User
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Details -->
+                <div class="space-y-2 sm:space-y-3 mb-4">
+                    <div class="flex items-center gap-2 text-xs sm:text-sm">
+                        <i class="fas fa-briefcase w-4 text-gray-400 dark:text-gray-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300 truncate">@user.Role</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs sm:text-sm">
+                        <i class="fas fa-phone w-4 text-gray-400 dark:text-gray-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300 truncate">@user.Phone</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs sm:text-sm">
+                        <i class="fas fa-calendar w-4 text-gray-400 dark:text-gray-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300">Joined @(user.JoinDate.ToString("MMM yyyy"))</span>
+                    </div>
+                    @if (user.LastLogin.HasValue)
+                    {
+                        <div class="flex items-center gap-2 text-xs sm:text-sm">
+                            <i class="fas fa-clock w-4 text-gray-400 dark:text-gray-500"></i>
+                            <span class="text-gray-600 dark:text-gray-300">Last: @user.LastLogin.Value.ToString("MMM dd, HH:mm")</span>
+                        </div>
+                    }
+                    <div class="flex items-center gap-2 text-xs sm:text-sm">
+                        <i class="fas fa-signal w-4 text-gray-400 dark:text-gray-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300">Logins: @user.TotalLogins</span>
+                    </div>
+                </div>
+
+                <!-- Footer with Status Toggle -->
+                <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <span class="text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full status-badge @(user.Status == "Active" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300")">
+                        @user.Status
+                    </span>
+
+                    <!-- Animated Toggle Switch -->
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" @(user.Status == "Active" ? "checked" : "")
+                               onchange="toggleUserStatus(@user.Id, this.checked, this)">
+                        <div class="w-10 sm:w-11 h-5 sm:h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 dark:peer-focus:ring-sky-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 dark:after:border-gray-600 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-sky-500 peer-checked:to-purple-600 dark:peer-checked:from-sky-700 dark:peer-checked:to-purple-800"></div>
+                    </label>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-12 sm:py-16">
+        <div class="w-16 h-16 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-users text-2xl sm:text-4xl text-gray-400 dark:text-gray-500"></i>
+        </div>
+        <h3 class="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">No users found</h3>
+        <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400">Try adjusting your search or filter criteria</p>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden transition-all duration-300 px-4"
+     onclick="closeDeleteModal(event)">
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+        <div class="text-center">
+            <!-- Animated Warning Icon -->
+            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                <i class="fas fa-exclamation-triangle text-2xl sm:text-3xl text-red-600 dark:text-red-400"></i>
+            </div>
+
+            <h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Delete User</h3>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-6" id="deleteUserMessage">Are you sure you want to delete this user? This action cannot be undone.</p>
+
+            <input type="hidden" id="deleteUserId" value="" />
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button type="button" onclick="closeDeleteModal()"
+                        class="w-full sm:flex-1 px-4 sm:px-6 py-3 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 font-medium text-sm sm:text-base order-2 sm:order-1">
+                    Cancel
+                </button>
+
+                <form asp-controller="Users" asp-action="Delete" method="post" id="deleteForm" class="w-full sm:flex-1 order-1 sm:order-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteFormUserId" value="" />
+                    <button type="submit"
+                            class="w-full px-4 sm:px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 dark:from-red-700 dark:to-red-800 text-white rounded-xl hover:from-red-600 dark:hover:from-red-800 hover:to-red-700 dark:hover:to-red-900 transition-all duration-200 font-medium text-sm sm:text-base">
+                        Delete User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .user-card {
+        animation: fadeIn 0.5s ease-out forwards;
+        animation-fill-mode: both;
+    }
+
+        .user-card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .user-card:nth-child(2) {
+            animation-delay: 0.10s;
+        }
+
+        .user-card:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .user-card:nth-child(4) {
+            animation-delay: 0.20s;
+        }
+
+        .user-card:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+
+        .user-card:nth-child(6) {
+            animation-delay: 0.30s;
+        }
+
+        .user-card:nth-child(7) {
+            animation-delay: 0.35s;
+        }
+
+        .user-card:nth-child(8) {
+            animation-delay: 0.40s;
+        }
+
+        .user-card:nth-child(9) {
+            animation-delay: 0.45s;
+        }
+
+        .user-card:nth-child(10) {
+            animation-delay: 0.50s;
+        }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    <script>
+        // Filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const roleFilter = document.getElementById('roleFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const usersGrid = document.getElementById('usersGrid');
+        const emptyState = document.getElementById('emptyState');
+        const userCards = document.querySelectorAll('.user-card');
+
+        function filterUsers() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const roleValue = roleFilter.value;
+            const statusValue = statusFilter.value;
+
+            let visibleCount = 0;
+
+            userCards.forEach(card => {
+                const name = card.dataset.name;
+                const email = card.dataset.email;
+                const role = card.dataset.role;
+                const status = card.dataset.status;
+
+                const matchesSearch = searchTerm === '' || (name && name.includes(searchTerm)) || (email && email.includes(searchTerm));
+                const matchesRole = roleValue === '' || role === roleValue;
+                const matchesStatus = statusValue === '' || status === statusValue;
+
+                if (matchesSearch && matchesRole && matchesStatus) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleCount === 0) {
+                usersGrid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                usersGrid.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+        }
+
+        if (searchInput) searchInput.addEventListener('input', filterUsers);
+        if (roleFilter) roleFilter.addEventListener('change', filterUsers);
+        if (statusFilter) statusFilter.addEventListener('change', filterUsers);
+
+        // Delete Modal Functions
+        function openDeleteModal(userId, userName) {
+            document.getElementById('deleteUserId').value = userId;
+            document.getElementById('deleteFormUserId').value = userId;
+            document.getElementById('deleteUserMessage').textContent = `Are you sure you want to delete ${userName}? This action cannot be undone.`;
+
+            const modal = document.getElementById('deleteModal');
+            const modalContent = document.getElementById('modalContent');
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 50);
+        }
+
+        function closeDeleteModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+
+            const modal = document.getElementById('deleteModal');
+            const modalContent = document.getElementById('modalContent');
+
+            modalContent.classList.add('scale-95', 'opacity-0');
+            modalContent.classList.remove('scale-100', 'opacity-100');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Toggle User Status
+        function toggleUserStatus(userId, isActive, checkbox) {
+            const card = checkbox.closest('.user-card');
+            const statusBadge = card.querySelector('.status-badge');
+
+            if (isActive) {
+                statusBadge.textContent = 'Active';
+                statusBadge.className = 'text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full status-badge bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400';
+            } else {
+                statusBadge.textContent = 'Inactive';
+                statusBadge.className = 'text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full status-badge bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300';
+            }
+
+            card.dataset.status = isActive ? 'Active' : 'Inactive';
+
+            fetch(`/Users/ToggleStatus/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                }
+            }).catch(error => console.error('Error updating status:', error));
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDeleteModal();
+            }
+        });
+
+        window.toggleUserStatus = toggleUserStatus;
+        window.openDeleteModal = openDeleteModal;
+        window.closeDeleteModal = closeDeleteModal;
+    </script>
+}

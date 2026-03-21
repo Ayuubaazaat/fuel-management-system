@@ -1,0 +1,334 @@
+﻿@model dynamic
+
+@{
+    var isEdit = Model.GetType().GetProperty("Id") != null;
+}
+
+<div class="space-y-4 sm:space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Employee ID - Read-only in Edit mode -->
+        <div class="floating-input-group relative">
+            @if (isEdit)
+            {
+                <input type="text" id="EmployeeId" name="EmployeeId"
+                       value="@(Model.EmployeeId ?? "")" readonly disabled
+                       class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 transition-all duration-200 outline-none cursor-not-allowed"
+                       placeholder=" " />
+                <input type="hidden" name="EmployeeId" value="@(Model.EmployeeId ?? "")" />
+            }
+            else
+            {
+                <input type="text" id="EmployeeId" name="EmployeeId"
+                       value="@(Model.EmployeeId ?? "")" required
+                       class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none @((ViewData.ModelState["EmployeeId"]?.Errors.Count > 0) ? "border-red-500" : "")"
+                       placeholder=" " />
+            }
+            <label for="EmployeeId"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Employee ID *
+            </label>
+            @if (ViewData.ModelState["EmployeeId"]?.Errors.Count > 0)
+            {
+                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">@ViewData.ModelState["EmployeeId"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+
+        <!-- Employee Name -->
+        <div class="floating-input-group relative">
+            <input type="text" id="EmployeeName" name="EmployeeName"
+                   value="@(Model.EmployeeName ?? "")" required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none @((ViewData.ModelState["EmployeeName"]?.Errors.Count > 0) ? "border-red-500" : "")"
+                   placeholder=" " />
+            <label for="EmployeeName"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Employee Name *
+            </label>
+            @if (ViewData.ModelState["EmployeeName"]?.Errors.Count > 0)
+            {
+                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">@ViewData.ModelState["EmployeeName"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+    </div>
+
+    <!-- Phone Number — editable on Create, read-only on Edit -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div class="floating-input-group relative">
+            @if (isEdit)
+            {
+                <input type="tel" id="PhoneNumber" name="PhoneNumber"
+                       value="@(Model.PhoneNumber ?? "")" readonly disabled
+                       class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 transition-all duration-200 outline-none cursor-not-allowed"
+                       placeholder=" " />
+                <input type="hidden" name="PhoneNumber" value="@(Model.PhoneNumber ?? "")" />
+                <!-- Lock icon badge -->
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-gray-400 dark:text-gray-500 text-xs"></i>
+                </div>
+            }
+            else
+            {
+                <input type="tel" id="PhoneNumber" name="PhoneNumber"
+                       value="@(Model.PhoneNumber ?? "")" required
+                       class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none @((ViewData.ModelState["PhoneNumber"]?.Errors.Count > 0) ? "border-red-500" : "")"
+                       placeholder=" " />
+            }
+            <label for="PhoneNumber"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Phone Number @(isEdit ? "" : "*")
+                @if (isEdit)
+                {
+                    <span class="ml-1 text-xs text-gray-400 dark:text-gray-500">(cannot be changed)</span>
+                }
+            </label>
+            @if (ViewData.ModelState["PhoneNumber"]?.Errors.Count > 0)
+            {
+                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">@ViewData.ModelState["PhoneNumber"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+
+        <!-- Position -->
+        <div class="floating-input-group relative">
+            <input type="text" id="Position" name="Position"
+                   value="@(Model.Position ?? "")" required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none @((ViewData.ModelState["Position"]?.Errors.Count > 0) ? "border-red-500" : "")"
+                   placeholder=" " />
+            <label for="Position"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Position *
+            </label>
+            @if (ViewData.ModelState["Position"]?.Errors.Count > 0)
+            {
+                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">@ViewData.ModelState["Position"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+    </div>
+
+    <!-- Department -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div class="floating-input-group relative">
+            <select id="Department" name="Department" required
+                    class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none appearance-none @((ViewData.ModelState["Department"]?.Errors.Count > 0) ? "border-red-500" : "")">
+                <option value="" disabled selected class="dark:bg-gray-700">Select department</option>
+                <option value="Sales" selected="@(Model.Department == "Sales")" class="dark:bg-gray-700">Sales</option>
+                <option value="Fuel Station" selected="@(Model.Department == "Fuel Station")" class="dark:bg-gray-700">Fuel Station</option>
+                <option value="Transport" selected="@(Model.Department == "Transport")" class="dark:bg-gray-700">Transport</option>
+                <option value="Maintenance" selected="@(Model.Department == "Maintenance")" class="dark:bg-gray-700">Maintenance</option>
+                <option value="Security" selected="@(Model.Department == "Security")" class="dark:bg-gray-700">Security</option>
+                <option value="Administration" selected="@(Model.Department == "Administration")" class="dark:bg-gray-700">Administration</option>
+            </select>
+            <label for="Department"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Department *
+            </label>
+            @if (ViewData.ModelState["Department"]?.Errors.Count > 0)
+            {
+                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">@ViewData.ModelState["Department"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+        <!-- Base Salary -->
+        <div class="floating-input-group relative">
+            <input type="number" id="BaseSalary" name="BaseSalary"
+                   value="@(Model.BaseSalary)" step="0.01" min="0" required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none @((ViewData.ModelState["BaseSalary"]?.Errors.Count > 0) ? "border-red-500" : "")"
+                   placeholder=" " />
+            <label for="BaseSalary"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Base Salary ($) *
+            </label>
+            @if (ViewData.ModelState["BaseSalary"]?.Errors.Count > 0)
+            {
+                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">@ViewData.ModelState["BaseSalary"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+
+        <!-- Bonus -->
+        <div class="floating-input-group relative">
+            <input type="number" id="Bonus" name="Bonus"
+                   value="@(Model.Bonus)" step="0.01" min="0"
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="Bonus"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Bonus ($)
+            </label>
+        </div>
+
+        <!-- Deductions -->
+        <div class="floating-input-group relative">
+            <input type="number" id="Deductions" name="Deductions"
+                   value="@(Model.Deductions)" step="0.01" min="0"
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none"
+                   placeholder=" " />
+            <label for="Deductions"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Deductions ($)
+            </label>
+        </div>
+    </div>
+
+    <!-- Net Salary Preview -->
+    <div class="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-3 sm:p-4 border border-emerald-100 dark:border-emerald-800">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <label class="text-xs sm:text-sm font-medium text-emerald-800 dark:text-emerald-300">Net Salary Preview</label>
+            <span id="netSalaryPreview" class="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400">$0.00</span>
+        </div>
+        <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Base Salary + Bonus - Deductions</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Payment Date -->
+        <div class="floating-input-group relative">
+            <input type="date" id="PaymentDate" name="PaymentDate"
+                   value="@(Model.PaymentDate?.ToString("yyyy-MM-dd") ?? DateTime.Today.ToString("yyyy-MM-dd"))" required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none @((ViewData.ModelState["PaymentDate"]?.Errors.Count > 0) ? "border-red-500" : "")"
+                   placeholder=" " />
+            <label for="PaymentDate"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Payment Date *
+            </label>
+            @if (ViewData.ModelState["PaymentDate"]?.Errors.Count > 0)
+            {
+                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">@ViewData.ModelState["PaymentDate"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+
+        <!-- Payment Method -->
+        <div class="floating-input-group relative">
+            <select id="PaymentMethod" name="PaymentMethod" required
+                    class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none appearance-none @((ViewData.ModelState["PaymentMethod"]?.Errors.Count > 0) ? "border-red-500" : "")">
+                <option value="" disabled selected class="dark:bg-gray-700">Select payment method</option>
+                <option value="EVC+" selected="@(Model.PaymentMethod == "EVC+")" class="dark:bg-gray-700">EVC +</option>
+                <option value="Waafi" selected="@(Model.PaymentMethod == "Waafi")" class="dark:bg-gray-700">Waafi</option>
+                <option value="Somtel" selected="@(Model.PaymentMethod == "Somtel")" class="dark:bg-gray-700">Somtel</option>
+                <option value="Somnet" selected="@(Model.PaymentMethod == "Somnet")" class="dark:bg-gray-700">Somnet</option>
+                <option value="E-Dahab" selected="@(Model.PaymentMethod == "E-Dahab")" class="dark:bg-gray-700">E-Dahab</option>
+            </select>
+            <label for="PaymentMethod"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Payment Method *
+            </label>
+            @if (ViewData.ModelState["PaymentMethod"]?.Errors.Count > 0)
+            {
+                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">@ViewData.ModelState["PaymentMethod"]?.Errors[0].ErrorMessage</span>
+            }
+        </div>
+    </div>
+
+    <!-- Status -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div class="floating-input-group relative">
+            <select id="Status" name="Status" required
+                    class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none appearance-none">
+                <option value="Pending" selected="@(Model.Status == "Pending" || Model.Status == null)" class="dark:bg-gray-700">Pending</option>
+                <option value="Paid" selected="@(Model.Status == "Paid")" class="dark:bg-gray-700">Paid</option>
+                <option value="Overdue" selected="@(Model.Status == "Overdue")" class="dark:bg-gray-700">Overdue</option>
+            </select>
+            <label for="Status"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Status
+            </label>
+        </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="floating-input-group relative">
+        <textarea id="Notes" name="Notes" rows="3"
+                  class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none resize-none"
+                  placeholder=" ">@(Model.Notes ?? "")</textarea>
+        <label for="Notes"
+               class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Notes (Optional)
+        </label>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const baseSalaryInput  = document.getElementById('BaseSalary');
+        const bonusInput       = document.getElementById('Bonus');
+        const deductionsInput  = document.getElementById('Deductions');
+        const netSalarySpan    = document.getElementById('netSalaryPreview');
+
+        function updateNetSalary() {
+            const baseSalary  = parseFloat(baseSalaryInput?.value)  || 0;
+            const bonus       = parseFloat(bonusInput?.value)        || 0;
+            const deductions  = parseFloat(deductionsInput?.value)   || 0;
+            const netSalary   = baseSalary + bonus - deductions;
+            if (netSalarySpan)
+                netSalarySpan.textContent = netSalary.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        }
+
+        if (baseSalaryInput && bonusInput && deductionsInput) {
+            baseSalaryInput.addEventListener('input', updateNetSalary);
+            bonusInput.addEventListener('input',      updateNetSalary);
+            deductionsInput.addEventListener('input', updateNetSalary);
+            updateNetSalary();
+        }
+    });
+</script>
+
+<style>
+    .floating-input-group {
+        transition: all 0.2s ease;
+    }
+
+        .floating-input-group input:focus ~ label,
+        .floating-input-group input:not(:placeholder-shown) ~ label,
+        .floating-input-group select:focus ~ label,
+        .floating-input-group select:has(option:checked:not([value=""])) ~ label,
+        .floating-input-group textarea:focus ~ label,
+        .floating-input-group textarea:not(:placeholder-shown) ~ label {
+            transform: translateY(-0.5rem);
+            font-size: 0.7rem;
+            color: #10b981;
+        }
+
+    .dark .floating-input-group input:focus ~ label,
+    .dark .floating-input-group input:not(:placeholder-shown) ~ label,
+    .dark .floating-input-group select:focus ~ label,
+    .dark .floating-input-group select:has(option:checked:not([value=""])) ~ label,
+    .dark .floating-input-group textarea:focus ~ label,
+    .dark .floating-input-group textarea:not(:placeholder-shown) ~ label {
+        color: #34d399;
+        background: #1f2937;
+    }
+
+    @@media (min-width: 640px) {
+        .floating-input-group input:focus ~ label,
+        .floating-input-group input:not(:placeholder-shown) ~ label,
+        .floating-input-group select:focus ~ label,
+        .floating-input-group select:has(option:checked:not([value=""])) ~ label,
+        .floating-input-group textarea:focus ~ label,
+        .floating-input-group textarea:not(:placeholder-shown) ~ label {
+            font-size: 0.75rem;
+        }
+    }
+
+    select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select:invalid {
+        color: #9ca3af;
+    }
+
+    .dark select option {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+
+    .border-red-500 {
+        border-color: #ef4444 !important;
+    }
+
+    .text-red-600 {
+        color: #dc2626;
+    }
+
+    .dark .text-red-400 {
+        color: #f87171;
+    }
+</style>

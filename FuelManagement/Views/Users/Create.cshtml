@@ -1,0 +1,260 @@
+﻿@model FuelManagement.Models.UserCreateViewModel
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<div class="max-w-3xl mx-auto animate-fadeIn px-4 sm:px-0">
+    <!-- Header -->
+    <div class="mb-6 sm:mb-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">Create New User</h1>
+        <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400">Add a new user to the system</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sm:p-8">
+        <form asp-action="Create" method="post" enctype="multipart/form-data" class="space-y-4 sm:space-y-6">
+            @Html.AntiForgeryToken()
+
+            <!-- Validation Summary -->
+            <div asp-validation-summary="ModelOnly" class="text-red-500 dark:text-red-400 text-xs sm:text-sm bg-red-50 dark:bg-red-900/30 p-3 sm:p-4 rounded-xl" role="alert"></div>
+
+            <!-- Avatar Upload Section -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-gray-100 dark:border-gray-700">
+                <div class="relative group">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-sky-500 to-purple-600 dark:from-sky-700 dark:to-purple-800 rounded-2xl flex items-center justify-center text-white text-2xl sm:text-3xl font-semibold overflow-hidden">
+                        <span id="avatarPlaceholder">@(Model.FirstName?.Length > 0 ? Model.FirstName[0].ToString() : "U")@(Model.LastName?.Length > 0 ? Model.LastName[0].ToString() : "U")</span>
+                        <img id="avatarPreview" class="w-full h-full object-cover hidden" src="#" alt="Preview" />
+                    </div>
+                    <label for="avatarInput" class="absolute inset-0 bg-black bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-70 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
+                        <i class="fas fa-camera text-white text-base sm:text-lg"></i>
+                    </label>
+                    <input type="file" id="avatarInput" name="avatar" accept="image/*" class="hidden" />
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 text-base sm:text-lg">Profile Photo</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">JPG, PNG or GIF (max. 5MB)</p>
+                    <div id="uploadStatus" class="text-xs mt-2 hidden"></div>
+                </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="space-y-4">
+                <!-- First Name -->
+                <div>
+                    <label asp-for="FirstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
+                    <input asp-for="FirstName" id="firstName" class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200" />
+                    <span asp-validation-for="FirstName" class="text-red-500 dark:text-red-400 text-xs mt-1"></span>
+                </div>
+
+                <!-- Last Name -->
+                <div>
+                    <label asp-for="LastName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
+                    <input asp-for="LastName" id="lastName" class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200" />
+                    <span asp-validation-for="LastName" class="text-red-500 dark:text-red-400 text-xs mt-1"></span>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label asp-for="Email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                    <input asp-for="Email" type="email" class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200" />
+                    <span asp-validation-for="Email" class="text-red-500 dark:text-red-400 text-xs mt-1"></span>
+                </div>
+
+                <!-- Phone Number -->
+                <div>
+                    <label asp-for="Phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Phone Number</label>
+                    <input asp-for="Phone" type="tel" class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200" />
+                    <span asp-validation-for="Phone" class="text-red-500 dark:text-red-400 text-xs mt-1"></span>
+                </div>
+
+                <!-- Role -->
+                <div>
+                    <label asp-for="Role" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Role</label>
+                    <select asp-for="Role" class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200">
+                        <option value="Admin">Admin</option>
+                        <option value="User" selected>User</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-red-500 dark:text-red-400 text-xs mt-1"></span>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label asp-for="Password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                    <div class="relative">
+                        <input asp-for="Password" type="password" id="Password"
+                               class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200 pr-12" />
+                        <button type="button"
+                                onclick="togglePasswordVisibility('Password', 'eyeIcon1')"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-sky-600 dark:text-gray-400 dark:hover:text-sky-400 focus:outline-none"
+                                tabindex="-1">
+                            <i id="eyeIcon1" class="fas fa-eye text-lg"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-red-500 dark:text-red-400 text-xs mt-1"></span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label asp-for="ConfirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm Password</label>
+                    <div class="relative">
+                        <input asp-for="ConfirmPassword" type="password" id="ConfirmPassword"
+                               class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200 pr-12" />
+                        <button type="button"
+                                onclick="togglePasswordVisibility('ConfirmPassword', 'eyeIcon2')"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-sky-600 dark:text-gray-400 dark:hover:text-sky-400 focus:outline-none"
+                                tabindex="-1">
+                            <i id="eyeIcon2" class="fas fa-eye text-lg"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-red-500 dark:text-red-400 text-xs mt-1"></span>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-700">
+                <button type="submit"
+                        class="w-full sm:w-auto px-4 sm:px-6 py-3 bg-gradient-to-r from-sky-500 to-purple-600 dark:from-sky-700 dark:to-purple-800 text-white rounded-xl hover:from-sky-600 dark:hover:from-sky-800 hover:to-purple-700 dark:hover:to-purple-900 focus:outline-none focus:ring-2 focus:ring-sky-500 dark:focus:ring-sky-700 focus:ring-offset-2 transition-all duration-200 font-medium text-sm sm:text-base flex items-center justify-center gap-2 group">
+                    <i class="fas fa-user-plus group-hover:scale-110 transition-transform duration-200"></i>
+                    Create User
+                </button>
+
+                <a asp-controller="Users" asp-action="Index"
+                   class="w-full sm:w-auto px-4 sm:px-6 py-3 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400 focus:ring-offset-2 transition-all duration-200 font-medium text-sm sm:text-base text-center">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-3"></div>
+
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        // Toast notification
+        function showToast(type, message) {
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-6 py-4 rounded-xl shadow-lg transform transition-all duration-300 translate-x-full ${
+                type === 'success'
+                ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                : 'bg-red-50 border border-red-200 text-red-700'
+            }`;
+
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+
+            document.getElementById('toastContainer').appendChild(toast);
+
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Avatar initials
+        function updateAvatarInitials() {
+            const firstName = document.getElementById('firstName')?.value || '';
+            const lastName = document.getElementById('lastName')?.value || '';
+
+            const firstInitial = firstName.charAt(0).toUpperCase();
+            const lastInitial = lastName.charAt(0).toUpperCase();
+
+            const placeholder = document.getElementById('avatarPlaceholder');
+            if (placeholder) {
+                placeholder.textContent = (firstInitial + lastInitial) || "UU";
+            }
+        }
+
+        document.getElementById('firstName')?.addEventListener('input', updateAvatarInitials);
+        document.getElementById('lastName')?.addEventListener('input', updateAvatarInitials);
+
+        // Avatar preview
+        const avatarInput = document.getElementById('avatarInput');
+
+        if (avatarInput) {
+            avatarInput.addEventListener('change', function () {
+
+                if (!this.files || !this.files[0]) return;
+
+                const file = this.files[0];
+
+                // size check
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('error', 'File must be smaller than 5MB');
+                    this.value = '';
+                    return;
+                }
+
+                // type check
+                if (!file.type.startsWith('image/')) {
+                    showToast('error', 'Please select an image');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const placeholder = document.getElementById('avatarPlaceholder');
+                    const preview = document.getElementById('avatarPreview');
+
+                    if (placeholder && preview) {
+                        placeholder.classList.add('hidden');
+                        preview.classList.remove('hidden');
+                        preview.src = e.target.result;
+                    }
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+           
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    
+
+        // run once
+        updateAvatarInitials();
+
+    </script>
+}

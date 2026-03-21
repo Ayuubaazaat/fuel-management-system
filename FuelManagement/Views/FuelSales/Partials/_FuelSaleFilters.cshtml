@@ -1,0 +1,71 @@
+﻿@model FuelManagement.Models.FuelSaleFilterViewModel
+
+<div class="bg-white dark:bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-lg dark:shadow-2xl p-4 sm:p-6 border border-gray-100 dark:border-gray-700">
+    <form method="get" action="@Url.Action("Index")" class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-4">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Filters</h3>
+            <a href="@Url.Action("Index")"
+               class="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-medium text-left sm:text-right">
+                Clear All
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <!-- Date Range -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">From</label>
+                <input type="date" name="startDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-800 transition-all duration-200" />
+            </div>
+
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">To</label>
+                <input type="date" name="endDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-800 transition-all duration-200" />
+            </div>
+
+            <!-- Pump Select -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Pump</label>
+                <select name="pumpNumber" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Pumps</option>
+                    @foreach (var pump in Model.AvailablePumps)
+                    {
+                        <option value="@pump" selected="@(Model.PumpNumber == pump)" class="dark:bg-gray-700">@pump</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Payment</label>
+                <select name="paymentMethod" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Methods</option>
+                    @foreach (var method in Model.AvailablePaymentMethods)
+                    {
+                        <option value="@method" selected="@(Model.PaymentMethod == method)" class="dark:bg-gray-700">@method</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Status -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                <select name="status" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Status</option>
+                    @foreach (var status in Model.AvailableStatuses)
+                    {
+                        <option value="@status" selected="@(Model.Status == status)" class="dark:bg-gray-700">@status</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-2 sm:pt-4">
+            <button type="submit"
+                    class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 dark:from-orange-600 dark:to-amber-600 text-white font-medium rounded-xl hover:from-orange-600 dark:hover:from-orange-700 hover:to-amber-600 dark:hover:to-amber-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>

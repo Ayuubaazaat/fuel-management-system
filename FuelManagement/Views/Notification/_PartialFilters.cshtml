@@ -1,0 +1,139 @@
+﻿@using FuelManagement.Models.ViewModels
+@model NotificationFilterViewModel
+
+@{
+    var currentModule = Context.Request.Query["module"];
+    var currentType = Context.Request.Query["type"];
+    var currentDateRange = Context.Request.Query["dateRange"];
+    var currentStatus = Context.Request.Query["status"];
+}
+
+<div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6">
+    <form id="filterForm" method="get" action="@Url.Action("Index", "Notification")" class="space-y-4">
+        <!-- Search -->
+        <div class="relative">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+            <input type="text"
+                   name="searchTerm"
+                   value="@Model?.SearchTerm"
+                   class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                   placeholder="Search by activity name or ID..." />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Module Filter -->
+            <div>
+                <select name="module" class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                    @foreach (var module in Model?.AvailableModules ?? new List<SelectListItem>())
+                    {
+                        if (module.Value == currentModule.ToString())
+                        {
+                            <option value="@module.Value" selected>@module.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@module.Value">@module.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Type Filter (FIXED: with preselection) -->
+            <div>
+                <select name="type" class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                    @foreach (var type in Model?.AvailableTypes ?? new List<SelectListItem>())
+                    {
+                        if (type.Value == currentType.ToString())
+                        {
+                            <option value="@type.Value" selected>@type.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@type.Value">@type.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Date Range (FIXED: with preselection) -->
+            <div>
+                <select name="dateRange" id="dateRangeSelect" class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                    @foreach (var range in Model?.AvailableDateRanges ?? new List<SelectListItem>())
+                    {
+                        if (range.Value == currentDateRange.ToString())
+                        {
+                            <option value="@range.Value" selected>@range.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@range.Value">@range.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Status Filter (FIXED: with preselection) -->
+            <div>
+                <select name="status" class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
+                    @foreach (var status in Model?.AvailableStatuses ?? new List<SelectListItem>())
+                    {
+                        if (status.Value == currentStatus.ToString())
+                        {
+                            <option value="@status.Value" selected>@status.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@status.Value">@status.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Custom Date Range (hidden by default) -->
+        <div id="customDateRange" class="grid grid-cols-1 md:grid-cols-2 gap-4 @(currentDateRange == "custom" ? "" : "hidden")">
+            <div>
+                <label class="block text-sm text-gray-600 dark:text-gray-400 mb-2">From</label>
+                <input type="date" name="dateFrom" value="@Model?.DateFrom?.ToString("yyyy-MM-dd")"
+                       class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all" />
+            </div>
+            <div>
+                <label class="block text-sm text-gray-600 dark:text-gray-400 mb-2">To</label>
+                <input type="date" name="dateTo" value="@Model?.DateTo?.ToString("yyyy-MM-dd")"
+                       class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all" />
+            </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex justify-end gap-3">
+            <button type="button" onclick="window.location.href='@Url.Action("Index", "Notification")'"
+                    class="px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors">
+                Clear Filters
+            </button>
+            <button type="submit"
+                    class="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105">
+                <i class="fas fa-filter mr-2"></i>Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('dateRangeSelect')?.addEventListener('change', function() {
+        const customRange = document.getElementById('customDateRange');
+        if (this.value === 'custom') {
+            customRange.classList.remove('hidden');
+        } else {
+            customRange.classList.add('hidden');
+        }
+    });
+
+    // Show custom date range on page load if custom is selected
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateRangeSelect = document.getElementById('dateRangeSelect');
+        const customRange = document.getElementById('customDateRange');
+        if (dateRangeSelect && dateRangeSelect.value === 'custom') {
+            customRange.classList.remove('hidden');
+        }
+    });
+</script>

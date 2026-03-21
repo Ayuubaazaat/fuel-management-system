@@ -1,0 +1,74 @@
+﻿@model FuelManagement.Models.InvoiceEditViewModel
+@{
+    ViewData["Title"] = "Edit Invoice";
+    ViewData["IsEdit"] = true;
+}
+
+<div class="min-h-screen bg-gradient-to-br from-amber-50 to-stone-50 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8 animate-slideIn">
+            <h1 class="text-2xl sm:text-3xl font-bold text-stone-800 dark:text-amber-100">Edit Invoice</h1>
+            <p class="text-sm sm:text-base mt-2 text-stone-600 dark:text-stone-400">Update invoice information and payment details</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden animate-fadeIn">
+            <div class="bg-gradient-to-r from-amber-800 via-yellow-900 to-stone-900 dark:from-amber-900 dark:via-yellow-800 dark:to-stone-800 px-4 sm:px-6 py-3 sm:py-4">
+                <h2 class="text-base sm:text-lg font-semibold text-amber-100 dark:text-amber-100">Invoice Information - @Model.InvoiceNumber</h2>
+            </div>
+
+            @using (Html.BeginForm("Edit", "Invoices", new { id = Model.InvoiceNumber }, FormMethod.Post, null, new { @class = "p-4 sm:p-6" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.InvoiceNumber)
+                @await Html.PartialAsync("Partials/_InvoiceForm", Model)
+
+                <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end gap-3">
+                    <a href="@Url.Action("Index")"
+                       class="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-stone-700 dark:text-stone-300 font-medium hover:bg-stone-50 dark:hover:bg-gray-700 transition-all duration-200 text-center order-2 sm:order-1">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-amber-800 to-stone-900 dark:from-amber-700 dark:to-stone-700 text-amber-100 dark:text-amber-100 font-medium rounded-lg hover:from-amber-900 dark:hover:from-amber-800 hover:to-stone-950 dark:hover:to-stone-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl order-1 sm:order-2">
+                        Update Invoice
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-slideIn {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

@@ -1,0 +1,101 @@
+﻿@model FuelManagement.Models.ViewModels.NotificationViewModel
+
+<div class="notification-item bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300 @(Model.Status == FuelManagement.Models.Enums.NotificationStatus.Unread ? "border-l-4 border-l-purple-500" : "")" data-id="@Model.Id" data-status="@((int)Model.Status)">
+    <div class="flex gap-4">
+        <!-- Icon -->
+        <div class="shrink-0">
+            @switch (Model.Type)
+            {
+                case FuelManagement.Models.Enums.NotificationType.Success:
+                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                        <i class="fas @Model.ModuleIcon text-green-600 dark:text-green-400 text-xl"></i>
+                    </div>
+                    break;
+                case FuelManagement.Models.Enums.NotificationType.Warning:
+                    <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                        <i class="fas @Model.ModuleIcon text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                    </div>
+                    break;
+                case FuelManagement.Models.Enums.NotificationType.Error:
+                case FuelManagement.Models.Enums.NotificationType.Alert:
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
+                        <i class="fas @Model.ModuleIcon text-red-600 dark:text-red-400 text-xl"></i>
+                    </div>
+                    break;
+                default:
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                        <i class="fas @Model.ModuleIcon text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                    break;
+            }
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@Model.Title</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">@Model.Description</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    @if (Model.Status == FuelManagement.Models.Enums.NotificationStatus.Unread)
+                    {
+                        <button class="mark-read-btn text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors" data-id="@Model.Id">
+                            Mark as read
+                        </button>
+                    }
+                    <button class="delete-notification-btn text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors" data-id="@Model.Id">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 mt-4">
+                <span class="text-xs px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-400">
+                    <i class="fas @Model.ModuleIcon mr-1"></i>@Model.Module
+                </span>
+                <span class="text-xs text-gray-500 dark:text-gray-500">
+                    <i class="far fa-clock mr-1"></i>@Model.Timestamp.ToString("MMM dd, yyyy • h:mm tt")
+                </span>
+                @if (Model.IsGlobal)
+                {
+                    <span class="text-xs px-3 py-1 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400">
+                        <i class="fas fa-globe mr-1"></i>Global
+                    </span>
+                }
+                @switch (Model.Type)
+                {
+                    case FuelManagement.Models.Enums.NotificationType.Success:
+                        <span class="text-xs px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400">
+                            <i class="fas fa-check-circle mr-1"></i>Success
+                        </span>
+                        break;
+                    case FuelManagement.Models.Enums.NotificationType.Warning:
+                        <span class="text-xs px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg text-yellow-600 dark:text-yellow-400">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Warning
+                        </span>
+                        break;
+                    case FuelManagement.Models.Enums.NotificationType.Error:
+                        <span class="text-xs px-3 py-1 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600 dark:text-red-400">
+                            <i class="fas fa-times-circle mr-1"></i>Error
+                        </span>
+                        break;
+                    case FuelManagement.Models.Enums.NotificationType.Alert:
+                        <span class="text-xs px-3 py-1 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600 dark:text-red-400">
+                            <i class="fas fa-exclamation-circle mr-1"></i>Alert
+                        </span>
+                        break;
+                }
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ActionText))
+            {
+                <div class="mt-4">
+                    <a href="@Model.ActionUrl" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-300 transform hover:scale-105">
+                        @Model.ActionText <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

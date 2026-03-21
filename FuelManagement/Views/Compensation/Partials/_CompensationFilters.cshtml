@@ -1,0 +1,91 @@
+﻿@model FuelManagement.Models.CompensationFilterViewModel
+
+<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 border border-green-100 dark:border-gray-700">
+    <form method="get" action="@Url.Action("Index")" class="space-y-4" id="filterForm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-4">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Filter Compensation</h3>
+            <button type="button" onclick="clearFilters()"
+                    class="text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium text-left sm:text-right">
+                Clear All
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <!-- Date Range -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">From</label>
+                <input type="date" name="StartDate" id="StartDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200" />
+            </div>
+
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">To</label>
+                <input type="date" name="EndDate" id="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200" />
+            </div>
+
+            <!-- Employee - Input field with datalist -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Employee ID</label>
+                <input type="text"
+                       name="EmployeeId"
+                       id="EmployeeId"
+                       value="@(Model.EmployeeId)"
+                       placeholder="Enter Employee ID (e.g., EMP-001)"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200"
+                       list="employeeSuggestions" />
+                <datalist id="employeeSuggestions" class="dark:bg-gray-700">
+                    @foreach (var employee in Model.AvailableEmployees)
+                    {
+                        <option value="@employee" class="dark:bg-gray-700 dark:text-white">@employee</option>
+                    }
+                </datalist>
+            </div>
+
+            <!-- Department -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Department</label>
+                <select name="Department" id="Department" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Departments</option>
+                    @foreach (var dept in Model.AvailableDepartments)
+                    {
+                        <option value="@dept" selected="@(Model.Department == dept)" class="dark:bg-gray-700">@dept</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Status -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                <select name="Status" id="Status" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Status</option>
+                    @foreach (var status in Model.AvailableStatuses)
+                    {
+                        <option value="@status" selected="@(Model.Status == status)" class="dark:bg-gray-700">@status</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-2 sm:pt-4">
+            <button type="submit"
+                    class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-600 text-white font-medium rounded-xl hover:from-green-600 dark:hover:from-green-700 hover:to-emerald-700 dark:hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function clearFilters() {
+        // Clear all input fields
+        document.getElementById('StartDate').value = '';
+        document.getElementById('EndDate').value = '';
+        document.getElementById('EmployeeId').value = '';
+        document.getElementById('Department').value = '';
+        document.getElementById('Status').value = '';
+
+        // Submit the form to refresh with no filters
+        document.getElementById('filterForm').submit();
+    }
+</script>

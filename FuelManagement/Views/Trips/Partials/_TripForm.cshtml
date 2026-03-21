@@ -1,0 +1,309 @@
+﻿@model dynamic
+
+@{
+    // Check if this is Edit mode by looking for an 'Id' property or checking if TripId has a value and we're in Edit action
+    var isEdit = Model.GetType().GetProperty("Id") != null ||
+                 (!string.IsNullOrEmpty(Model.TripId) && ViewContext.RouteData.Values["action"]?.ToString() == "Edit");
+}
+
+<div class="space-y-4 sm:space-y-6">
+    <!-- Trip ID - Read-only in Edit mode -->
+    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800 mb-2">
+        <div class="floating-input-group relative">
+            @if (isEdit)
+            {
+                <!-- Edit mode: Display as read-only disabled field -->
+                <input type="text"
+                       id="TripId"
+                       name="TripId"
+                       value="@(Model.TripId ?? "")"
+                       readonly
+                       disabled
+                       class="peer w-full px-3 sm:px-4 py-3 sm:py-4 text-base rounded-xl border-2 border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-gray-600 text-blue-800 dark:text-blue-300 cursor-not-allowed font-medium"
+                       placeholder=" " />
+                <!-- Hidden field to submit the value -->
+                <input type="hidden" name="TripId" value="@(Model.TripId ?? "")" />
+            }
+            else
+            {
+                <!-- Create mode: Normal editable field with validation -->
+                <input type="text"
+                       id="TripId"
+                       name="TripId"
+                       value="@(Model.TripId ?? "")"
+                       required
+                       class="peer w-full px-3 sm:px-4 py-3 sm:py-4 text-base rounded-xl border-2 border-blue-300 dark:border-blue-700 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none font-medium"
+                       placeholder=" "
+                       data-val="true"
+                       data-val-required="Trip ID is required"
+                       data-val-remote="Trip ID already exists"
+                       data-val-remote-url="/Trips/CheckTripId"
+                       data-val-remote-additionalfields="*.TripId" />
+            }
+            <label for="TripId"
+                   class="absolute left-3 sm:left-4 -top-3 sm:-top-3.5 bg-white dark:bg-gray-800 px-2 py-0.5 text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-semibold transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 sm:peer-placeholder-shown:top-4 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-3 sm:peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Trip ID * (e.g. TRP-015)
+            </label>
+            @if (!isEdit)
+            {
+                <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="TripId" data-valmsg-replace="true"></span>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Enter a unique Trip ID (e.g., TRP-015, TRP-016, etc.)</p>
+            }
+            else
+            {
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Trip ID cannot be changed after creation</p>
+            }
+        </div>
+    </div>
+
+    <!-- Vehicle Selection Dropdown -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div class="floating-input-group relative">
+            <select id="VehicleId"
+                    name="VehicleId"
+                    required
+                    class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none appearance-none">
+                <option value="" disabled selected>-- Select a vehicle --</option>
+                @if (Model.AvailableVehicles != null)
+                {
+                    foreach (var vehicle in Model.AvailableVehicles)
+                    {
+                        <option value="@vehicle.Value" selected="@(Model.VehicleId == vehicle.Value)">@vehicle.Text</option>
+                    }
+                }
+            </select>
+            <label for="VehicleId"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Select Vehicle *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="VehicleId" data-valmsg-replace="true"></span>
+        </div>
+
+        <!-- Hidden fields that will be auto-filled -->
+        <input type="hidden" id="VehicleName" name="VehicleName" value="@(Model.VehicleName ?? "")" />
+        <input type="hidden" id="LicensePlate" name="LicensePlate" value="@(Model.LicensePlate ?? "")" />
+        <input type="hidden" id="DriverName" name="DriverName" value="@(Model.DriverName ?? "")" />
+
+        <!-- Display fields (read-only) -->
+        <div class="floating-input-group relative">
+            <input type="text"
+                   id="VehicleNameDisplay"
+                   value="@(Model.VehicleName ?? "")"
+                   readonly
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-100 cursor-not-allowed"
+                   placeholder=" " />
+            <label for="VehicleNameDisplay"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                Vehicle Name
+            </label>
+        </div>
+    </div>
+
+    <!-- License Plate and Driver Name (read-only, auto-filled) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div class="floating-input-group relative">
+            <input type="text"
+                   id="LicensePlateDisplay"
+                   value="@(Model.LicensePlate ?? "")"
+                   readonly
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-100 cursor-not-allowed"
+                   placeholder=" " />
+            <label for="LicensePlateDisplay"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                License Plate
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="LicensePlate" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="floating-input-group relative">
+            <input type="text"
+                   id="DriverNameDisplay"
+                   value="@(Model.DriverName ?? "")"
+                   readonly
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-100 cursor-not-allowed"
+                   placeholder=" " />
+            <label for="DriverNameDisplay"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                Driver Name
+            </label>
+        </div>
+    </div>
+
+    <!-- Trip Date -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div class="floating-input-group relative">
+            <input type="date"
+                   id="TripDate"
+                   name="TripDate"
+                   value="@(Model.TripDate?.ToString("yyyy-MM-dd") ?? DateTime.Today.ToString("yyyy-MM-dd"))"
+                   required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+                   placeholder=" "
+                   data-val="true"
+                   data-val-required="Trip date is required" />
+            <label for="TripDate"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Trip Date *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="TripDate" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    <!-- Distance and Fuel -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div class="floating-input-group relative">
+            <input type="number"
+                   id="Distance"
+                   name="Distance"
+                   value="@(Model.Distance)"
+                   step="0.1"
+                   min="0.1"
+                   required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+                   placeholder=" "
+                   data-val="true"
+                   data-val-required="Distance is required"
+                   data-val-range="Distance must be between 0.1 and 9,999 km"
+                   data-val-range-min="0.1"
+                   data-val-range-max="9999" />
+            <label for="Distance"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Distance (km) *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="Distance" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="floating-input-group relative">
+            <input type="number"
+                   id="FuelUsed"
+                   name="FuelUsed"
+                   value="@(Model.FuelUsed)"
+                   step="0.1"
+                   min="0.1"
+                   required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+                   placeholder=" "
+                   data-val="true"
+                   data-val-required="Fuel used is required"
+                   data-val-range="Fuel used must be between 0.1 and 9,999 L"
+                   data-val-range-min="0.1"
+                   data-val-range-max="9999" />
+            <label for="FuelUsed"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Fuel Used (L) *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="FuelUsed" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    <!-- Cost -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div class="floating-input-group relative">
+            <input type="number"
+                   id="Cost"
+                   name="Cost"
+                   value="@(Model.Cost)"
+                   step="0.01"
+                   min="0"
+                   required
+                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none"
+                   placeholder=" "
+                   data-val="true"
+                   data-val-required="Cost is required"
+                   data-val-range="Cost must be between 0.01 and 999,999"
+                   data-val-range-min="0.01"
+                   data-val-range-max="999999" />
+            <label for="Cost"
+                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                Cost ($) *
+            </label>
+            <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="Cost" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="floating-input-group relative">
+        <textarea id="Notes"
+                  name="Notes"
+                  rows="3"
+                  class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 outline-none resize-none"
+                  placeholder=" ">@(Model.Notes ?? "")</textarea>
+        <label for="Notes"
+               class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600 dark:peer-focus:text-blue-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+            Notes (Optional)
+        </label>
+        <span class="text-red-500 text-xs mt-1 field-validation-error" data-valmsg-for="Notes" data-valmsg-replace="true"></span>
+    </div>
+</div>
+
+<!-- AJAX script to auto-fill vehicle details -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const vehicleSelect = document.getElementById('VehicleId');
+        const vehicleName = document.getElementById('VehicleName');
+        const vehicleNameDisplay = document.getElementById('VehicleNameDisplay');
+        const licensePlate = document.getElementById('LicensePlate');
+        const licensePlateDisplay = document.getElementById('LicensePlateDisplay');
+        const driverName = document.getElementById('DriverName');
+        const driverNameDisplay = document.getElementById('DriverNameDisplay');
+
+        if (vehicleSelect) {
+            vehicleSelect.addEventListener('change', function() {
+                const vehicleId = this.value;
+                if (vehicleId) {
+                    fetch(`/Trips/GetVehicleDetails?vehicleId=${encodeURIComponent(vehicleId)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                vehicleName.value = data.vehicleName;
+                                vehicleNameDisplay.value = data.vehicleName;
+                                licensePlate.value = data.licensePlate;
+                                licensePlateDisplay.value = data.licensePlate;
+                                driverName.value = data.driverName;
+                                driverNameDisplay.value = data.driverName;
+                            }
+                        });
+                }
+            });
+
+            // Trigger change if there's an existing value (for edit mode)
+            if (vehicleSelect.value) {
+                vehicleSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Clear validation errors when typing
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('input-validation-error');
+                const errorSpan = this.parentElement.querySelector('.field-validation-error');
+                if (errorSpan) {
+                    errorSpan.textContent = '';
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .floating-input-group {
+        transition: all 0.2s ease;
+    }
+
+    .field-validation-error {
+        color: #ef4444;
+        font-size: 0.75rem;
+        line-height: 1rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .input-validation-error {
+        border-color: #ef4444 !important;
+    }
+
+        .input-validation-error:focus {
+            border-color: #ef4444 !important;
+            ring-color: #fecaca !important;
+        }
+</style>

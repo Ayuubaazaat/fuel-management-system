@@ -1,0 +1,412 @@
+﻿@model FuelManagement.Models.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Enterprise Login - FuelMS";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'fadeIn':  'fadeIn 0.5s ease-out forwards',
+                        'slideIn': 'slideIn 0.6s ease-out forwards',
+                        'scaleIn': 'scaleIn 0.4s ease-out forwards',
+                        'float':   'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn:  { '0%': { opacity: '0', transform: 'translateY(20px)' },  '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        slideIn: { '0%': { opacity: '0', transform: 'translateX(-30px)' }, '100%': { opacity: '1', transform: 'translateX(0)' } },
+                        scaleIn: { '0%': { opacity: '0', transform: 'scale(0.9)' },        '100%': { opacity: '1', transform: 'scale(1)' } },
+                        float:   { '0%,100%': { transform: 'translateY(0)' },               '50%':  { transform: 'translateY(-10px)' } },
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+            html.dark body {
+                background-color: #111827 !important;
+            }
+
+        * {
+            transition-property: background-color, border-color, color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 200ms;
+        }
+
+        .form-input {
+            transition: all 0.3s ease;
+        }
+
+            .form-input:focus {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.2);
+            }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-primary::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.3);
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+
+            .btn-primary:hover::after {
+                width: 300px;
+                height: 300px;
+            }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .eye-btn {
+            transition: color 0.2s ease;
+        }
+
+        .right-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .right-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .right-panel::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+
+        .dark .right-panel::-webkit-scrollbar-thumb {
+            background: #374151;
+        }
+
+        .card-container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Left panel: flex column */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            /* Single solid purple — no gradient direction change that creates a different color at bottom */
+            background-color: #7c3aed;
+        }
+
+        /* Team photo fills remaining bottom space, flush to all edges */
+        .team-photo-fill {
+            flex: 1;
+            position: relative;
+            min-height: 240px;
+            margin-left: -1.5rem;
+            margin-right: -1.5rem;
+            margin-bottom: -1.5rem;
+            overflow: hidden;
+            /* Same purple as panel — guaranteed no color mismatch */
+            background-color: #7c3aed;
+        }
+
+            .team-photo-fill img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center 25%;
+                display: block;
+            }
+
+            /* Fade from exact same purple into photo */
+            .team-photo-fill::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 120px;
+                background: linear-gradient(to bottom, #7c3aed 0%, #7c3aed 20%, rgba(124,58,237,0) 100%);
+                z-index: 1;
+                pointer-events: none;
+            }
+
+        .dark .left-panel {
+            background-color: #4c1d95;
+        }
+
+        .dark .team-photo-fill {
+            background-color: #4c1d95;
+        }
+
+            .dark .team-photo-fill::before {
+                background: linear-gradient(to bottom, #4c1d95 0%, #4c1d95 20%, rgba(76,29,149,0) 100%);
+            }
+
+        @@media (max-width: 1023px) {
+            .right-panel {
+                max-height: none !important;
+            }
+
+            .team-photo-fill {
+                margin-left: -1.5rem;
+                margin-right: -1.5rem;
+                margin-bottom: -1.5rem;
+                min-height: 220px;
+            }
+        }
+
+        @@media (min-width: 1024px) {
+            .card-container {
+                min-height: 700px;
+                max-height: 96vh;
+            }
+
+            .right-panel {
+                max-height: 96vh;
+            }
+
+            .team-photo-fill {
+                margin-left: -2.5rem;
+                margin-right: -2.5rem;
+                margin-bottom: -2.5rem;
+                min-height: 280px;
+            }
+        }
+
+        @@media (min-width: 1280px) {
+            .team-photo-fill {
+                min-height: 320px;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full flex items-center justify-center p-3 sm:p-4 lg:p-8 bg-white dark:bg-gray-950">
+
+    <div class="card-container bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row animate-scaleIn">
+
+        <!-- ── Left Side — Pure Purple, equal width ─────────────────────── -->
+        <div class="left-panel w-full lg:w-1/2 p-6 sm:p-8 lg:p-10 xl:p-12 text-white relative overflow-hidden">
+
+            <!-- Decorative circles -->
+            <div class="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-36 translate-x-36 pointer-events-none"></div>
+            <div class="absolute top-1/3 left-0 w-48 h-48 bg-white/5 rounded-full -translate-x-24 pointer-events-none"></div>
+
+            <!-- ── Top: Logo + Text ── -->
+            <div class="relative z-10 animate-slideIn mb-8 sm:mb-10">
+                <div class="flex items-center gap-3 mb-6 sm:mb-7">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 rounded-2xl flex items-center justify-center float-animation overflow-hidden flex-shrink-0">
+                        <img src="~/images/ul.png"
+                             alt="Logo"
+                             class="w-full h-full object-contain p-1"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <i class="fas fa-gas-pump text-white text-xl sm:text-2xl" style="display:none;"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold">Uniso Fuel</h1>
+                        <p class="text-white/60 text-xs sm:text-sm">Engineer Ayub</p>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl sm:text-3xl xl:text-4xl font-bold leading-tight mb-2 sm:mb-3 animate-fadeIn" style="animation-delay: 0.2s;">
+                    In kabadanFilashadaada.
+                </h2>
+                <p class="text-white/80 text-sm sm:text-base animate-fadeIn" style="animation-delay: 0.3s;">
+                    Maamulo Ganacsiga Shidaalkaaga.
+                </p>
+            </div>
+
+            <!-- ── Team Photo — same purple bg, no box, flush to all edges ── -->
+            <div class="team-photo-fill">
+                <img src="~/images/bbyu.png"
+                     alt="Team Photo"
+                     onerror="this.closest('.team-photo-fill').style.visibility='hidden';" />
+            </div>
+        </div>
+
+        <!-- ── Right Side — Login Form, equal width ──────────────────────── -->
+        <div class="right-panel w-full lg:w-1/2 p-6 sm:p-8 lg:p-10 xl:p-14 bg-white dark:bg-gray-900 overflow-y-auto flex flex-col justify-center">
+
+            <!-- Success message -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="mb-5 p-4 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded-xl animate-fadeIn">
+                    <div class="flex items-center gap-3 text-emerald-600 dark:text-emerald-400">
+                        <i class="fas fa-check-circle flex-shrink-0"></i>
+                        <span class="text-sm font-medium">@TempData["SuccessMessage"]</span>
+                    </div>
+                </div>
+            }
+
+            <!-- Error Message -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                var errors = ViewData.ModelState.Values.SelectMany(v => v.Errors);
+                if (errors.Any())
+                {
+                    <div class="mb-5 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl animate-fadeIn">
+                        <div class="flex items-center gap-3 text-red-600 dark:text-red-400">
+                            <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+                            <span class="text-sm font-medium">@errors.First().ErrorMessage</span>
+                        </div>
+                    </div>
+                }
+            }
+
+            <div class="mb-6 sm:mb-8 animate-fadeIn">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">Enterprise Login</h2>
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">Welcome back! Please enter your details.</p>
+            </div>
+
+            <form asp-action="Login" method="post" class="space-y-4 sm:space-y-5">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                <!-- Email / Username -->
+                <div class="animate-fadeIn" style="animation-delay: 0.1s;">
+                    <label asp-for="Username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
+                        Email 
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400 dark:text-gray-500"></i>
+                        </div>
+                        <input asp-for="Username"
+                               type="text"
+                               class="form-input w-full pl-10 pr-4 py-2.5 sm:py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 transition-all text-sm sm:text-base"
+                               placeholder="Ayub@Fahim.com" />
+                    </div>
+                    <span asp-validation-for="Username" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="animate-fadeIn" style="animation-delay: 0.2s;">
+                    <label asp-for="Password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400 dark:text-gray-500"></i>
+                        </div>
+                        <input asp-for="Password"
+                               type="password"
+                               id="loginPassword"
+                               class="form-input w-full pl-10 pr-11 py-2.5 sm:py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 transition-all text-sm sm:text-base"
+                               placeholder="••••••••" />
+                        <button type="button"
+                                id="toggleLoginPw"
+                                class="eye-btn absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-purple-500 dark:text-gray-500 dark:hover:text-purple-400"
+                                tabindex="-1"
+                                aria-label="Toggle password visibility">
+                            <i id="eyeLoginPw" class="fas fa-eye text-base"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between animate-fadeIn" style="animation-delay: 0.3s;">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input asp-for="RememberMe"
+                               type="checkbox"
+                               class="w-4 h-4 text-purple-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 transition-all" />
+                        <span class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors">
+                            Remember me for 30 days
+                        </span>
+                    </label>
+                    <a asp-action="ForgotPassword"
+                       asp-controller="Account"
+                       class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors relative group">
+                        Forgot password?
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit"
+                        class="btn-primary w-full py-2.5 sm:py-3 px-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group animate-fadeIn text-sm sm:text-base"
+                        style="animation-delay: 0.4s;">
+                    <span class="relative z-10 flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2 transform group-hover:scale-110 transition-transform"></i>
+                        Login
+                    </span>
+                </button>
+            </form>
+
+            <!-- Sign Up Link -->
+            <p class="mt-5 sm:mt-6 text-center text-sm text-gray-600 dark:text-gray-400 animate-fadeIn" style="animation-delay: 0.5s;">
+                Don't have an account?
+                <a asp-action="SignIn" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors relative group ml-1">
+                    Create an account
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-full transition-all duration-300"></span>
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.getElementById('toggleLoginPw');
+            const pwInput   = document.getElementById('loginPassword');
+            const eyeIcon   = document.getElementById('eyeLoginPw');
+
+            if (toggleBtn && pwInput && eyeIcon) {
+                toggleBtn.addEventListener('click', function () {
+                    const isHidden = pwInput.type === 'password';
+                    pwInput.type = isHidden ? 'text' : 'password';
+                    eyeIcon.classList.toggle('fa-eye',      !isHidden);
+                    eyeIcon.classList.toggle('fa-eye-slash', isHidden);
+                });
+            }
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (!localStorage.theme) {
+                    document.documentElement.classList.toggle('dark', e.matches);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+﻿@model FuelManagement.Models.InvoiceDetailsViewModel
+
+@{
+    var companyName = Model.CompanyName ?? "Uniso Fuel Inc.";
+    var companyAddress = Model.CompanyAddress ?? "KM5, Mogadishu, Somalia";
+    var companyPhone = Model.CompanyPhone ?? "+252 61 249 6070";
+    var companyEmail = Model.CompanyEmail ?? "ayuubboodaaye2@gmail.com";
+}
+
+<div id="invoice-print" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-gray-900/30 overflow-hidden border border-amber-200 dark:border-amber-800">
+    <!-- Invoice Paper Design - A4 Printable -->
+    <div class="p-4 sm:p-8" style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-4 border-b-2 border-amber-200 dark:border-amber-700 pb-4 sm:pb-6">
+            <div>
+                <h1 class="text-2xl sm:text-4xl font-bold text-stone-800 dark:text-amber-100 tracking-tight">@companyName</h1>
+                <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200 mt-1">@companyAddress</p>
+                <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">Tel: @companyPhone | Email: @companyEmail</p>
+            </div>
+            <div class="text-right">
+                <div class="bg-amber-100 dark:bg-amber-900/50 px-3 sm:px-4 py-1 sm:py-2 rounded-lg">
+                    <h2 class="text-xl sm:text-2xl font-bold text-amber-800 dark:text-amber-400">INVOICE</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Info -->
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mt-4 sm:mt-6">
+            <div>
+                <h3 class="text-xs sm:text-sm font-semibold text-stone-500 dark:text-amber-300 uppercase tracking-wider">Ku Socota:</h3>
+                <p class="text-base sm:text-lg font-semibold text-stone-800 dark:text-amber-100 mt-1">@Model.CustomerName</p>
+                <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@Model.CustomerType</p>
+                @if (!string.IsNullOrEmpty(Model.CustomerAddress))
+                {
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@Model.CustomerAddress</p>
+                }
+                @if (!string.IsNullOrEmpty(Model.CustomerPhone))
+                {
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">Tel: @Model.CustomerPhone</p>
+                }
+                @if (!string.IsNullOrEmpty(Model.CustomerEmail))
+                {
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">Email: @Model.CustomerEmail</p>
+                }
+            </div>
+            <div class="text-right space-y-1 sm:space-y-2">
+                <div>
+                    <span class="text-xs sm:text-sm font-semibold text-stone-500 dark:text-amber-300">Lambarka Qaanshada:</span>
+                    <p class="text-sm sm:text-lg font-mono font-bold text-amber-800 dark:text-amber-400">@Model.InvoiceNumber</p>
+                </div>
+                <div>
+                    <span class="text-xs sm:text-sm font-semibold text-stone-500 dark:text-amber-300">Taariikhda la soo saaray:</span>
+                    <p class="text-xs sm:text-base text-stone-800 dark:text-amber-100">@Model.FormattedIssueDate</p>
+                </div>
+                <div>
+                    <span class="text-xs sm:text-sm font-semibold text-stone-500 dark:text-amber-300">Taariikhda la bixinayo:</span>
+                    <p class="text-xs sm:text-base text-stone-800 dark:text-amber-100">@Model.FormattedDueDate</p>
+                </div>
+                <div>
+                    <span class="px-2 sm:px-4 py-0.5 sm:py-1 rounded-full text-xs font-semibold inline-block @Model.StatusColor">
+                        @Model.PaymentStatus
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="mt-4 sm:mt-8">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-amber-50 dark:bg-amber-900/30">
+                        <th class="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider border-b-2 border-amber-200 dark:border-amber-700">Sharaxaada</th>
+                        <th class="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider border-b-2 border-amber-200 dark:border-amber-700">Litere</th>
+                        <th class="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider border-b-2 border-amber-200 dark:border-amber-700">Qiimaha Litirkiiba</th>
+                        <th class="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider border-b-2 border-amber-200 dark:border-amber-700">Wadarta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover:bg-stone-50 dark:hover:bg-gray-700">
+                        <td class="px-2 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm text-stone-800 dark:text-amber-100 border-b border-stone-200 dark:border-amber-800">
+                            <span class="font-medium">@Model.FuelType</span>
+                            <p class="text-xs text-stone-500 dark:text-amber-200 mt-1">Shidaal</p>
+                        </td>
+                        <td class="px-2 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm text-right text-stone-800 dark:text-amber-100 border-b border-stone-200 dark:border-amber-800">@Model.FormattedTotalLiters</td>
+                        <td class="px-2 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm text-right text-stone-800 dark:text-amber-100 border-b border-stone-200 dark:border-amber-800">@Model.FormattedUnitPrice</td>
+                        <td class="px-2 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm text-right font-medium text-stone-800 dark:text-amber-100 border-b border-stone-200 dark:border-amber-800">@Model.FormattedSubtotal</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="mt-4 sm:mt-6 flex justify-end">
+            <div class="w-full sm:w-80 space-y-2 sm:space-y-3">
+                <div class="flex justify-between text-xs sm:text-sm py-1 sm:py-2 border-b border-stone-200 dark:border-amber-800">
+                    <span class="text-stone-600 dark:text-amber-200">Wadarta (subtotal):</span>
+                    <span class="font-medium text-stone-800 dark:text-amber-100">@Model.FormattedSubtotal</span>
+                </div>
+                <div class="flex justify-between text-xs sm:text-sm py-1 sm:py-2 border-b border-stone-200 dark:border-amber-800">
+                    <span class="text-stone-600 dark:text-amber-200">VAT (5%):</span>
+                    <span class="font-medium text-amber-600 dark:text-amber-400">@Model.FormattedVAT</span>
+                </div>
+                <div class="flex justify-between text-sm sm:text-base font-bold py-1 sm:py-2 border-b-2 border-stone-300 dark:border-amber-700">
+                    <span class="text-stone-800 dark:text-amber-100">Wadarta Guud:</span>
+                    <span class="text-amber-800 dark:text-amber-400">@Model.FormattedTotalAmount</span>
+                </div>
+                <div class="flex justify-between text-xs sm:text-sm py-1 sm:py-2 border-b border-stone-200 dark:border-amber-800">
+                    <span class="text-stone-600 dark:text-amber-200">Lacagtii la bixiyay:</span>
+                    <span class="font-medium text-green-600 dark:text-green-400">@Model.FormattedAmountPaid</span>
+                </div>
+                <div class="flex justify-between text-sm sm:text-base font-bold py-1 sm:py-2">
+                    <span class="text-stone-800 dark:text-amber-100">Haraaga:</span>
+                    <span class="@(Model.BalanceDue > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400")">@Model.FormattedBalanceDue</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="mt-4 sm:mt-8 p-3 sm:p-4 bg-stone-50 dark:bg-gray-700 rounded-lg border border-stone-200 dark:border-amber-800">
+                <h4 class="text-xs sm:text-sm font-semibold text-stone-700 dark:text-amber-300 mb-1 sm:mb-2">Qoraalo:</h4>
+                <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@Model.Notes</p>
+            </div>
+        }
+
+        <!-- Footer -->
+        <div class="mt-4 sm:mt-8 pt-4 sm:pt-6 border-t-2 border-stone-200 dark:border-amber-800">
+            <div class="flex flex-col sm:flex-row justify-between gap-4">
+                <div>
+                    <h5 class="text-xs font-semibold text-stone-500 dark:text-amber-300 uppercase tracking-wider">Habka Bixinta</h5>
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200 mt-1">Waa inaad ku bixisaa 30 maalmood gudahood</p>
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">Waafi / EVC Plus / E-Dahab</p>
+                </div>
+                <div class="text-left sm:text-right">
+                    <h5 class="text-xs font-semibold text-stone-500 dark:text-amber-300 uppercase tracking-wider">Saxiixa</h5>
+                    <div class="mt-2 sm:mt-4">
+                        <div class="w-24 sm:w-32 h-8 sm:h-12 border-b-2 border-stone-300 dark:border-amber-700"></div>
+                    </div>
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-amber-200 mt-1">@Model.CreatedBy</p>
+                    <p class="text-xs text-stone-500 dark:text-amber-300">@Model.FormattedCreatedAt</p>
+                </div>
+            </div>
+            <div class="mt-4 sm:mt-6 text-center text-xs text-stone-500 dark:text-amber-300">
+                <p>Waa ku mahadsan tahay soo booqashadaada macaamiil, noo soo noqo marar badan iyo adeeg hufan</p>
+                <p class="mt-1">Qaanshadan waxaa soo saaray kombiyuutar. Saxiix looma baahna.</p>
+                <p class="mt-1">Hadii aad qabto su'aal, kala soo xiriir qeybta macaamiisha: @companyEmail</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Print-specific styles */
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #invoice-print, #invoice-print * {
+            visibility: visible;
+        }
+
+        #invoice-print {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            padding: 0.25in;
+            margin: 0;
+            box-shadow: none;
+            border: none;
+            background: white;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+        /* Ensure colors print well */
+        .text-amber-800 {
+            color: #92400e !important;
+        }
+
+        .text-stone-800 {
+            color: #292524 !important;
+        }
+
+        .bg-amber-50 {
+            background-color: #fffbeb !important;
+        }
+
+        .border-amber-200 {
+            border-color: #fed7aa !important;
+        }
+    }
+
+    /* Screen styles */
+    @@media screen {
+        #invoice-print {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    }
+</style>

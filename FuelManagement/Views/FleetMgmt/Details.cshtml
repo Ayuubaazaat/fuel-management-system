@@ -1,0 +1,199 @@
+﻿@model FuelManagement.Models.FleetListItemViewModel
+@{
+    ViewData["Title"] = "Vehicle Details";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8 animate-slideIn">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Vehicle Details</h1>
+                    <p class="text-sm sm:text-base mt-2 text-gray-600 dark:text-gray-300">Complete information for @Model.VehicleId</p>
+                </div>
+                <span class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold @Model.StatusColor self-start sm:self-auto">
+                    @Model.Status
+                </span>
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 animate-fadeIn">
+            <!-- Vehicle Info Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 card-hover border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Vehicle Information</h2>
+                </div>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Vehicle ID:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.VehicleId</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Vehicle Name:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.VehicleName</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">License Plate:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.LicensePlate</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Fuel Type:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FuelType</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Driver Info Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 card-hover border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-rose-100 dark:bg-rose-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Driver Information</h2>
+                </div>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Driver Name:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.DriverName</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Total Trips:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.TotalTrips</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuel Usage Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 card-hover border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Fuel Usage</h2>
+                </div>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Total Fuel Consumed:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedFuelConsumed</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Fuel Efficiency:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedFuelEfficiency</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Odometer:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedOdometer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Info Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 card-hover border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-3 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Service Information</h2>
+                </div>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Last Service:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedLastService</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Next Service Due:</span>
+                        <span class="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white">@Model.FormattedNextService</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Due Progress -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900 p-4 sm:p-6 md:col-span-2 card-hover border border-gray-100 dark:border-gray-700">
+                <h2 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">Service Due Status</h2>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                        <span>Service Due in @((Model.NextServiceDue - DateTime.Today).Days) days</span>
+                        <span>@Model.ServiceDuePercentage%</span>
+                    </div>
+                    <div class="w-full h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div class="h-full @Model.ProgressBarColor transition-all duration-500 ease-out"
+                             style="width: @Model.ServiceDuePercentage%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 animate-fadeIn">
+            <a href="@Url.Action("Edit", new { id = Model.Id })"
+               class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-pink-500 to-rose-500 dark:from-pink-600 dark:to-rose-700 text-white font-medium rounded-lg hover:from-pink-600 dark:hover:from-pink-700 hover:to-rose-600 dark:hover:to-rose-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-center">
+                Edit Vehicle
+            </a>
+            <a href="@Url.Action("Index")"
+               class="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-center">
+                Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(236, 72, 153, 0.1), 0 10px 10px -5px rgba(236, 72, 153, 0.04);
+        }
+
+    .dark .card-hover:hover {
+        box-shadow: 0 20px 25px -5px rgba(236, 72, 153, 0.3), 0 10px 10px -5px rgba(236, 72, 153, 0.2);
+    }
+
+    .animate-slideIn {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

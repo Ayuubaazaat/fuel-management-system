@@ -1,0 +1,120 @@
+﻿@model List<FuelManagement.Models.ViewModels.NotificationViewModel>
+
+@{
+    var unreadCount = ViewBag.UnreadCount ?? 0;
+}
+
+@* CHANGED: removed id="notificationDropdown" from this div                    *@
+@* The parent container in _Layout.cshtml assigns the correct ID per context:   *@
+@* Desktop: id="notificationDropdown" added by _Layout desktop bell wrapper     *@
+@* Mobile:  rendered inside mobileNotificationDropdown with no ID conflict      *@
+<div class="notificationDropdownPanel absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50 hidden animate-scaleIn">
+
+    <!-- Header -->
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <h3 class="font-semibold text-gray-800 dark:text-gray-100">Notifications</h3>
+        <div class="flex items-center gap-2">
+            <span class="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 px-2 py-1 rounded-lg"
+                  id="dropdownUnreadBadge">
+                @unreadCount new
+            </span>
+            @* CHANGED: removed id, added class + onclick so both desktop and mobile instances work independently *@
+            <button class="mark-all-read-dropdown-btn text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+                    title="Mark all as read"
+                    onclick="markAllAsRead(); return false;">
+                <i class="fas fa-check-double"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="max-h-96 overflow-y-auto" id="dropdownNotificationsList">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var notification in Model)
+            {
+                <div class="notification-item p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors @(notification.Status == 0 ? "bg-purple-50/50 dark:bg-purple-900/10" : "")"
+                     data-id="@notification.Id"
+                     data-status="@notification.Status">
+                    <div class="flex gap-3">
+                        <!-- Icon -->
+                        <div class="shrink-0">
+                            @switch (notification.Type)
+                            {
+                                case FuelManagement.Models.Enums.NotificationType.Success:
+                                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                                        <i class="fas @notification.ModuleIcon text-green-600 dark:text-green-400"></i>
+                                    </div>
+                                    break;
+                                case FuelManagement.Models.Enums.NotificationType.Warning:
+                                    <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                                        <i class="fas @notification.ModuleIcon text-yellow-600 dark:text-yellow-400"></i>
+                                    </div>
+                                    break;
+                                case FuelManagement.Models.Enums.NotificationType.Error:
+                                case FuelManagement.Models.Enums.NotificationType.Alert:
+                                    <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
+                                        <i class="fas @notification.ModuleIcon text-red-600 dark:text-red-400"></i>
+                                    </div>
+                                    break;
+                                default:
+                                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                                        <i class="fas @notification.ModuleIcon text-purple-600 dark:text-purple-400"></i>
+                                    </div>
+                                    break;
+                            }
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2">
+                                <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">@notification.Title</h4>
+                                @if (notification.Status == 0)
+                                {
+                                    <span class="w-2 h-2 bg-purple-600 rounded-full shrink-0"></span>
+                                }
+                            </div>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">@notification.Description</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-400">
+                                    <i class="fas @notification.ModuleIcon mr-1 text-xs"></i>@notification.Module
+                                </span>
+                                <span class="text-xs text-gray-500 dark:text-gray-500">
+                                    @notification.Timestamp.ToString("MMM dd, h:mm tt")
+                                </span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(notification.ActionText))
+                            {
+                                <a href="@notification.ActionUrl"
+                                   class="inline-block mt-2 text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium">
+                                    @notification.ActionText <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="p-8 text-center">
+                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-bell-slash text-2xl text-gray-400 dark:text-gray-500"></i>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">No new notifications</p>
+            </div>
+        }
+    </div>
+
+    <!-- Footer -->
+    <div class="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        <a href="/Notification"
+           class="block w-full py-2 text-center text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors">
+            View all activity <i class="fas fa-arrow-right ml-1 text-xs"></i>
+        </a>
+    </div>
+</div>
+
+@* CHANGED: removed inline <script> block                                       *@
+@* Click-outside is handled by desktop-notifications.js and mobile-notifications.js *@
+@* markAllReadDropdown id removed — now uses onclick="markAllAsRead()" directly  *@

@@ -1,0 +1,125 @@
+﻿@model FuelManagement.Models.FuelClientIndexViewModel
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
+    <!-- Total Clients Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-blue-100 dark:border-blue-900/30" style="animation-delay: 0.1s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.TotalClients total</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Total Clients</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.TotalClients</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">@Model.ActiveClients active, @(Model.TotalClients - Model.ActiveClients) inactive</p>
+    </div>
+
+    <!-- Active Clients Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-green-100 dark:border-green-900/30" style="animation-delay: 0.2s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-green-500 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.ActiveClients active</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Active Clients</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.ActiveClients</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">@(((double)Model.ActiveClients / (Model.TotalClients == 0 ? 1 : Model.TotalClients) * 100).ToString("F0"))% of total</p>
+    </div>
+
+    <!-- New This Month Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-purple-100 dark:border-purple-900/30" style="animation-delay: 0.3s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-purple-500 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 sm:px-2.5 py-1 rounded-full">this month</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">New This Month</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.NewThisMonth</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">@(DateTime.Now.ToString("MMMM yyyy"))</p>
+    </div>
+
+    <!-- Fleet Clients Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-amber-100 dark:border-amber-900/30" style="animation-delay: 0.4s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.FleetClients fleet</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Fleet Clients</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.FleetClients</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Commercial accounts</p>
+    </div>
+
+    <!-- Corporate Clients Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-indigo-100 dark:border-indigo-900/30" style="animation-delay: 0.5s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.CorporateClients corporate</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Corporate Clients</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.CorporateClients</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Business accounts</p>
+    </div>
+
+    <!-- Individual Clients Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-teal-100 dark:border-teal-900/30" style="animation-delay: 0.6s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 dark:bg-teal-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-teal-500 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.IndividualClients individual</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Individual Clients</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.IndividualClients</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Personal accounts</p>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
+        }
+
+    .dark .card-hover:hover {
+        box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2), 0 10px 10px -5px rgba(59, 130, 246, 0.1);
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

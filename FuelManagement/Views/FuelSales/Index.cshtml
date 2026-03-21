@@ -1,0 +1,46 @@
+﻿@model FuelManagement.Models.FuelSaleViewModel
+@{
+    ViewData["Title"] = "Fuel Sales";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <!-- Header Partial -->
+    @await Html.PartialAsync("Partials/_FuelSaleHeader")
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <!-- Summary Cards Partial -->
+        @await Html.PartialAsync("Partials/_FuelSaleSummaryCards", Model)
+
+        <!-- Filters Section -->
+        <div class="mt-6 sm:mt-8 animate-fadeIn" style="animation-delay: 0.2s;">
+            @await Html.PartialAsync("Partials/_FuelSaleFilters", Model.Filter)
+        </div>
+
+        <!-- Table Section -->
+        <div class="mt-4 sm:mt-6 animate-fadeIn" style="animation-delay: 0.3s;">
+            @await Html.PartialAsync("Partials/_FuelSaleTable", Model)
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+@await Html.PartialAsync("Partials/_DeleteFuelSaleModal")
+
+@section Scripts {
+    <script>
+        // Smooth animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fadeIn');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.card-hover').forEach((card) => {
+                observer.observe(card);
+            });
+        });
+    </script>
+}

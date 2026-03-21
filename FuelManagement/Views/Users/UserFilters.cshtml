@@ -1,0 +1,38 @@
+﻿@{
+    var currentRole = ViewBag.CurrentRole as string ?? "";
+    var currentStatus = ViewBag.CurrentStatus as string ?? "";
+}
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Search -->
+        <div class="md:col-span-2">
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="searchInput" placeholder="Search users by name, email, or role..."
+                       class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200"
+                       value="@ViewBag.SearchTerm" />
+            </div>
+        </div>
+
+        <!-- Role Filter -->
+        <div>
+            <select id="roleFilter" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200 bg-white">
+                <option value="">All Roles</option>
+                <option value="Admin" selected="@(currentRole == "Admin")">Admin</option>
+                <option value="Manager" selected="@(currentRole == "Manager")">Manager</option>
+                <option value="Operator" selected="@(currentRole == "Operator")">Operator</option>
+                <option value="Viewer" selected="@(currentRole == "Viewer")">Viewer</option>
+            </select>
+        </div>
+
+        <!-- Status Filter -->
+        <div>
+            <select id="statusFilter" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200 bg-white">
+                <option value="">All Status</option>
+                <option value="Active" selected="@(currentStatus == "Active")">Active</option>
+                <option value="Inactive" selected="@(currentStatus == "Inactive")">Inactive</option>
+            </select>
+        </div>
+    </div>
+</div>

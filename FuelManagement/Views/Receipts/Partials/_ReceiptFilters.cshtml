@@ -1,0 +1,108 @@
+﻿@model FuelManagement.Models.ReceiptFilterViewModel
+
+<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+    <form method="get" action="@Url.Action("Index")" id="filterForm" class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-4">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Filter Receipts</h3>
+            <button type="button" onclick="clearFilters()"
+                    class="text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium text-left sm:text-right">
+                Clear All
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <!-- Date Range -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">From</label>
+                <input type="date" id="StartDate" name="StartDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200" />
+            </div>
+
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">To</label>
+                <input type="date" id="EndDate" name="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200" />
+            </div>
+
+            <!-- Customer Type -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Customer Type</label>
+                <select id="CustomerType" name="CustomerType" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Types</option>
+                    @foreach (var type in Model.AvailableCustomerTypes)
+                    {
+                        <option value="@type" selected="@(Model.CustomerType == type)" class="dark:bg-gray-700">@type</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Payment Status -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                <select id="PaymentStatus" name="PaymentStatus" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Status</option>
+                    @foreach (var status in Model.AvailablePaymentStatuses)
+                    {
+                        <option value="@status" selected="@(Model.PaymentStatus == status)" class="dark:bg-gray-700">@status</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <!-- Payment Method -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Payment Method</label>
+                <select id="PaymentMethod" name="PaymentMethod" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Methods</option>
+                    @foreach (var method in Model.AvailablePaymentMethods)
+                    {
+                        <option value="@method" selected="@(Model.PaymentMethod == method)" class="dark:bg-gray-700">@method</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Fuel Type -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Fuel Type</label>
+                <select id="FuelType" name="FuelType" class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200">
+                    <option value="" class="dark:bg-gray-700">All Types</option>
+                    @foreach (var fuel in Model.AvailableFuelTypes)
+                    {
+                        <option value="@fuel" selected="@(Model.FuelType == fuel)" class="dark:bg-gray-700">@fuel</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Receipt/Customer Search -->
+            <div class="space-y-1 sm:space-y-2">
+                <label class="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Search</label>
+                <input type="text" id="CustomerName" name="CustomerName" value="@Model.CustomerName" placeholder="Receipt # or Customer"
+                       class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200" />
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-2 sm:pt-4">
+            <button type="submit"
+                    class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-2.5 bg-gradient-to-r from-slate-800 to-zinc-900 dark:from-gray-200 dark:to-gray-300 text-white dark:text-gray-900 font-medium rounded-xl hover:from-slate-900 hover:to-zinc-950 dark:hover:from-gray-300 dark:hover:to-gray-400 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function clearFilters() {
+        // Clear all form fields
+        document.getElementById('StartDate').value = '';
+        document.getElementById('EndDate').value = '';
+        document.getElementById('CustomerType').value = '';
+        document.getElementById('PaymentStatus').value = '';
+        document.getElementById('PaymentMethod').value = '';
+        document.getElementById('FuelType').value = '';
+        document.getElementById('CustomerName').value = '';
+
+        // Submit the form to refresh with no filters
+        document.getElementById('filterForm').submit();
+    }
+</script>

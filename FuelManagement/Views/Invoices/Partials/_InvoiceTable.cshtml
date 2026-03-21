@@ -1,0 +1,225 @@
+﻿@model IEnumerable<FuelManagement.Models.InvoiceListItemViewModel>
+@{
+    var pageNumber = ViewBag.PageNumber ?? 1;
+    var totalPages = ViewBag.TotalPages ?? 1;
+    var pageSize = ViewBag.PageSize ?? 10;
+    var totalCount = ViewBag.TotalCount ?? 0;
+    var filter = ViewBag.CurrentFilter as FuelManagement.Models.InvoiceFilterViewModel ?? new FuelManagement.Models.InvoiceFilterViewModel();
+    var startIndex = (pageNumber - 1) * pageSize + 1;
+    var endIndex = Math.Min(pageNumber * pageSize, totalCount);
+    var hasInvoices = Model != null && Model.Any();
+}
+
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 overflow-hidden border border-amber-200 dark:border-amber-800">
+    @if (hasInvoices)
+    {
+        <div class="overflow-x-auto">
+            <table class="min-w-[1900px] sm:min-w-full divide-y divide-amber-200 dark:divide-amber-800">
+                <thead class="bg-gradient-to-r from-amber-50 to-stone-50 dark:from-gray-700 dark:to-gray-800">
+                    <tr>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-left text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Invoice #</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-left text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Customer</th>
+                        <!-- Phone column added after Customer -->
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-left text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Phone</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-left text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Type</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-left text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Fuel</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-right text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Liters</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-right text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Unit Price</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-right text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Subtotal</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-right text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">VAT</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-right text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Total</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-right text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Paid</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-right text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Balance</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-left text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-left text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Issue Date</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-left text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Due Date</th>
+                        <th scope="col" class="px-2 sm:px-4 py-2 sm:py-4 text-right text-xs font-medium text-amber-800 dark:text-amber-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-amber-200 dark:divide-amber-800">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="hover:bg-amber-50/50 dark:hover:bg-gray-700/50 transition-colors duration-200 group">
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                <span class="text-xs sm:text-sm font-mono font-medium text-stone-800 dark:text-amber-100">@item.InvoiceNumber</span>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                <div class="text-xs sm:text-sm font-medium text-stone-800 dark:text-amber-100 truncate max-w-[80px] sm:max-w-none">@item.CustomerName</div>
+                            </td>
+                            <!-- Phone cell added after Customer -->
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                <div class="flex items-center gap-1.5 text-xs sm:text-sm text-stone-600 dark:text-amber-200">
+                                    <i class="fas fa-phone text-amber-400 text-xs"></i>
+                                    @(string.IsNullOrEmpty(item.CustomerPhone) ? "—" : item.CustomerPhone)
+                                </div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                <span class="px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300">@item.CustomerType</span>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                <div class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@item.FuelType</div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                <div class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@item.FormattedTotalLiters</div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                <div class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@item.FormattedUnitPrice</div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                <div class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@item.FormattedSubtotal</div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                <div class="text-xs sm:text-sm text-amber-600 dark:text-amber-400">@item.FormattedVAT</div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                <div class="text-xs sm:text-sm font-semibold text-stone-800 dark:text-white">@item.FormattedTotalAmount</div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                <div class="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">@item.FormattedAmountPaid</div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                <div class="text-xs sm:text-sm font-medium @(item.BalanceDue > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400")">
+                                    @item.FormattedBalanceDue
+                                </div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                <span class="px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-medium @item.StatusColor dark:opacity-90">
+                                    <svg class="w-2 h-2 sm:w-3 sm:h-3 inline mr-0.5 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="@item.StatusIcon"></path>
+                                    </svg>
+                                    <span class="hidden sm:inline">@item.PaymentStatus</span>
+                                    <span class="sm:hidden">@item.PaymentStatus.Substring(0, 1)</span>
+                                </span>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                <div class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@item.FormattedIssueDate</div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                <div class="text-xs sm:text-sm text-stone-600 dark:text-amber-200">@item.FormattedDueDate</div>
+                                @if (item.IsOverdue)
+                                {
+                                    <span class="text-xs text-red-600 dark:text-red-400 hidden sm:inline">Overdue</span>
+                                    <span class="text-xs text-red-600 dark:text-red-400 sm:hidden">!</span>
+                                }
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
+                                <div class="flex items-center justify-end space-x-1 sm:space-x-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <a href="@Url.Action("Details", new { id = item.InvoiceNumber })"
+                                       class="p-1 sm:p-2 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200" title="View">
+                                        <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="@Url.Action("Edit", new { id = item.InvoiceNumber })"
+                                       class="p-1 sm:p-2 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200" title="Edit">
+                                        <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </a>
+                                    <button type="button"
+                                            onclick="openDeleteInvoiceModal('@item.InvoiceNumber', @item.Id)"
+                                            class="p-1 sm:p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200" title="Delete">
+                                        <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="bg-amber-50 dark:bg-gray-700 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-amber-200 dark:border-amber-700">
+            <div class="text-sm text-stone-700 dark:text-amber-200 order-2 sm:order-1">
+                Showing <span class="font-medium">@startIndex</span> to <span class="font-medium">@endIndex</span> of <span class="font-medium">@totalCount</span> results
+            </div>
+            <div class="order-1 sm:order-2">
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <!-- Previous Button -->
+                    <a href="@Url.Action("Index", new {
+                        page = pageNumber - 1,
+                        StartDate = filter.StartDate,
+                        EndDate = filter.EndDate,
+                        CustomerName = filter.CustomerName,
+                        CustomerType = filter.CustomerType,
+                        PaymentStatus = filter.PaymentStatus,
+                        FuelType = filter.FuelType
+                    })"
+                       class="relative inline-flex items-center px-2 sm:px-3 py-2 rounded-l-md border border-amber-300 dark:border-amber-600 bg-white dark:bg-gray-700 text-xs sm:text-sm font-medium @(pageNumber > 1 ? "text-stone-700 dark:text-amber-200 hover:bg-amber-50 dark:hover:bg-gray-600" : "text-stone-400 dark:text-gray-500 cursor-not-allowed pointer-events-none")"
+                    @(pageNumber <= 1 ? "aria-disabled=true" : "")>
+                        <span class="sr-only">Previous</span>
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+
+                    @{
+                        int startPage = Math.Max(1, pageNumber - 2);
+                        int endPage = Math.Min(totalPages, startPage + 4);
+                        if (endPage - startPage < 4) startPage = Math.Max(1, endPage - 4);
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <a href="@Url.Action("Index", new {
+                            page = i,
+                            StartDate = filter.StartDate,
+                            EndDate = filter.EndDate,
+                            CustomerName = filter.CustomerName,
+                            CustomerType = filter.CustomerType,
+                            PaymentStatus = filter.PaymentStatus,
+                            FuelType = filter.FuelType
+                        })"
+                           class="relative inline-flex items-center px-3 sm:px-4 py-2 border border-amber-300 dark:border-amber-600 text-xs sm:text-sm font-medium @(i == pageNumber ? "bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-800/50" : "bg-white dark:bg-gray-700 text-stone-700 dark:text-amber-200 hover:bg-amber-50 dark:hover:bg-gray-600")">
+                            @i
+                        </a>
+                    }
+
+                    <!-- Next Button -->
+                    <a href="@Url.Action("Index", new {
+                        page = pageNumber + 1,
+                        StartDate = filter.StartDate,
+                        EndDate = filter.EndDate,
+                        CustomerName = filter.CustomerName,
+                        CustomerType = filter.CustomerType,
+                        PaymentStatus = filter.PaymentStatus,
+                        FuelType = filter.FuelType
+                    })"
+                       class="relative inline-flex items-center px-2 sm:px-3 py-2 rounded-r-md border border-amber-300 dark:border-amber-600 bg-white dark:bg-gray-700 text-xs sm:text-sm font-medium @(pageNumber < totalPages ? "text-stone-700 dark:text-amber-200 hover:bg-amber-50 dark:hover:bg-gray-600" : "text-stone-400 dark:text-gray-500 cursor-not-allowed pointer-events-none")"
+                    @(pageNumber >= totalPages ? "aria-disabled=true" : "")>
+                        <span class="sr-only">Next</span>
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- No Invoices Found Message -->
+        <div class="py-12 sm:py-16 text-center">
+            <div class="flex justify-center mb-4">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="text-lg sm:text-xl font-semibold text-stone-800 dark:text-amber-100 mb-2">No invoices found</h3>
+            <p class="text-sm sm:text-base text-stone-600 dark:text-amber-200 mb-6">Get started by adding a new invoice record.</p>
+            <a href="@Url.Action("Create")"
+               class="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-amber-800 to-stone-900 dark:from-amber-700 dark:to-stone-800 text-amber-100 dark:text-amber-100 font-medium rounded-xl hover:from-amber-900 dark:hover:from-amber-800 hover:to-stone-950 dark:hover:to-stone-900 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Invoice
+            </a>
+        </div>
+    }
+</div>

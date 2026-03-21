@@ -1,0 +1,113 @@
+﻿@model FuelManagement.Models.PumpCreateViewModel
+@{
+    ViewData["Title"] = "Add Pump";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8 animate-slideIn">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Add New Pump</h1>
+            <p class="text-sm sm:text-base mt-2 text-gray-600 dark:text-gray-400">Register a new fuel dispenser to your system</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden animate-fadeIn">
+            <div class="bg-gradient-to-r from-yellow-400 to-amber-500 dark:from-yellow-600 dark:to-amber-600 px-4 sm:px-6 py-3 sm:py-4">
+                <h2 class="text-base sm:text-lg font-semibold text-white">Pump Information</h2>
+            </div>
+
+            @using (Html.BeginForm("Create", "Pumps", FormMethod.Post, new { @class = "p-4 sm:p-6", id = "createForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-red-500 dark:text-red-400 mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg"></div>
+                @await Html.PartialAsync("Partials/_PumpForm", Model)
+
+                <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end gap-3">
+                    <a href="@Url.Action("Index")"
+                       class="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-center order-2 sm:order-1">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-yellow-400 to-amber-500 dark:from-yellow-600 dark:to-amber-600 text-white font-medium rounded-lg hover:from-yellow-500 dark:hover:from-yellow-700 hover:to-amber-600 dark:hover:to-amber-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl order-1 sm:order-2">
+                        Add Pump
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-slideIn {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize unobtrusive validation
+            $.validator.unobtrusive.parse("#createForm");
+
+            // Remove validation error when user starts typing
+            $('#PumpId').on('input', function() {
+                $(this).removeClass('input-validation-error');
+                $(this).siblings('.field-validation-error').remove();
+            });
+
+            // Custom remote validation for Pump ID
+            $('#PumpId').on('change', function() {
+                var pumpId = $(this).val();
+                if (pumpId) {
+                    $.get('@Url.Action("CheckPumpId", "Pumps")', { pumpId: pumpId }, function(data) {
+                        if (data !== true) {
+                            $('#PumpId').addClass('input-validation-error');
+                            var errorSpan = $('#PumpId').siblings('.field-validation-error');
+                            if (errorSpan.length === 0) {
+                                $('#PumpId').after('<span class="field-validation-error">Pump ID already exists</span>');
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Force validation on tab out
+            $('#PumpId').on('blur', function() {
+                $(this).valid();
+            });
+        });
+    </script>
+}

@@ -1,0 +1,82 @@
+﻿@model FuelManagement.Models.UserViewModel
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sticky top-24">
+    <!-- User Quick Info -->
+    <div class="text-center mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
+        <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
+            @(Model?.FirstName?[0].ToString() ?? "")@(Model?.LastName?[0].ToString() ?? "")
+        </div>
+        <h3 class="font-semibold text-gray-800 dark:text-gray-200">@Model?.FirstName @Model?.LastName</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">@Model?.Email</p>
+        <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium @(Model?.Status == "Active" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400")">
+            @Model?.Status
+        </span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="space-y-1">
+        <a asp-controller="Users" asp-action="Details" asp-route-id="@Model?.Id"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group @(currentAction == "Details" ? "bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700")">
+            <i class="fas fa-user-circle w-5 @(currentAction == "Details" ? "text-purple-700 dark:text-purple-400" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300")"></i>
+            <span class="font-medium">Profile</span>
+            @if (currentAction == "Details")
+            {
+                <i class="fas fa-chevron-right ml-auto text-sm text-purple-700 dark:text-purple-400"></i>
+            }
+        </a>
+
+        <a asp-controller="Users" asp-action="Edit" asp-route-id="@Model?.Id"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group @(currentAction == "Edit" ? "bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700")">
+            <i class="fas fa-edit w-5 @(currentAction == "Edit" ? "text-purple-700 dark:text-purple-400" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300")"></i>
+            <span class="font-medium">Edit Profile</span>
+            @if (currentAction == "Edit")
+            {
+                <i class="fas fa-chevron-right ml-auto text-sm text-purple-700 dark:text-purple-400"></i>
+            }
+        </a>
+
+        <a asp-controller="Users" asp-action="Security" asp-route-id="@Model?.Id"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group @(currentAction == "Security" ? "bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700")">
+            <i class="fas fa-shield-alt w-5 @(currentAction == "Security" ? "text-purple-700 dark:text-purple-400" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300")"></i>
+            <span class="font-medium">Security</span>
+            @if (currentAction == "Security")
+            {
+                <i class="fas fa-chevron-right ml-auto text-sm text-purple-700 dark:text-purple-400"></i>
+            }
+        </a>
+
+        <button onclick="openRolesModal(@Model?.Id, '@Model?.FirstName @Model?.LastName', '@Model?.Role')"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 group">
+            <i class="fas fa-user-tag w-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"></i>
+            <span class="font-medium">Manage Roles</span>
+        </button>
+    </nav>
+
+    <!-- Account Stats -->
+    <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
+        <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-4">
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Account Stats</p>
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">Member Since</span>
+                    <span class="text-gray-700 dark:text-gray-300 font-medium">
+                        @(Model?.JoinDate.ToString("MMM yyyy") ?? "N/A")
+                    </span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">Last Login</span>
+                    <span class="text-gray-700 dark:text-gray-300 font-medium">
+                        @(Model?.LastLogin.HasValue == true ? Model.LastLogin.Value.ToString("MMM dd") : "Never")
+                    </span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-gray-400">Total Logins</span>
+                    <span class="text-gray-700 dark:text-gray-300 font-medium">@(Model?.TotalLogins.ToString() ?? "0")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

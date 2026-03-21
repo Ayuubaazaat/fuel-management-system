@@ -1,0 +1,107 @@
+﻿<div id="exportModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Background overlay -->
+    <div class="fixed inset-0 bg-slate-900 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-90 transition-opacity backdrop-blur-sm" aria-hidden="true" onclick="closeExportModal()"></div>
+
+    <!-- Modal panel -->
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md mx-auto transform transition-all animate-slideUp">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-800 dark:to-blue-800 px-4 sm:px-6 py-3 sm:py-4 rounded-t-2xl">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </div>
+                    <h3 class="ml-2 sm:ml-3 text-base sm:text-lg font-semibold text-white" id="modal-title">
+                        Export Report
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="bg-white dark:bg-gray-800 px-4 sm:px-6 py-4 sm:py-6">
+                <p class="text-sm text-slate-600 dark:text-gray-300 mb-4">Choose export format:</p>
+                <div class="space-y-3">
+                    <!-- Excel Only -->
+                    <form method="post" action="@Url.Action("Export", "Reports")">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="format" value="excel" />
+                        <button type="submit"
+                                class="w-full flex items-center justify-between p-3 sm:p-4 border border-indigo-200 dark:border-indigo-700 rounded-xl hover:bg-indigo-50 dark:hover:bg-gray-700 transition-all duration-200 group">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center mr-2 sm:mr-3">
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-sm sm:text-base font-medium text-slate-800 dark:text-gray-200">Excel Spreadsheet</p>
+                                    <p class="text-xs text-slate-500 dark:text-gray-400 hidden sm:block">Export as CSV/Excel data</p>
+                                </div>
+                            </div>
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-slate-50 dark:bg-gray-700 px-4 sm:px-6 py-3 sm:py-4 rounded-b-2xl flex justify-end">
+                <button type="button"
+                        onclick="closeExportModal()"
+                        class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-white dark:bg-gray-600 text-slate-700 dark:text-gray-200 text-sm font-medium rounded-lg border border-slate-300 dark:border-gray-600 hover:bg-slate-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openExportModal() {
+        document.getElementById('exportModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = window.innerWidth - document.documentElement.clientWidth + 'px';
+    }
+
+    function closeExportModal() {
+        document.getElementById('exportModal').classList.add('hidden');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('exportModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeExportModal();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeExportModal();
+        }
+    });
+</script>
+
+<style>
+    .animate-slideUp {
+        animation: slideUp 0.3s ease-out;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

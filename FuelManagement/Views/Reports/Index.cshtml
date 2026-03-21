@@ -1,0 +1,73 @@
+﻿@model FuelManagement.Models.ReportsViewModel
+@{
+    ViewData["Title"] = "Reports Management";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-gray-50 dark:from-gray-900 dark:to-gray-800">
+    <!-- Header Partial -->
+    @await Html.PartialAsync("Partials/_ReportHeader")
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <!-- Success/Info/Error Messages -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="mb-4 bg-green-50 border-l-4 border-green-500 p-4 rounded-lg animate-fadeIn">
+                <p class="text-sm text-green-700">@TempData["Success"]</p>
+            </div>
+        }
+
+        @if (TempData["Info"] != null)
+        {
+            <div class="mb-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg animate-fadeIn">
+                <p class="text-sm text-blue-700">@TempData["Info"]</p>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="mb-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg animate-fadeIn">
+                <p class="text-sm text-red-700">@TempData["Error"]</p>
+            </div>
+        }
+
+        <!-- Summary Cards Partial -->
+        @await Html.PartialAsync("Partials/_ReportSummaryCards", Model.Summary)
+
+        <!-- Filters Section -->
+        <div class="mt-6 sm:mt-8 animate-fadeIn" style="animation-delay: 0.2s;">
+            @await Html.PartialAsync("Partials/_ReportFilters", Model.Filter)
+        </div>
+
+        <!-- Chart Section -->
+        <div class="mt-6 sm:mt-8 animate-fadeIn" style="animation-delay: 0.3s;">
+            @await Html.PartialAsync("Partials/_ReportChartSection", Model.ChartData)
+        </div>
+
+        <!-- Table Section -->
+        <div class="mt-6 sm:mt-8 animate-fadeIn" style="animation-delay: 0.4s;">
+            @await Html.PartialAsync("Partials/_ReportTable", Model.ReportItems)
+        </div>
+    </div>
+</div>
+
+<!-- Export Modal -->
+@await Html.PartialAsync("Partials/_ReportExportModal")
+
+<style>
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

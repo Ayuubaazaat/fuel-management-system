@@ -1,0 +1,158 @@
+﻿@{
+    string? controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    string? action = ViewContext.RouteData.Values["action"]?.ToString();
+    bool isSignIn = action == "SignIn";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FuelMS</title>
+
+    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // ✅ ADDED: Match dashboard Tailwind dark mode config
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .dark body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .brand-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .brand-gradient-2 {
+            background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @@keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-focus-effect:focus {
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+    <div class="flex min-h-screen">
+        <!-- Left side - Brand Panel -->
+        <div class="hidden lg:flex lg:w-1/2 brand-gradient-2 relative overflow-hidden">
+            <!-- Animated background elements -->
+            <div class="absolute inset-0 opacity-20">
+                <div class="absolute top-20 left-20 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-float"></div>
+                <div class="absolute bottom-20 right-20 w-96 h-96 bg-purple-300 rounded-full mix-blend-overlay filter blur-3xl animate-float" style="animation-delay: 2s;"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10 flex flex-col justify-between w-full p-16 text-white">
+                <div>
+                    <div class="flex items-center gap-4 mb-16">
+                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-lg">
+                            <i class="fas fa-gas-pump text-white text-3xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-4xl font-bold">FuelMS</h1>
+                            <p class="text-white/80 text-lg">Enterprise Suite</p>
+                        </div>
+                    </div>
+
+                    <h2 class="text-5xl font-bold mb-6 leading-tight">
+                        Manage fuel operations with precision and control.
+                    </h2>
+
+                    <p class="text-xl text-white/80 mb-12 max-w-xl">
+                        The industry-standard solution for logistics and fleet fuel efficiency monitoring.
+                    </p>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 gap-6 max-w-lg">
+                        <div class="stat-card rounded-2xl p-6">
+                            <div class="text-4xl font-bold mb-2">2.4M+</div>
+                            <div class="text-white/80 text-sm">Liters monitored</div>
+                        </div>
+                        <div class="stat-card rounded-2xl p-6">
+                            <div class="text-4xl font-bold mb-2">98%</div>
+                            <div class="text-white/80 text-sm">Fleet efficiency</div>
+                        </div>
+                        <div class="stat-card rounded-2xl p-6">
+                            <div class="text-4xl font-bold mb-2">24/7</div>
+                            <div class="text-white/80 text-sm">Real-time tracking</div>
+                        </div>
+                        <div class="stat-card rounded-2xl p-6">
+                            <div class="text-4xl font-bold mb-2">500+</div>
+                            <div class="text-white/80 text-sm">Active clients</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="text-white/60 text-sm flex gap-8">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition-colors">Help Center</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side - Form Panel -->
+        <div class="w-full lg:w-1/2 bg-white dark:bg-gray-900 flex items-center justify-center p-8">
+            <div class="w-full max-w-md">
+                @RenderBody()
+
+                <!-- Footer for mobile -->
+                <div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400 lg:hidden">
+                    <p>© 2024 FuelMS Enterprise. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</body>
+</html>

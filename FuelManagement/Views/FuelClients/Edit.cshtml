@@ -1,0 +1,74 @@
+﻿@model FuelManagement.Models.FuelClientViewModel
+@{
+    ViewData["Title"] = "Edit Fuel Client";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8 animate-slideIn">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Edit Fuel Client</h1>
+            <p class="text-sm sm:text-base mt-2 text-gray-600 dark:text-gray-400">Update client information</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden animate-fadeIn">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-900 px-4 sm:px-6 py-3 sm:py-4">
+                <h2 class="text-base sm:text-lg font-semibold text-white">Client Information - @Model.ClientId</h2>
+            </div>
+
+            @using (Html.BeginForm("Edit", "FuelClients", FormMethod.Post, new { @class = "p-4 sm:p-6" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.ClientId)
+                @await Html.PartialAsync("Partials/_FuelClientForm", Model)
+
+                <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end gap-3">
+                    <a href="@Url.Action("Index")"
+                       class="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-center order-2 sm:order-1">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-700 dark:to-blue-800 text-white font-medium rounded-lg hover:from-blue-700 dark:hover:from-blue-800 hover:to-blue-900 dark:hover:to-blue-900 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl order-1 sm:order-2">
+                        Update Client
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-slideIn {
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

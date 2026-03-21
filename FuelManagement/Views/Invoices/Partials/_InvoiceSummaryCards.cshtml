@@ -1,0 +1,131 @@
+﻿@model FuelManagement.Models.InvoicesViewModel
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
+    <!-- Total Invoices Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-indigo-100 dark:border-indigo-900/30" style="animation-delay: 0.1s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.TotalInvoices total</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Total Invoices</h3>
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.TotalInvoices</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">@Model.PaidCount paid, @Model.UnpaidCount unpaid</p>
+    </div>
+
+    <!-- Total Revenue Card - FIXED: Both badge and main display now use compact format -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-emerald-100 dark:border-emerald-900/30" style="animation-delay: 0.2s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <!-- Badge shows COMPACT format (e.g., $2097.9M) -->
+            <span class="text-xs sm:text-sm font-semibold text-emerald-500 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.GetFormattedRevenue()</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Total Revenue</h3>
+        <!-- FIXED: Main display now uses COMPACT format for better responsive design -->
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.GetFormattedRevenue()</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Including VAT: @Model.GetFormattedTotalVAT()</p>
+    </div>
+
+    <!-- Outstanding Balance Card - FIXED: Shows compact with floor rounding -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-red-100 dark:border-red-900/30" style="animation-delay: 0.3s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 dark:bg-red-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.OverdueCount overdue</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Outstanding</h3>
+        <!-- Shows compact with floor rounding (e.g., $1048.9M) -->
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.GetFormattedTotalOutstanding()</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">@Model.OverdueCount invoices overdue</p>
+    </div>
+
+    <!-- Paid Invoices Card - FIXED: Shows compact with floor rounding -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-green-100 dark:border-green-900/30" style="animation-delay: 0.4s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-green-500 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.PaidCount paid</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Paid Invoices</h3>
+        <!-- Shows compact with floor rounding (e.g., $1048.9M) -->
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.GetFormattedTotalPaid()</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">@Model.PaidCount invoices</p>
+    </div>
+
+    <!-- Overdue Invoices Card - FIXED: Shows compact with floor rounding -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-amber-100 dark:border-amber-900/30" style="animation-delay: 0.5s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.OverdueCount overdue</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Overdue</h3>
+        <!-- Shows compact with floor rounding -->
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.GetFormattedTotalOverdue()</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Immediate attention</p>
+    </div>
+
+    <!-- Partial Payments Card - FIXED: Shows compact with floor rounding -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/30 p-4 sm:p-6 card-hover animate-fadeIn border border-purple-100 dark:border-purple-900/30" style="animation-delay: 0.6s;">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs sm:text-sm font-semibold text-purple-500 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 sm:px-2.5 py-1 rounded-full">@Model.PartialCount partial</span>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-1">Partial Payments</h3>
+        <!-- Shows compact with floor rounding -->
+        <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">@Model.GetFormattedTotalPartial()</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Awaiting balance</p>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(180, 83, 9, 0.1), 0 10px 10px -5px rgba(180, 83, 9, 0.04);
+        }
+
+    .dark .card-hover:hover {
+        box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.2), 0 10px 10px -5px rgba(245, 158, 11, 0.1);
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

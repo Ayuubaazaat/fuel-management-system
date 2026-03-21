@@ -1,0 +1,68 @@
+﻿@{
+    var currentRole = ViewBag.CurrentRole as string ?? "";
+    var currentStatus = ViewBag.CurrentStatus as string ?? "";
+    var searchTerm = ViewBag.SearchTerm as string ?? "";
+}
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Search -->
+        <div class="sm:col-span-2">
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="text" id="searchInput" placeholder="Search users by name, email, or role..."
+                       class="w-full pl-12 pr-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200"
+                       value="@searchTerm" />
+            </div>
+        </div>
+
+        <!-- Role Filter -->
+        <div>
+            <select id="roleFilter" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200 bg-white">
+                <option value="">All Roles</option>
+                <option value="Admin" selected="@(currentRole == "Admin")">Admin</option>
+                <option value="Manager" selected="@(currentRole == "Manager")">Manager</option>
+                <option value="Operator" selected="@(currentRole == "Operator")">Operator</option>
+                <option value="Viewer" selected="@(currentRole == "Viewer")">Viewer</option>
+            </select>
+        </div>
+
+        <!-- Status Filter -->
+        <div>
+            <select id="statusFilter" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200 bg-white">
+                <option value="">All Status</option>
+                <option value="Active" selected="@(currentStatus == "Active")">Active</option>
+                <option value="Inactive" selected="@(currentStatus == "Inactive")">Inactive</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize filter functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const roleFilter = document.getElementById('roleFilter');
+        const statusFilter = document.getElementById('statusFilter');
+
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const roleValue = roleFilter.value;
+            const statusValue = statusFilter.value;
+
+            // Trigger custom event that parent page can listen to
+            const filterEvent = new CustomEvent('filtersChanged', {
+                detail: {
+                    search: searchTerm,
+                    role: roleValue,
+                    status: statusValue
+                }
+            });
+            document.dispatchEvent(filterEvent);
+        }
+
+        if (searchInput) searchInput.addEventListener('input', applyFilters);
+        if (roleFilter) roleFilter.addEventListener('change', applyFilters);
+        if (statusFilter) statusFilter.addEventListener('change', applyFilters);
+    });
+</script>
