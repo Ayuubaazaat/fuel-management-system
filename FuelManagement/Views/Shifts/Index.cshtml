@@ -1,0 +1,824 @@
+﻿@model List<FuelManagement.Models.Shift>
+@{
+    ViewData["Title"] = "Shift Management";
+    var activeShifts = Model.Count(s => s.Status == "Active");
+    var closedShifts = Model.Count(s => s.Status == "Closed");
+    var totalCash = Model.Sum(s => s.CashCollected);
+}
+
+<style>
+    @@keyframes floatUp {
+        from {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes popIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.85);
+        }
+
+        70% {
+            transform: scale(1.04);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @@keyframes pulseRing {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16,185,129,0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(16,185,129,0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(16,185,129,0);
+        }
+    }
+
+    @@keyframes slideRight {
+        from {
+            opacity: 0;
+            transform: translateX(-16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes modalIn {
+        from {
+            opacity: 0;
+            transform: scale(0.88) translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .shift-page {
+        animation: floatUp 0.5s ease both;
+    }
+
+    .stat-card {
+        border-radius: 9999px;
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: popIn 0.5s ease both;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+
+    .shift-row {
+        animation: slideRight 0.4s ease both;
+        transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+        .shift-row:hover {
+            background: rgba(99,102,241,0.05) !important;
+            transform: translateX(4px);
+        }
+
+    .dark .shift-row:hover {
+        background: rgba(99,102,241,0.12) !important;
+    }
+
+    .badge-active {
+        animation: pulseRing 2s infinite;
+        background: #d1fae5;
+        color: #065f46;
+        padding: 3px 12px;
+        border-radius: 9999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .badge-active::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+    .dark .badge-active {
+        background: rgba(16,185,129,0.2);
+        color: #34d399;
+    }
+
+    .badge-closed {
+        background: #f3f4f6;
+        color: #6b7280;
+        padding: 3px 12px;
+        border-radius: 9999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+    }
+
+    .dark .badge-closed {
+        background: rgba(107,114,128,0.2);
+        color: #9ca3af;
+    }
+
+    .btn-start {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.4rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+    }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+            color: white;
+            text-decoration: none;
+        }
+
+    .action-btn {
+        padding: 5px 14px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1.5px solid;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            text-decoration: none;
+        }
+
+    .action-view {
+        border-color: #6366f1;
+        color: #6366f1;
+    }
+
+        .action-view:hover {
+            background: #6366f1;
+            color: white;
+        }
+
+    .action-edit {
+        border-color: #f59e0b;
+        color: #f59e0b;
+    }
+
+        .action-edit:hover {
+            background: #f59e0b;
+            color: white;
+        }
+
+    .action-delete {
+        border-color: #ef4444;
+        color: #ef4444;
+        background: transparent;
+    }
+
+        .action-delete:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+    .dark .action-view {
+        border-color: #818cf8;
+        color: #818cf8;
+    }
+
+        .dark .action-view:hover {
+            background: #818cf8;
+            color: #1e1b4b;
+        }
+
+    .dark .action-edit {
+        border-color: #fbbf24;
+        color: #fbbf24;
+    }
+
+        .dark .action-edit:hover {
+            background: #fbbf24;
+            color: #1c1917;
+        }
+
+    .dark .action-delete {
+        border-color: #f87171;
+        color: #f87171;
+    }
+
+        .dark .action-delete:hover {
+            background: #f87171;
+            color: #1c1917;
+        }
+
+    .shifts-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+    }
+
+        .shifts-table th {
+            background: #f8fafc;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+    .dark .shifts-table th {
+        background: #1e293b;
+        color: #64748b;
+        border-color: #334155;
+    }
+
+    .shifts-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .dark .shifts-table td {
+        border-color: #1e293b;
+    }
+
+    .shifts-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        animation: floatUp 0.6s ease both;
+    }
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 9999px;
+        background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .dark .empty-icon {
+        background: linear-gradient(135deg, #312e81, #4c1d95);
+    }
+
+    .search-input {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 9999px;
+        padding: 0.5rem 1rem 0.5rem 2.5rem;
+        font-size: 0.85rem;
+        background: white;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        color: #1f2937;
+        width: 220px;
+    }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+        }
+
+    .dark .search-input {
+        background: #1e293b;
+        border-color: #334155;
+        color: #f1f5f9;
+    }
+
+        .dark .search-input:focus {
+            border-color: #818cf8;
+        }
+
+    .filter-select {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 9999px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        background: white;
+        color: #1f2937;
+        transition: border-color 0.2s;
+        cursor: pointer;
+    }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+    .dark .filter-select {
+        background: #1e293b;
+        border-color: #334155;
+        color: #f1f5f9;
+    }
+
+    /* ── Delete Modal ── */
+    .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 10, 40, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+    }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+    .modal-box {
+        background: white;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 420px;
+        margin: 1rem;
+        overflow: hidden;
+        box-shadow: 0 25px 60px rgba(79,46,229,0.25), 0 8px 24px rgba(0,0,0,0.12);
+        transform: scale(0.88) translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+        opacity: 0;
+    }
+
+    .dark .modal-box {
+        background: #1e293b;
+    }
+
+    .modal-backdrop.open .modal-box {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .modal-header-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9999px;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .modal-header-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: white;
+    }
+
+    .modal-header-sub {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.7);
+        margin-top: 1px;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .modal-warning-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 9999px;
+        background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #7c3aed;
+        margin-bottom: 1rem;
+    }
+
+    .dark .modal-warning-icon {
+        background: rgba(99,102,241,0.2);
+        color: #a78bfa;
+    }
+
+    .modal-body p {
+        font-size: 0.9rem;
+        color: #475569;
+        line-height: 1.6;
+    }
+
+    .dark .modal-body p {
+        color: #94a3b8;
+    }
+
+    .modal-body strong {
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    .dark .modal-body strong {
+        color: #f1f5f9;
+    }
+
+    .modal-body-sub {
+        font-size: 0.78rem !important;
+        color: #94a3b8 !important;
+        margin-top: 6px !important;
+    }
+
+    .modal-footer {
+        padding: 1rem 1.5rem;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .dark .modal-footer {
+        border-color: #334155;
+    }
+
+    .btn-modal-cancel {
+        padding: 0.6rem 1.4rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        border: 2px solid #e2e8f0;
+        color: #64748b;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .btn-modal-cancel:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #475569;
+        }
+
+    .dark .btn-modal-cancel {
+        border-color: #334155;
+        color: #94a3b8;
+    }
+
+        .dark .btn-modal-cancel:hover {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+    .btn-modal-delete {
+        padding: 0.6rem 1.4rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .btn-modal-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(99,102,241,0.4);
+        }
+
+        .btn-modal-delete:active {
+            transform: scale(0.97);
+        }
+</style>
+
+<div class="shift-page">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
+                <span class="inline-flex w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 items-center justify-center text-white text-lg">
+                    <i class="fas fa-clock"></i>
+                </span>
+                Shift Management
+            </h1>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mt-1 ml-13">Track employee shifts and meter readings</p>
+        </div>
+        <a href="/Shifts/Create" class="btn-start">
+            <i class="fas fa-plus"></i> Start New Shift
+        </a>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="flex flex-wrap gap-4 mb-8">
+        <div class="stat-card bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex-1 min-w-[180px]" style="animation-delay:0.05s">
+            <div class="stat-icon bg-white/20"><i class="fas fa-layer-group"></i></div>
+            <div>
+                <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">Total Shifts</p>
+                <p class="text-3xl font-bold">@Model.Count</p>
+            </div>
+        </div>
+        <div class="stat-card bg-gradient-to-r from-emerald-400 to-teal-500 text-white flex-1 min-w-[180px]" style="animation-delay:0.1s">
+            <div class="stat-icon bg-white/20"><i class="fas fa-play-circle"></i></div>
+            <div>
+                <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">Active</p>
+                <p class="text-3xl font-bold">@activeShifts</p>
+            </div>
+        </div>
+        <div class="stat-card bg-gradient-to-r from-slate-400 to-slate-600 text-white flex-1 min-w-[180px]" style="animation-delay:0.15s">
+            <div class="stat-icon bg-white/20"><i class="fas fa-check-circle"></i></div>
+            <div>
+                <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">Closed</p>
+                <p class="text-3xl font-bold">@closedShifts</p>
+            </div>
+        </div>
+        <div class="stat-card bg-gradient-to-r from-amber-400 to-orange-500 text-white flex-1 min-w-[200px]" style="animation-delay:0.2s">
+            <div class="stat-icon bg-white/20"><i class="fas fa-dollar-sign"></i></div>
+            <div>
+                <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">Total Cash</p>
+                <p class="text-3xl font-bold">$@totalCash.ToString("N0")</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+            <h2 class="font-semibold text-gray-700 dark:text-gray-200 text-base">All Shifts</h2>
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    <input type="text" id="shiftSearch" placeholder="Search shifts..." class="search-input" />
+                </div>
+                <select id="statusFilter" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
+                </select>
+            </div>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-clock text-indigo-400"></i></div>
+                <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">No shifts yet</h3>
+                <p class="text-sm text-gray-400 dark:text-gray-500 mb-4">Start a new shift to begin tracking employee activity</p>
+                <a href="/Shifts/Create" class="btn-start"><i class="fas fa-plus"></i> Start First Shift</a>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto px-2 pb-2">
+                <table class="shifts-table" id="shiftsTable">
+                    <thead>
+                        <tr>
+                            <th>Shift</th>
+                            <th>Assigned To</th>
+                            <th>Pump</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Meter (Open→Close)</th>
+                            <th>Cash</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shiftsBody">
+                        @foreach (var shift in Model)
+                        {
+                            <tr class="shift-row"
+                                data-name="@shift.ShiftName.ToLower()"
+                                data-assigned="@shift.AssignedTo.ToLower()"
+                                data-status="@shift.Status">
+
+                                <td>
+                                    <div class="font-semibold text-gray-800 dark:text-gray-100 text-sm">@shift.ShiftName</div>
+                                    <div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">#@shift.Id</div>
+                                </td>
+
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        @if (!string.IsNullOrEmpty(shift.AvatarPath))
+                                        {
+                                            <img src="@shift.AvatarPath" alt="@shift.AssignedTo"
+                                                 class="w-8 h-8 rounded-full object-cover border-2 border-indigo-200 dark:border-indigo-700 flex-shrink-0" />
+                                        }
+                                        else
+                                        {
+                                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                                                @(shift.AssignedTo.Length >= 2 ? shift.AssignedTo.Substring(0, 2).ToUpper() : shift.AssignedTo.ToUpper())
+                                            </div>
+                                        }
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">@shift.AssignedTo</span>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="inline-block bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full text-xs font-semibold">
+                                        @shift.PumpNumber
+                                    </span>
+                                </td>
+                                <td class="text-sm text-gray-600 dark:text-gray-300">@shift.StartTime.ToString("MMM dd, hh:mm tt")</td>
+                                <td class="text-sm text-gray-600 dark:text-gray-300">
+                                    @(shift.EndTime.HasValue ? shift.EndTime.Value.ToString("MMM dd, hh:mm tt") : "—")
+                                </td>
+                                <td class="text-sm text-gray-600 dark:text-gray-300">
+                                    <span class="font-mono">@shift.OpeningMeter.ToString("N0")</span>
+                                    <span class="text-gray-300 dark:text-gray-600 mx-1">→</span>
+                                    <span class="font-mono">@(shift.ClosingMeter.HasValue ? shift.ClosingMeter.Value.ToString("N0") : "—")</span>
+                                </td>
+                                <td class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                                    $@shift.CashCollected.ToString("N2")
+                                </td>
+                                <td>
+                                    @if (shift.Status == "Active")
+                                    {
+                                        <span class="badge-active">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-closed">Closed</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="flex items-center gap-2 flex-nowrap">
+                                        <a href="/Shifts/Details/@shift.Id" class="action-btn action-view">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        <a href="/Shifts/Edit/@shift.Id" class="action-btn action-edit">
+                                            <i class="fas fa-pen"></i> Edit
+                                        </a>
+                                        <button type="button" class="action-btn action-delete"
+                                                onclick="openDeleteModal(@shift.Id, '@shift.ShiftName', '@shift.AssignedTo')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="px-6 py-3 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-400 dark:text-gray-500">
+                Showing <span id="rowCount">@Model.Count</span> of @Model.Count shifts
+            </div>
+        }
+    </div>
+</div>
+
+<!-- ── Delete Modal ── -->
+<div class="modal-backdrop" id="deleteModalBackdrop" onclick="closeDeleteModal(event)">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-header-icon"><i class="fas fa-trash"></i></div>
+            <div>
+                <p class="modal-header-title">Delete Shift</p>
+                <p class="modal-header-sub">This action cannot be undone</p>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="modal-warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <p>Are you sure you want to delete shift <strong id="modalShiftName">—</strong>?</p>
+            <p class="modal-body-sub">Assigned to <strong id="modalAssignedTo">—</strong>. All shift data will be permanently removed.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal-cancel" onclick="closeDeleteModal()">
+                <i class="fas fa-times mr-1"></i> Cancel
+            </button>
+            <form id="deleteForm" method="post" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-modal-delete">
+                    <i class="fas fa-trash"></i> Delete Shift
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // ── Search & Filter ──
+        const searchInput  = document.getElementById('shiftSearch');
+        const statusFilter = document.getElementById('statusFilter');
+        const tbody        = document.getElementById('shiftsBody');
+        const rowCount     = document.getElementById('rowCount');
+
+        function filterTable() {
+            if (!tbody) return;
+            const q      = searchInput?.value.toLowerCase() ?? '';
+            const status = statusFilter?.value ?? '';
+            let visible  = 0;
+            tbody.querySelectorAll('tr').forEach(row => {
+                const name      = row.dataset.name ?? '';
+                const assigned  = row.dataset.assigned ?? '';
+                const rowStatus = row.dataset.status ?? '';
+                const matchQ    = name.includes(q) || assigned.includes(q);
+                const matchS    = !status || rowStatus === status;
+                const show      = matchQ && matchS;
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            if (rowCount) rowCount.textContent = visible;
+        }
+
+        searchInput?.addEventListener('input', filterTable);
+        statusFilter?.addEventListener('change', filterTable);
+
+        document.querySelectorAll('#shiftsBody tr').forEach((row, i) => {
+            row.style.animationDelay = `${0.05 + i * 0.04}s`;
+        });
+
+        // ── Delete Modal ──
+        function openDeleteModal(id, shiftName, assignedTo) {
+            document.getElementById('modalShiftName').textContent  = shiftName;
+            document.getElementById('modalAssignedTo').textContent = assignedTo;
+            document.getElementById('deleteForm').action           = `/Shifts/Delete/${id}`;
+            document.getElementById('deleteModalBackdrop').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteModal(e) {
+            if (e && e.target !== document.getElementById('deleteModalBackdrop')) return;
+            document.getElementById('deleteModalBackdrop').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.getElementById('deleteModalBackdrop').classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+}

@@ -37,6 +37,8 @@ namespace FuelManagement.Data
 
         public DbSet<Notification> Notifications { get; set; }
 
+        public DbSet<Shift> Shifts { get; set; }
+
         // Future DbSets for other modules
         // public DbSet<Vehicle> Vehicles { get; set; }
         // public DbSet<Compensation> Compensations { get; set; }

@@ -1,0 +1,761 @@
+﻿@model FuelManagement.Models.Shift
+@{
+    ViewData["Title"] = "Shift Details";
+    var duration = Model.EndTime.HasValue
+        ? (Model.EndTime.Value - Model.StartTime).TotalHours
+        : (DateTime.Now - Model.StartTime).TotalHours;
+    var fuelUsed = Model.ClosingMeter.HasValue ? Model.ClosingMeter.Value - Model.OpeningMeter : 0;
+    var assignedTo = Model.AssignedTo ?? "";
+    var parts = assignedTo.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var initials = parts.Length >= 2
+        ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
+        : assignedTo.Length >= 2 ? assignedTo.Substring(0, 2).ToUpper() : "??";
+    var hasAvatar = !string.IsNullOrEmpty(Model.AvatarPath);
+}
+
+<style>
+    @@keyframes floatUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    @@keyframes popIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.9)
+        }
+
+        70% {
+            transform: scale(1.02)
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1)
+        }
+    }
+
+    @@keyframes pulseRing {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16,185,129,.4)
+        }
+
+        70% {
+            box-shadow: 0 0 0 12px rgba(16,185,129,0)
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(16,185,129,0)
+        }
+    }
+
+    @@keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(8px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-10px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0)
+        }
+    }
+
+    .details-page {
+        animation: floatUp 0.5s ease both;
+    }
+
+    .hero-card {
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        animation: popIn 0.45s ease both;
+    }
+
+    .hero-header {
+        background: linear-gradient(135deg,#4f46e5,#7c3aed,#a855f7);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero-header::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,.05);
+            border-radius: 50%;
+        }
+
+        .hero-header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 30%;
+            width: 300px;
+            height: 150px;
+            background: rgba(255,255,255,.03);
+            border-radius: 50%;
+        }
+
+    .emp-avatar-lg {
+        width: 72px;
+        height: 72px;
+        border-radius: 9999px;
+        border: 3px solid rgba(255,255,255,.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: white;
+        flex-shrink: 0;
+        overflow: hidden;
+        position: relative;
+        background: rgba(255,255,255,.2);
+    }
+
+        .emp-avatar-lg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 9999px;
+        }
+
+        .emp-avatar-lg .initials-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+        }
+
+    .badge-active-lg {
+        animation: pulseRing 2s infinite;
+        background: rgba(16,185,129,.2);
+        border: 1.5px solid rgba(16,185,129,.5);
+        color: #6ee7b7;
+        padding: 4px 16px;
+        border-radius: 9999px;
+        font-size: .75rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .badge-active-lg::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+    .badge-closed-lg {
+        background: rgba(255,255,255,.15);
+        border: 1.5px solid rgba(255,255,255,.25);
+        color: rgba(255,255,255,.7);
+        padding: 4px 16px;
+        border-radius: 9999px;
+        font-size: .75rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .metric-strip {
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        background: white;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .dark .metric-strip {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    @@media(max-width:640px) {
+        .metric-strip {
+            grid-template-columns: repeat(2,1fr)
+        }
+    }
+
+    .metric-item {
+        padding: 1.25rem;
+        border-right: 1px solid #e2e8f0;
+        animation: countUp .5s ease both;
+    }
+
+    .dark .metric-item {
+        border-color: #334155;
+    }
+
+    .metric-item:last-child {
+        border-right: none;
+    }
+
+    .metric-label {
+        font-size: .7rem;
+        font-weight: 600;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        margin-bottom: 4px;
+    }
+
+    .metric-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .dark .metric-value {
+        color: #f1f5f9;
+    }
+
+    .metric-sub {
+        font-size: .72rem;
+        color: #94a3b8;
+        margin-top: 2px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        animation: popIn .5s ease both;
+    }
+
+    .dark .info-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    .info-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dark .info-header {
+        border-color: #334155;
+    }
+
+    .info-header-title {
+        font-size: .78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #64748b;
+    }
+
+    .dark .info-header-title {
+        color: #94a3b8;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .85rem 1.5rem;
+        border-bottom: 1px solid #f8fafc;
+        animation: slideIn .4s ease both;
+        transition: background .15s;
+    }
+
+    .dark .info-row {
+        border-color: #1e293b;
+    }
+
+    .info-row:hover {
+        background: #f8fafc;
+    }
+
+    .dark .info-row:hover {
+        background: rgba(99,102,241,.05);
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-key {
+        font-size: .82rem;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dark .info-key {
+        color: #94a3b8;
+    }
+
+    .info-val {
+        font-size: .85rem;
+        font-weight: 600;
+        color: #1e293b;
+        text-align: right;
+    }
+
+    .dark .info-val {
+        color: #f1f5f9;
+    }
+
+    .emp-detail-card {
+        background: linear-gradient(135deg,#ede9fe,#ddd6fe);
+        border-radius: 14px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        animation: popIn .5s ease both;
+    }
+
+    .dark .emp-detail-card {
+        background: rgba(99,102,241,.12);
+    }
+
+    .emp-detail-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 9999px;
+        background: linear-gradient(135deg,#6366f1,#8b5cf6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: white;
+        border: 3px solid white;
+        box-shadow: 0 4px 12px rgba(99,102,241,.25);
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+        .emp-detail-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 9999px;
+        }
+
+    .close-shift-card {
+        background: white;
+        border-radius: 16px;
+        border: 2px dashed #fbbf24;
+        overflow: hidden;
+        animation: popIn .6s ease both;
+    }
+
+    .dark .close-shift-card {
+        background: #1e293b;
+        border-color: #b45309;
+    }
+
+    .close-header {
+        background: linear-gradient(135deg,#fef3c7,#fde68a);
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .dark .close-header {
+        background: rgba(245,158,11,.12);
+    }
+
+    .close-body {
+        padding: 1.5rem;
+    }
+
+    .close-field-label {
+        display: block;
+        font-size: .8rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 6px;
+    }
+
+    .dark .close-field-label {
+        color: #94a3b8;
+    }
+
+    .close-input {
+        width: 100%;
+        padding: .65rem 1rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: .9rem;
+        color: #1e293b;
+        background: #f8fafc;
+        transition: border-color .2s,box-shadow .2s;
+    }
+
+        .close-input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245,158,11,.12);
+            background: white;
+        }
+
+    .dark .close-input {
+        background: #0f172a;
+        border-color: #334155;
+        color: #f1f5f9;
+    }
+
+        .dark .close-input:focus {
+            border-color: #fbbf24;
+            background: #1e293b;
+        }
+
+    .btn-close-shift {
+        background: linear-gradient(135deg,#f59e0b,#f97316);
+        color: white;
+        padding: .75rem 2rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: .9rem;
+        border: none;
+        cursor: pointer;
+        transition: all .2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+        .btn-close-shift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(245,158,11,.4);
+        }
+
+    .btn-edit {
+        background: linear-gradient(135deg,#6366f1,#8b5cf6);
+        color: white;
+        padding: .6rem 1.4rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        font-size: .82rem;
+        border: none;
+        cursor: pointer;
+        transition: all .2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+    }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99,102,241,.35);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-back {
+        padding: .6rem 1.2rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        font-size: .82rem;
+        border: 2px solid #e2e8f0;
+        color: #64748b;
+        background: transparent;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all .2s ease;
+    }
+
+        .btn-back:hover {
+            background: #f8fafc;
+            text-decoration: none;
+            color: #475569;
+        }
+
+    .dark .btn-back {
+        border-color: #334155;
+        color: #94a3b8;
+    }
+
+        .dark .btn-back:hover {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+    .grid-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+    }
+
+    @@media(max-width:768px) {
+        .grid-details {
+            grid-template-columns: 1fr
+        }
+    }
+
+    .notes-box {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 1rem;
+        font-size: .85rem;
+        color: #475569;
+        line-height: 1.6;
+        font-style: italic;
+    }
+
+    .dark .notes-box {
+        background: #0f172a;
+        color: #94a3b8;
+    }
+</style>
+
+<div class="details-page">
+
+    <div class="flex items-center justify-between mb-6">
+        <a href="/Shifts" class="btn-back"><i class="fas fa-arrow-left text-xs"></i> All Shifts</a>
+        <a href="/Shifts/Edit/@Model.Id" class="btn-edit"><i class="fas fa-pen"></i> Edit</a>
+    </div>
+
+    <!-- Hero Card -->
+    <div class="hero-card border border-indigo-200 dark:border-indigo-900">
+        <div class="hero-header">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 relative z-10">
+
+                <!-- Avatar: show saved photo or initials -->
+                <div class="emp-avatar-lg">
+                    @if (hasAvatar)
+                    {
+                        <img src="@Model.AvatarPath" alt="@Model.AssignedTo" />
+                    }
+                    else
+                    {
+                        <span class="initials-text">@initials</span>
+                    }
+                </div>
+
+                <div class="flex-1">
+                    <div class="flex flex-wrap items-center gap-3 mb-1">
+                        <h1 class="text-xl font-bold text-white">@Model.ShiftName</h1>
+                        @if (Model.Status == "Active")
+                        {
+                            <span class="badge-active-lg">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge-closed-lg"><i class="fas fa-check-circle"></i> Closed</span>
+                        }
+                    </div>
+                    <p class="text-white/70 text-sm mb-1"><i class="fas fa-user mr-1"></i> @Model.AssignedTo</p>
+                    <p class="text-white/50 text-xs">
+                        <i class="fas fa-hashtag mr-1"></i>Shift #@Model.Id &nbsp;·&nbsp;
+                        <i class="fas fa-oil-can mr-1"></i>Pump @Model.PumpNumber
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric Strip -->
+        <div class="metric-strip">
+            <div class="metric-item" style="animation-delay:.05s">
+                <div class="metric-label">Duration</div>
+                <div class="metric-value">@duration.ToString("F1")<span class="text-sm font-normal text-gray-400">h</span></div>
+                <div class="metric-sub">@(Model.EndTime.HasValue ? "Completed" : "Ongoing")</div>
+            </div>
+            <div class="metric-item" style="animation-delay:.1s">
+                <div class="metric-label">Fuel Used</div>
+                <div class="metric-value">@Math.Abs(fuelUsed).ToString("N0")<span class="text-sm font-normal text-gray-400">L</span></div>
+                <div class="metric-sub">@(Model.ClosingMeter.HasValue ? "Meter diff" : "Not closed yet")</div>
+            </div>
+            <div class="metric-item" style="animation-delay:.15s">
+                <div class="metric-label">Cash</div>
+                <div class="metric-value text-emerald-600 dark:text-emerald-400">$@Model.CashCollected.ToString("N0")</div>
+                <div class="metric-sub">Collected</div>
+            </div>
+            <div class="metric-item" style="animation-delay:.2s">
+                <div class="metric-label">Created</div>
+                <div class="metric-value text-base">@Model.CreatedAt.ToString("MMM dd")</div>
+                <div class="metric-sub">@Model.CreatedAt.ToString("yyyy")</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Card -->
+    <div class="emp-detail-card">
+        <div class="emp-detail-avatar">
+            @if (hasAvatar)
+            {
+                <img src="@Model.AvatarPath" alt="@Model.AssignedTo" />
+            }
+            else
+            {
+                <span>@initials</span>
+            }
+        </div>
+        <div>
+            <p class="font-bold text-indigo-800 dark:text-indigo-200 text-base">@Model.AssignedTo</p>
+            <p class="text-xs text-indigo-500 dark:text-indigo-400 mt-0.5">
+                <i class="fas fa-id-badge mr-1"></i>Assigned Employee &nbsp;·&nbsp;
+                <i class="fas fa-oil-can mr-1"></i>Pump @Model.PumpNumber
+            </p>
+            <p class="text-xs text-indigo-400 dark:text-indigo-500 mt-0.5">
+                <i class="fas fa-calendar mr-1"></i>Shift started @Model.StartTime.ToString("MMM dd, yyyy 'at' hh:mm tt")
+            </p>
+        </div>
+    </div>
+
+    <!-- Detail Grid -->
+    <div class="grid-details mb-6">
+        <div class="info-card" style="animation-delay:.1s">
+            <div class="info-header">
+                <i class="fas fa-clock text-indigo-400 text-sm"></i>
+                <span class="info-header-title">Schedule</span>
+            </div>
+            <div class="info-row" style="animation-delay:.15s">
+                <span class="info-key"><i class="fas fa-play text-emerald-400 text-xs"></i> Start Time</span>
+                <span class="info-val">@Model.StartTime.ToString("MMM dd, yyyy hh:mm tt")</span>
+            </div>
+            <div class="info-row" style="animation-delay:.2s">
+                <span class="info-key"><i class="fas fa-stop text-red-400 text-xs"></i> End Time</span>
+                <span class="info-val">@(Model.EndTime.HasValue ? Model.EndTime.Value.ToString("MMM dd, yyyy hh:mm tt") : "—")</span>
+            </div>
+            <div class="info-row" style="animation-delay:.25s">
+                <span class="info-key"><i class="fas fa-oil-can text-blue-400 text-xs"></i> Pump</span>
+                <span class="info-val">
+                    <span class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full text-xs font-bold">
+                        @Model.PumpNumber
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <div class="info-card" style="animation-delay:.15s">
+            <div class="info-header">
+                <i class="fas fa-tachometer-alt text-blue-400 text-sm"></i>
+                <span class="info-header-title">Meter Readings</span>
+            </div>
+            <div class="info-row" style="animation-delay:.2s">
+                <span class="info-key"><i class="fas fa-arrow-circle-right text-emerald-400 text-xs"></i> Opening</span>
+                <span class="info-val font-mono">@Model.OpeningMeter.ToString("N2")</span>
+            </div>
+            <div class="info-row" style="animation-delay:.25s">
+                <span class="info-key"><i class="fas fa-arrow-circle-left text-red-400 text-xs"></i> Closing</span>
+                <span class="info-val font-mono">@(Model.ClosingMeter.HasValue ? Model.ClosingMeter.Value.ToString("N2") : "—")</span>
+            </div>
+            <div class="info-row" style="animation-delay:.3s">
+                <span class="info-key"><i class="fas fa-gas-pump text-purple-400 text-xs"></i> Fuel Used</span>
+                <span class="info-val text-purple-600 dark:text-purple-400">@Math.Abs(fuelUsed).ToString("N2") L</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes -->
+    @if (!string.IsNullOrEmpty(Model.Notes))
+    {
+        <div class="info-card mb-6" style="animation-delay:.2s">
+            <div class="info-header">
+                <i class="fas fa-sticky-note text-amber-400 text-sm"></i>
+                <span class="info-header-title">Notes</span>
+            </div>
+            <div class="p-4"><div class="notes-box">"@Model.Notes"</div></div>
+        </div>
+    }
+
+    <!-- Close Shift Panel -->
+    @if (Model.Status == "Active")
+    {
+        <div class="close-shift-card" style="animation-delay:.3s">
+            <div class="close-header">
+                <div class="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center">
+                    <i class="fas fa-flag-checkered text-white text-sm"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-amber-800 dark:text-amber-300 text-sm">Close This Shift</p>
+                    <p class="text-xs text-amber-600 dark:text-amber-500">Enter closing details to finalize</p>
+                </div>
+            </div>
+            <div class="close-body">
+                <form method="post" action="/Shifts/CloseShift">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" class="close-grid">
+                        <div>
+                            <label class="close-field-label">Closing Meter Reading *</label>
+                            <input type="number" name="closingMeter" step="0.01" class="close-input"
+                                   placeholder="e.g. @(Model.OpeningMeter + 500)" required />
+                        </div>
+                        <div>
+                            <label class="close-field-label">Final Cash Collected *</label>
+                            <input type="number" name="cashCollected" step="0.01" class="close-input"
+                                   placeholder="e.g. 1500.00" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-close-shift"
+                            onclick="return confirm('Close this shift? This cannot be undone.')">
+                        <i class="fas fa-flag-checkered"></i> Close Shift Now
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="info-card" style="animation-delay:.3s">
+            <div class="p-5 flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                    <i class="fas fa-check-circle text-gray-400 text-lg"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-600 dark:text-gray-300 text-sm">Shift Closed</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">
+                        This shift was closed on
+                        @(Model.EndTime.HasValue ? Model.EndTime.Value.ToString("MMM dd, yyyy 'at' hh:mm tt") : "—")
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <style>
+        @@media(max-width:600px) {
+            .close-grid {
+                grid-template-columns: 1fr !important
+            }
+        }
+    </style>
+}

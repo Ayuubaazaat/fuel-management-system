@@ -32,7 +32,8 @@ namespace FuelManagement.Services
             { "Invoices",     "fa-file-invoice-dollar" },
             { "Receipts",     "fa-receipt" },
             { "Reports",      "fa-chart-line" },
-            { "Settings",     "fa-cog" }
+            { "Settings",     "fa-cog" },
+            { "Shifts",       "fa-clock" } // [ADDED] Icon for the Shifts module
         };
 
         public NotificationService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
@@ -412,5 +413,71 @@ namespace FuelManagement.Services
             await _context.SaveChangesAsync();
             return MapToViewModel(notification);
         }
+
+        // ── SHIFTS notifications (newly added) ───────────────────────────
+
+        // [ADDED] Fired when a new shift is created/started by a user
+        public async Task<NotificationViewModel> CreateShiftStartedNotification(
+            int shiftId, string shiftName, string assignedTo, string pumpNumber, string actionUrl)
+            => await CreateNotificationAsync(
+                // [ADDED] Title includes shift name to make the notification identifiable at a glance
+                $"Shift Started: {shiftName}",
+                // [ADDED] Description shows who is assigned and which pump, matching fields from Shift.cs
+                $"Shift '{shiftName}' assigned to {assignedTo} on pump {pumpNumber} has started",
+                // [ADDED] Module name must match exactly the sidebar entry we will add in Index.cshtml
+                "Shifts",
+                // [ADDED] Success type because starting a shift is a positive/normal action
+                NotificationType.Success,
+                // [ADDED] Action URL links to the Details page of this specific shift
+                actionUrl,
+                // [ADDED] Button label shown on the notification card
+                "View Shift");
+
+        // [ADDED] Fired when an existing shift is edited/updated
+        public async Task<NotificationViewModel> CreateShiftUpdatedNotification(
+            int shiftId, string shiftName, string assignedTo, string actionUrl)
+            => await CreateNotificationAsync(
+                // [ADDED] Title identifies which shift was updated
+                $"Shift Updated: {shiftName}",
+                // [ADDED] Description shows who the shift belongs to so admins know at a glance
+                $"Shift '{shiftName}' assigned to {assignedTo} has been updated",
+                // [ADDED] Same module string used throughout — must be consistent
+                "Shifts",
+                // [ADDED] Info type because an update is neutral, not critical
+                NotificationType.Info,
+                actionUrl,
+                // [ADDED] Button label for the notification action link
+                "View Shift");
+
+        // [ADDED] Fired when a shift is closed with final meter reading and cash collected
+        public async Task<NotificationViewModel> CreateShiftClosedNotification(
+            int shiftId, string shiftName, string assignedTo, decimal closingMeter, decimal cashCollected, string actionUrl)
+            => await CreateNotificationAsync(
+                // [ADDED] Title shows the shift name so it's easy to identify in the list
+                $"Shift Closed: {shiftName}",
+                // [ADDED] Description includes closing meter and cash — key financial data from CloseShift action
+                $"Shift '{shiftName}' by {assignedTo} closed. Meter: {closingMeter:N1}, Cash: {cashCollected:C}",
+                "Shifts",
+                // [ADDED] Warning type to draw attention — closing a shift is an important financial event
+                NotificationType.Warning,
+                actionUrl,
+                // [ADDED] Button label for the notification action link
+                "View Details");
+
+        // [ADDED] Fired when a shift record is permanently deleted
+        public async Task<NotificationViewModel> CreateShiftDeletedNotification(
+            int shiftId, string shiftName, string assignedTo, string actionUrl)
+            => await CreateNotificationAsync(
+                // [ADDED] Title clearly states deletion happened
+                $"Shift Deleted: {shiftName}",
+                // [ADDED] Description preserves context of who the shift belonged to before deletion
+                $"Shift '{shiftName}' assigned to {assignedTo} has been deleted",
+                "Shifts",
+                // [ADDED] Alert type because deletion is destructive and irreversible
+                NotificationType.Alert,
+                // [ADDED] Action URL points to Shifts index since the record no longer exists
+                actionUrl,
+                // [ADDED] Button label for the notification action link
+                "View Shifts");
     }
 }

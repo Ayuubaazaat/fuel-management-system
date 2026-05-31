@@ -1,0 +1,588 @@
+﻿@model FuelManagement.Models.Shift
+@{
+    ViewData["Title"] = "Edit Shift";
+    var initials = Model.AssignedTo?.Length >= 2
+        ? Model.AssignedTo.Substring(0, 2).ToUpper()
+        : (Model.AssignedTo ?? "??").ToUpper();
+}
+
+<style>
+    @@keyframes floatUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes popIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        70% {
+            transform: scale(1.02);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @@keyframes borderGlow {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(245,158,11,0.3);
+        }
+
+        50% {
+            box-shadow: 0 0 0 6px rgba(245,158,11,0);
+        }
+    }
+
+    .edit-page {
+        animation: floatUp 0.45s ease both;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        animation: popIn 0.45s ease both;
+    }
+
+    .dark .form-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #f59e0b, #f97316);
+        padding: 2rem;
+        color: white;
+    }
+
+    .form-section {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .dark .form-section {
+        border-color: #334155;
+    }
+
+    .section-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #94a3b8;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+    .dark .section-title::after {
+        background: #334155;
+    }
+
+    .field-group {
+        margin-bottom: 1.25rem;
+    }
+
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
+
+    .field-label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 6px;
+    }
+
+    .dark .field-label {
+        color: #94a3b8;
+    }
+
+    .field-input {
+        width: 100%;
+        padding: 0.65rem 1rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: #1e293b;
+        background: #f8fafc;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+        .field-input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
+        }
+
+    .dark .field-input {
+        background: #0f172a;
+        border-color: #334155;
+        color: #f1f5f9;
+    }
+
+        .dark .field-input:focus {
+            border-color: #fbbf24;
+            background: #1e293b;
+            box-shadow: 0 0 0 3px rgba(251,191,36,0.15);
+        }
+
+    .field-hint {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin-top: 4px;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    @@media (max-width: 600px) {
+        .grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .status-toggle {
+        display: flex;
+        gap: 10px;
+    }
+
+    .status-opt {
+        flex: 1;
+        padding: 0.65rem;
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        background: #f8fafc;
+        cursor: pointer;
+        text-align: center;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #64748b;
+        transition: all 0.2s ease;
+    }
+
+        .status-opt.active-sel {
+            border-color: #10b981;
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-opt.closed-sel {
+            border-color: #6b7280;
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+    .dark .status-opt {
+        background: #0f172a;
+        border-color: #334155;
+        color: #94a3b8;
+    }
+
+        .dark .status-opt.active-sel {
+            border-color: #10b981;
+            background: rgba(16,185,129,0.15);
+            color: #34d399;
+        }
+
+        .dark .status-opt.closed-sel {
+            border-color: #6b7280;
+            background: rgba(107,114,128,0.15);
+            color: #9ca3af;
+        }
+
+    /* Avatar Upload */
+    .avatar-upload-zone {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        padding: 1.25rem;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border-radius: 14px;
+        border: 2px dashed #f59e0b;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+
+        .avatar-upload-zone:hover {
+            border-color: #d97706;
+            background: linear-gradient(135deg, #fde68a, #fcd34d);
+        }
+
+    .dark .avatar-upload-zone {
+        background: rgba(245,158,11,0.1);
+        border-color: #b45309;
+    }
+
+        .dark .avatar-upload-zone:hover {
+            border-color: #fbbf24;
+            background: rgba(245,158,11,0.18);
+        }
+
+    .avatar-preview-wrap {
+        position: relative;
+        width: 72px;
+        height: 72px;
+        flex-shrink: 0;
+    }
+
+    .avatar-preview-img {
+        width: 72px;
+        height: 72px;
+        border-radius: 9999px;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+        display: none;
+    }
+
+    .avatar-initials-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 9999px;
+        background: linear-gradient(135deg, #f59e0b, #f97316);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+        border: 3px solid white;
+        box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+    }
+
+    .avatar-edit-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 22px;
+        height: 22px;
+        border-radius: 9999px;
+        background: #f59e0b;
+        color: white;
+        border: 2px solid white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.55rem;
+        cursor: pointer;
+    }
+
+    .emp-name-display {
+        font-weight: 700;
+        color: #92400e;
+        font-size: 0.95rem;
+    }
+
+    .dark .emp-name-display {
+        color: #fbbf24;
+    }
+
+    .emp-upload-hint {
+        font-size: 0.75rem;
+        color: #b45309;
+        margin-top: 2px;
+    }
+
+    .dark .emp-upload-hint {
+        color: #f59e0b;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #f59e0b, #f97316);
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(245,158,11,0.4);
+        }
+
+        .btn-save:active {
+            transform: scale(0.98);
+        }
+
+    .btn-cancel {
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: 2px solid #e2e8f0;
+        color: #64748b;
+        background: transparent;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-cancel:hover {
+            border-color: #94a3b8;
+            color: #475569;
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+    .dark .btn-cancel {
+        border-color: #334155;
+        color: #94a3b8;
+    }
+
+        .dark .btn-cancel:hover {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+</style>
+
+<div class="edit-page max-w-2xl mx-auto">
+
+    <div class="mb-6 flex items-center justify-between">
+        <a href="/Shifts" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-amber-500 dark:hover:text-amber-400 transition-colors">
+            <i class="fas fa-arrow-left text-xs"></i> Back to Shifts
+        </a>
+        <a href="/Shifts/Details/@Model.Id" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-indigo-500 transition-colors">
+            <i class="fas fa-eye text-xs"></i> View Details
+        </a>
+    </div>
+
+    <div class="form-card">
+        <div class="form-header">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <i class="fas fa-pen text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">Edit Shift</h1>
+                    <p class="text-white/70 text-sm">@Model.ShiftName — #@Model.Id</p>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedAt" />
+
+            <!-- Shift Info -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-info-circle text-amber-400"></i> Shift Info
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Shift Name *</label>
+                    <input asp-for="ShiftName" class="field-input" placeholder="e.g. Morning Shift" />
+                    <span asp-validation-for="ShiftName" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Status</label>
+                    <div class="status-toggle">
+                        <div class="status-opt @(Model.Status == "Active" ? "active-sel" : "")"
+                             data-value="Active" onclick="selectStatus(this)">
+                            <i class="fas fa-play-circle mr-1"></i> Active
+                        </div>
+                        <div class="status-opt @(Model.Status == "Closed" ? "closed-sel" : "")"
+                             data-value="Closed" onclick="selectStatus(this)">
+                            <i class="fas fa-check-circle mr-1"></i> Closed
+                        </div>
+                    </div>
+                    <input type="hidden" asp-for="Status" id="statusInput" />
+                </div>
+            </div>
+
+            <!-- Employee Details -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-user text-purple-400"></i> Employee Details
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Assigned To *</label>
+                    <input asp-for="AssignedTo" class="field-input" placeholder="Full name of employee" id="assignedToInput" />
+                    <span asp-validation-for="AssignedTo" class="text-red-500 text-xs mt-1 block"></span>
+                </div>
+
+                <!-- Avatar Upload Zone -->
+                <div class="avatar-upload-zone" onclick="document.getElementById('avatarFileInput').click()">
+                    <div class="avatar-preview-wrap">
+                        <img id="avatarPreviewImg" class="avatar-preview-img" src="#" alt="Avatar" />
+                        <div class="avatar-initials-circle" id="avatarInitialsCircle">@initials</div>
+                        <div class="avatar-edit-btn"><i class="fas fa-camera"></i></div>
+                    </div>
+                    <div>
+                        <p class="emp-name-display" id="empNameDisplay">@Model.AssignedTo</p>
+                        <p class="emp-upload-hint"><i class="fas fa-cloud-upload-alt mr-1"></i>Click to upload or change photo</p>
+                        <p class="text-xs text-gray-400 mt-1">JPG, PNG · Max 2MB</p>
+                    </div>
+                </div>
+                <input type="file" id="avatarFileInput" name="AvatarFile" accept="image/*" class="hidden" />
+            </div>
+
+            <!-- Pump & Schedule -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-oil-can text-emerald-400"></i> Pump & Schedule
+                </div>
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label class="field-label">Pump Number *</label>
+                        <input asp-for="PumpNumber" class="field-input" placeholder="e.g. P-01" />
+                        <span asp-validation-for="PumpNumber" class="text-red-500 text-xs mt-1 block"></span>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Start Time *</label>
+                        <input asp-for="StartTime" type="datetime-local" class="field-input" />
+                        <span asp-validation-for="StartTime" class="text-red-500 text-xs mt-1 block"></span>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label class="field-label">End Time</label>
+                        <input asp-for="EndTime" type="datetime-local" class="field-input" />
+                        <p class="field-hint">Leave empty if shift still active</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meter & Cash -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-tachometer-alt text-blue-400"></i> Meter & Cash
+                </div>
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label class="field-label">Opening Meter</label>
+                        <input asp-for="OpeningMeter" type="number" step="0.01" class="field-input" />
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Closing Meter</label>
+                        <input asp-for="ClosingMeter" type="number" step="0.01" class="field-input" />
+                        <p class="field-hint">Leave empty if shift still active</p>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Cash Collected</label>
+                    <input asp-for="CashCollected" type="number" step="0.01" class="field-input" />
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-sticky-note text-amber-400"></i> Notes
+                </div>
+                <div class="field-group">
+                    <textarea asp-for="Notes" class="field-input" rows="3" placeholder="Optional shift notes..."></textarea>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="px-8 py-5 bg-gray-50 dark:bg-slate-900/50 flex items-center justify-end gap-3 border-t border-gray-100 dark:border-slate-700">
+                <a href="/Shifts" class="btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Status toggle
+        function selectStatus(el) {
+            document.querySelectorAll('.status-opt').forEach(o => o.className = 'status-opt');
+            const val = el.dataset.value;
+            el.classList.add(val === 'Active' ? 'active-sel' : 'closed-sel');
+            document.getElementById('statusInput').value = val;
+        }
+
+        // Employee name → initials live update
+        const assignedInput    = document.getElementById('assignedToInput');
+        const avatarInitials   = document.getElementById('avatarInitialsCircle');
+        const avatarPreviewImg = document.getElementById('avatarPreviewImg');
+        const empNameDisplay   = document.getElementById('empNameDisplay');
+
+        assignedInput?.addEventListener('input', function () {
+            const val = this.value.trim();
+            empNameDisplay.textContent = val || '—';
+            if (avatarPreviewImg.style.display === 'none' || !avatarPreviewImg.src || avatarPreviewImg.src === window.location.href + '#') {
+                const parts    = val.split(' ').filter(w => w);
+                const initials = parts.length >= 2
+                    ? (parts[0][0] + parts[1][0]).toUpperCase()
+                    : (val.substring(0, 2).toUpperCase() || '??');
+                avatarInitials.textContent = initials;
+            }
+        });
+
+        // Avatar file preview
+        document.getElementById('avatarFileInput')?.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File is too large. Maximum size is 2MB.');
+                this.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                avatarPreviewImg.src           = e.target.result;
+                avatarPreviewImg.style.display = 'block';
+                avatarInitials.style.display   = 'none';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Format datetime-local inputs
+        function toLocalDatetime(val) {
+            if (!val) return '';
+            const d = new Date(val);
+            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            return d.toISOString().slice(0, 16);
+        }
+        document.querySelectorAll('input[type="datetime-local"]').forEach(inp => {
+            if (inp.value) inp.value = toLocalDatetime(inp.value);
+        });
+    </script>
+}

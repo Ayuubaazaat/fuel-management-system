@@ -41,6 +41,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ShiftService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

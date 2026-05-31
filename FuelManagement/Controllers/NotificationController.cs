@@ -38,6 +38,7 @@ namespace FuelManagement.Controllers
                 new() { Text = "Trips",         Value = "Trips" },
                 new() { Text = "Pumps",         Value = "Pumps" },
                 new() { Text = "Compensation",  Value = "Compensation" },
+                new() { Text = "Shifts", Value = "Shifts" },
                 new() { Text = "Invoices",      Value = "Invoices" },
                 new() { Text = "Receipts",      Value = "Receipts" },
             };

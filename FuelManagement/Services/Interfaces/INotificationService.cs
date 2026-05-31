@@ -63,5 +63,16 @@ namespace FuelManagement.Services.Interfaces
 
         // SETTINGS
         Task<NotificationViewModel> CreateSystemNotification(string title, string description, NotificationType type, string? actionUrl = null, string? actionText = null, bool isGlobal = true);
+        // Notifies when a new shift is started/created
+        Task<NotificationViewModel> CreateShiftStartedNotification(int shiftId, string shiftName, string assignedTo, string pumpNumber, string actionUrl);
+
+        // Notifies when a shift is updated/edited
+        Task<NotificationViewModel> CreateShiftUpdatedNotification(int shiftId, string shiftName, string assignedTo, string actionUrl);
+
+        // Notifies when a shift is closed with meter and cash summary
+        Task<NotificationViewModel> CreateShiftClosedNotification(int shiftId, string shiftName, string assignedTo, decimal closingMeter, decimal cashCollected, string actionUrl);
+
+        // Notifies when a shift is deleted
+        Task<NotificationViewModel> CreateShiftDeletedNotification(int shiftId, string shiftName, string assignedTo, string actionUrl);
     }
 }
