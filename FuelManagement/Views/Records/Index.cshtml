@@ -1,0 +1,490 @@
+﻿@model FuelManagement.Models.ViewModels.RecordsViewModel
+@using FuelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Records";
+    var tab = ViewBag.Tab as string ?? "activity";
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var modules = ViewBag.Modules as List<string> ?? new List<string>();
+}
+
+<!-- ===================== HERO BANNER ===================== -->
+<div class="relative overflow-hidden rounded-2xl mb-6 bg-gradient-to-br from-slate-600 via-slate-700 to-gray-800 dark:from-slate-800 dark:via-slate-900 dark:to-gray-950 p-6 md:p-8 shadow-lg">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
+    <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24"></div>
+
+    <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-clipboard-list text-white text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-slate-300 uppercase tracking-widest">Admin Only</span>
+                    <h1 class="text-2xl md:text-3xl font-bold text-white mt-0.5">System Records</h1>
+                </div>
+            </div>
+            <p class="text-slate-300/80 text-sm max-w-md">Read-only audit log of all system activity and login sessions.</p>
+            <div class="flex items-center gap-4 mt-3 text-xs text-slate-300/70">
+                <span><i class="fas fa-calendar-day mr-1"></i>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</span>
+                <span><i class="fas fa-shield-alt mr-1"></i>Read-only — no edits permitted</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero quick stats -->
+    <div class="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center">
+            <p class="text-xs text-slate-300/70 uppercase tracking-wide mb-1">Total Activity</p>
+            <p class="text-xl font-bold text-white">@ViewBag.TotalActivity</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center">
+            <p class="text-xs text-slate-300/70 uppercase tracking-wide mb-1">Today's Activity</p>
+            <p class="text-xl font-bold text-white">@ViewBag.TodayActivity</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center">
+            <p class="text-xs text-slate-300/70 uppercase tracking-wide mb-1">Total Users</p>
+            <p class="text-xl font-bold text-white">@ViewBag.TotalLogins</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center">
+            <p class="text-xs text-slate-300/70 uppercase tracking-wide mb-1">Logins Today</p>
+            <p class="text-xl font-bold text-white">@ViewBag.TodayLogins</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== TABS ===================== -->
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6">
+    <div class="flex border-b border-gray-100 dark:border-gray-700">
+        <a href="@Url.Action("Index", new { tab = "activity", moduleFilter = ViewBag.ModuleFilter, searchTerm = ViewBag.SearchTerm, dateFrom = ViewBag.DateFrom, dateTo = ViewBag.DateTo })"
+           class="flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2
+                  @(tab == "activity" ? "border-slate-600 text-slate-700 dark:text-slate-300" : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300")">
+            <i class="fas fa-history text-xs"></i>
+            Activity Log
+            <span class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">
+                @ViewBag.TotalActivity
+            </span>
+        </a>
+        <a href="@Url.Action("Index", new { tab = "logins", searchTerm = ViewBag.SearchTerm, dateFrom = ViewBag.DateFrom, dateTo = ViewBag.DateTo })"
+           class="flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2
+                  @(tab == "logins" ? "border-slate-600 text-slate-700 dark:text-slate-300" : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300")">
+            <i class="fas fa-sign-in-alt text-xs"></i>
+            Login Sessions
+            <span class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">
+                @ViewBag.TotalLogins
+            </span>
+        </a>
+    </div>
+</div>
+
+<!-- ===================== FILTER BAR ===================== -->
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-6">
+    <form method="get" asp-action="Index" id="filterForm">
+        <input type="hidden" name="tab" value="@tab" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+
+            <!-- Search -->
+            <div class="lg:col-span-2 relative">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="text" name="searchTerm" value="@ViewBag.SearchTerm"
+                       placeholder="Search activity, module, user..."
+                       class="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 placeholder-gray-400 dark:placeholder-gray-500" />
+            </div>
+
+            @if (tab == "activity")
+            {
+                <!-- Module filter -->
+                <select name="moduleFilter"
+                        onchange="document.getElementById('filterForm').submit()"
+                        class="py-2.5 px-3 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-slate-500">
+                    <option value="">All Modules</option>
+                    @foreach (var mod in modules)
+                    {
+                        <option value="@mod" selected="@(ViewBag.ModuleFilter == mod ? "selected" : null)">@mod</option>
+                    }
+                </select>
+
+                <!-- Type filter -->
+                <select name="typeFilter"
+                        onchange="document.getElementById('filterForm').submit()"
+                        class="py-2.5 px-3 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-slate-500">
+                    <option value="">All Types</option>
+                    @foreach (var t in new[] { "Success", "Info", "Warning", "Alert", "Error" })
+                    {
+                        <option value="@t" selected="@(ViewBag.TypeFilter == t ? "selected" : null)">@t</option>
+                    }
+                </select>
+            }
+
+            <!-- Actions -->
+            <div class="flex gap-2">
+                <button type="submit"
+                        class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-slate-700 hover:bg-slate-800 text-white text-sm font-medium rounded-xl transition-colors">
+                    <i class="fas fa-filter text-xs"></i> Filter
+                </button>
+                <a href="@Url.Action("Index", new { tab = tab })"
+                   class="flex items-center justify-center px-3 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 text-sm rounded-xl transition-colors">
+                    <i class="fas fa-times text-xs"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Date range -->
+        <div class="flex flex-col sm:flex-row gap-3 mt-3">
+            <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Date range:</span>
+            </div>
+            <input type="date" name="dateFrom" value="@ViewBag.DateFrom"
+                   onchange="document.getElementById('filterForm').submit()"
+                   class="px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-slate-500" />
+            <span class="text-gray-400 dark:text-gray-500 self-center text-sm">to</span>
+            <input type="date" name="dateTo" value="@ViewBag.DateTo"
+                   onchange="document.getElementById('filterForm').submit()"
+                   class="px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-slate-500" />
+        </div>
+    </form>
+</div>
+
+<!-- ===================== ACTIVITY LOG TAB ===================== -->
+@if (tab == "activity")
+{
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-history text-slate-500 dark:text-slate-400"></i>
+                <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Activity Log</h2>
+                <span class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-medium">
+                    @Model.ActivityLogs.Count records
+                </span>
+            </div>
+            <span class="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
+                <i class="fas fa-lock text-xs"></i> Read-only
+            </span>
+        </div>
+
+        @if (!Model.ActivityLogs.Any())
+        {
+            <div class="flex flex-col items-center justify-center py-20 text-center">
+                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mb-4">
+                    <i class="fas fa-clipboard-list text-3xl text-gray-300 dark:text-gray-500"></i>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 font-medium">No activity records found</p>
+                <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Try adjusting your filters</p>
+            </div>
+        }
+        else
+        {
+            <!-- Desktop Table -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-700/60 text-xs uppercase tracking-wider">
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">#</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Type</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Module</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Activity</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Description</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Timestamp</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Link</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                        @{
+                            int rowNum = 0;
+                        }
+                        @foreach (var log in Model.ActivityLogs)
+                        {
+                            rowNum++;
+                            string typeBg, typeText, typeIcon;
+
+                            switch (log.Type)
+                            {
+                                case NotificationType.Success:
+                                    typeBg = "bg-green-100 dark:bg-green-900/40";
+                                    typeText = "text-green-700 dark:text-green-300";
+                                    typeIcon = "fa-check-circle";
+                                    break;
+                                case NotificationType.Warning:
+                                    typeBg = "bg-yellow-100 dark:bg-yellow-900/40";
+                                    typeText = "text-yellow-700 dark:text-yellow-300";
+                                    typeIcon = "fa-exclamation-triangle";
+                                    break;
+                                case NotificationType.Alert:
+                                    typeBg = "bg-orange-100 dark:bg-orange-900/40";
+                                    typeText = "text-orange-700 dark:text-orange-300";
+                                    typeIcon = "fa-bell";
+                                    break;
+                                case NotificationType.Error:
+                                    typeBg = "bg-red-100 dark:bg-red-900/40";
+                                    typeText = "text-red-700 dark:text-red-300";
+                                    typeIcon = "fa-times-circle";
+                                    break;
+                                default:
+                                    typeBg = "bg-blue-100 dark:bg-blue-900/40";
+                                    typeText = "text-blue-700 dark:text-blue-300";
+                                    typeIcon = "fa-info-circle";
+                                    break;
+                            }
+
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
+                                <td class="px-4 py-3 text-gray-400 dark:text-gray-500 font-mono text-xs">@rowNum</td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-0.5 rounded-lg text-xs font-medium flex items-center gap-1 w-fit @typeBg @typeText">
+                                        <i class="fas @typeIcon text-xs"></i>
+                                        @log.Type
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-1.5">
+                                        <i class="fas @log.ModuleIcon text-gray-400 dark:text-gray-500 text-xs w-4"></i>
+                                        <span class="text-xs font-medium text-gray-700 dark:text-gray-300">@log.Module</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <p class="text-xs font-semibold text-gray-800 dark:text-gray-100">@log.Title</p>
+                                </td>
+                                <td class="px-4 py-3 max-w-xs">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">@log.Description</p>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <p class="text-xs text-gray-600 dark:text-gray-300">@log.Timestamp.ToString("MMM dd, yyyy")</p>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500">@log.Timestamp.ToString("hh:mm tt")</p>
+                                </td>
+                                <td class="px-4 py-3">
+                                    @if (!string.IsNullOrEmpty(log.ActionUrl))
+                                    {
+                                        <a href="@log.ActionUrl"
+                                           class="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1 transition-colors">
+                                            <i class="fas fa-external-link-alt text-xs"></i>
+                                            @(log.ActionText ?? "View")
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-xs text-gray-300 dark:text-gray-600">—</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden divide-y divide-gray-100 dark:divide-gray-700">
+                @foreach (var log in Model.ActivityLogs)
+                {
+                    string mTypeBg, mTypeText, mTypeIcon;
+                    switch (log.Type)
+                    {
+                        case NotificationType.Success:
+                            mTypeBg = "bg-green-100 dark:bg-green-900/40"; mTypeText = "text-green-700 dark:text-green-300"; mTypeIcon = "fa-check-circle"; break;
+                        case NotificationType.Warning:
+                            mTypeBg = "bg-yellow-100 dark:bg-yellow-900/40"; mTypeText = "text-yellow-700 dark:text-yellow-300"; mTypeIcon = "fa-exclamation-triangle"; break;
+                        case NotificationType.Alert:
+                            mTypeBg = "bg-orange-100 dark:bg-orange-900/40"; mTypeText = "text-orange-700 dark:text-orange-300"; mTypeIcon = "fa-bell"; break;
+                        case NotificationType.Error:
+                            mTypeBg = "bg-red-100 dark:bg-red-900/40"; mTypeText = "text-red-700 dark:text-red-300"; mTypeIcon = "fa-times-circle"; break;
+                        default:
+                            mTypeBg = "bg-blue-100 dark:bg-blue-900/40"; mTypeText = "text-blue-700 dark:text-blue-300"; mTypeIcon = "fa-info-circle"; break;
+                    }
+
+                    <div class="p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded-lg text-xs font-medium flex items-center gap-1 @mTypeBg @mTypeText">
+                                    <i class="fas @mTypeIcon text-xs"></i> @log.Type
+                                </span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">@log.Module</span>
+                            </div>
+                            <span class="text-xs text-gray-400 dark:text-gray-500">@log.Timestamp.ToString("MMM dd hh:mm tt")</span>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-1">@log.Title</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">@log.Description</p>
+                        @if (!string.IsNullOrEmpty(log.ActionUrl))
+                        {
+                            <a href="@log.ActionUrl" class="text-xs text-slate-600 dark:text-slate-400 hover:underline mt-1 block">
+                                <i class="fas fa-external-link-alt mr-1"></i>@(log.ActionText ?? "View")
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (totalPages > 1)
+            {
+                <div class="flex items-center justify-between px-5 py-4 border-t border-gray-100 dark:border-gray-700">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Page @currentPage of @totalPages</p>
+                    <div class="flex gap-2">
+                        @if (currentPage > 1)
+                        {
+                            <a href="@Url.Action("Index", new { tab, moduleFilter = ViewBag.ModuleFilter, typeFilter = ViewBag.TypeFilter, searchTerm = ViewBag.SearchTerm, dateFrom = ViewBag.DateFrom, dateTo = ViewBag.DateTo, page = currentPage - 1 })"
+                               class="px-3 py-1.5 text-xs border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+                                <i class="fas fa-chevron-left"></i> Prev
+                            </a>
+                        }
+                        @if (currentPage < totalPages)
+                        {
+                            <a href="@Url.Action("Index", new { tab, moduleFilter = ViewBag.ModuleFilter, typeFilter = ViewBag.TypeFilter, searchTerm = ViewBag.SearchTerm, dateFrom = ViewBag.DateFrom, dateTo = ViewBag.DateTo, page = currentPage + 1 })"
+                               class="px-3 py-1.5 text-xs border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}
+
+<!-- ===================== LOGIN SESSIONS TAB ===================== -->
+@if (tab == "logins")
+{
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-sign-in-alt text-slate-500 dark:text-slate-400"></i>
+                <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Login Sessions</h2>
+                <span class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-medium">
+                    @Model.LoginSessions.Count users
+                </span>
+            </div>
+            <span class="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
+                <i class="fas fa-lock text-xs"></i> Read-only
+            </span>
+        </div>
+
+        @if (!Model.LoginSessions.Any())
+        {
+            <div class="flex flex-col items-center justify-center py-20 text-center">
+                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mb-4">
+                    <i class="fas fa-users text-3xl text-gray-300 dark:text-gray-500"></i>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 font-medium">No login sessions found</p>
+            </div>
+        }
+        else
+        {
+            <!-- Desktop Table -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-700/60 text-xs uppercase tracking-wider">
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">#</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">User</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Role</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Last Login</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Device</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">IP Address</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Total Logins</th>
+                            <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-semibold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                        @{
+                            int sessionNum = 0;
+                        }
+                        @foreach (var session in Model.LoginSessions)
+                        {
+                            sessionNum++;
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
+                                <td class="px-4 py-3 text-gray-400 dark:text-gray-500 font-mono text-xs">@sessionNum</td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                                            @session.Initials
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-semibold text-gray-800 dark:text-gray-100">@session.FullName</p>
+                                            <p class="text-xs text-gray-400 dark:text-gray-500">@session.Email</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-0.5 rounded-lg text-xs font-medium
+                                                 @(session.Role == "Admin" ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300" : "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300")">
+                                        @session.Role
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    @if (session.LastLoginAt.HasValue)
+                                    {
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">@session.LastLoginAt.Value.ToString("MMM dd, yyyy")</p>
+                                        <p class="text-xs text-gray-400 dark:text-gray-500">@session.LastLoginAt.Value.ToString("hh:mm tt") · @session.TimeAgo</p>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-xs text-gray-400 dark:text-gray-500 italic">Never</span>
+                                    }
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-1.5">
+                                        <i class="fas @(session.Device != null && (session.Device.Contains("iPhone") || session.Device.Contains("Android")) ? "fa-mobile-alt" : "fa-desktop") text-gray-400 dark:text-gray-500 text-xs"></i>
+                                        <span class="text-xs text-gray-600 dark:text-gray-300">@(session.Device ?? "—")</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="text-xs font-mono text-gray-600 dark:text-gray-300">@(session.LastLoginIp ?? "—")</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="text-xs font-bold text-gray-800 dark:text-gray-100">@session.LoginCount</span>
+                                    <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">times</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="px-2 py-0.5 rounded-lg text-xs font-medium
+                                                 @(session.IsActive ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300" : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300")">
+                                        @(session.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden divide-y divide-gray-100 dark:divide-gray-700">
+                @foreach (var session in Model.LoginSessions)
+                {
+                    <div class="p-4">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-white text-sm font-bold">
+                                    @session.Initials
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800 dark:text-gray-100 text-sm">@session.FullName</p>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500">@session.Email</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-lg text-xs font-medium
+                                         @(session.IsActive ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300" : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300")">
+                                @(session.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div>
+                                <p class="text-gray-400 dark:text-gray-500 mb-0.5">Last Login</p>
+                                <p class="font-medium text-gray-700 dark:text-gray-300">@session.TimeAgo</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 dark:text-gray-500 mb-0.5">Device</p>
+                                <p class="font-medium text-gray-700 dark:text-gray-300">@(session.Device ?? "—")</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 dark:text-gray-500 mb-0.5">IP Address</p>
+                                <p class="font-mono font-medium text-gray-700 dark:text-gray-300">@(session.LastLoginIp ?? "—")</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 dark:text-gray-500 mb-0.5">Total Logins</p>
+                                <p class="font-bold text-gray-800 dark:text-gray-100">@session.LoginCount</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

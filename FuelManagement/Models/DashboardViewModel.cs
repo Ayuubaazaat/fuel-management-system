@@ -19,6 +19,22 @@ namespace FuelManagement.Models
         public decimal TotalInventory { get; set; }
         public int ActiveSessions { get; set; }
         public int FuelingNow { get; set; }
+        // ===== CAR WASH =====
+        public int TodayCarWashes { get; set; }
+        public decimal TodayCarWashRevenue { get; set; }
+        public int TotalCarWashes { get; set; }
+        public decimal TotalCarWashRevenue { get; set; }
+        public int PendingCarWashes { get; set; }
+
+        // ===== FUEL CLIENTS =====
+        public int TotalClients { get; set; }
+        public int ActiveClients { get; set; }
+        public int NewClientsThisMonth { get; set; }
+
+        // ===== COMPENSATION =====
+        public decimal TotalCompensationPaidThisMonth { get; set; }
+        public int TotalEmployees { get; set; }
+        public int PendingCompensations { get; set; }
 
         // Comparison Data
         public decimal RevenueGrowthPercentage { get; set; }

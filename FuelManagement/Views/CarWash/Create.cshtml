@@ -1,0 +1,397 @@
+﻿@model FuelManagement.Models.CarWash
+@{
+    ViewData["Title"] = "New Car Wash Record";
+}
+
+<!-- ===================== HEADER ===================== -->
+<div class="flex items-center gap-3 mb-6">
+    <a href="@Url.Action("Index")"
+       class="w-9 h-9 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+        <i class="fas fa-arrow-left text-sm"></i>
+    </a>
+    <div>
+        <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100">New Car Wash Record</h1>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Fill in the details below to log a new car wash service</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- ===================== MAIN FORM ===================== -->
+    <div class="lg:col-span-2 space-y-5">
+        <form asp-action="Create" method="post" id="createForm">
+            @Html.AntiForgeryToken()
+
+            <!-- Customer Info Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20">
+                    <div class="w-8 h-8 bg-cyan-100 dark:bg-cyan-900/40 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-user text-cyan-600 dark:text-cyan-400 text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Customer Information</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Who is bringing the vehicle?</p>
+                    </div>
+                </div>
+                <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <!-- Customer Name -->
+                    <div class="sm:col-span-2">
+                        <label asp-for="CustomerName" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                            <input asp-for="CustomerName"
+                                   placeholder="e.g. ina fahim"
+                                   class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 placeholder-gray-400 dark:placeholder-gray-500 transition-all" />
+                        </div>
+                        <span asp-validation-for="CustomerName" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                    </div>
+
+                    <!-- Vehicle Plate -->
+                    <div>
+                        <label asp-for="VehiclePlate" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <div class="relative">
+                            <i class="fas fa-id-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                            <input asp-for="VehiclePlate"
+                                   placeholder="e.g. AB-1234"
+                                   class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 placeholder-gray-400 dark:placeholder-gray-500 transition-all font-mono uppercase" />
+                        </div>
+                        <span asp-validation-for="VehiclePlate" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                    </div>
+
+                    <!-- Vehicle Type -->
+                    <div>
+                        <label asp-for="VehicleType" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <div class="relative">
+                            <i class="fas fa-car absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                            <select asp-for="VehicleType"
+                                    class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all appearance-none">
+                                <option value="">-- Select Vehicle Type --</option>
+                                <option value="Car">Car</option>
+                                <option value="SUV">SUV</option>
+                                <option value="Truck">Truck</option>
+                                <option value="Van">Van</option>
+                                <option value="Motorcycle">Motorcycle</option>
+                                <option value="Bus">Bus</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="VehicleType" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Details Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
+                    <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-soap text-purple-600 dark:text-purple-400 text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Service Details</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Select the type of wash service</p>
+                    </div>
+                </div>
+
+                <!-- Service Type Selector -->
+                <div class="p-5">
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3">Service Type</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4" id="serviceSelector">
+                        @foreach (var svc in new[]
+                        {
+                        new { Name = "Basic",    Icon = "fa-tint",       Color = "gray",   Price = "10.00", Desc = "Exterior rinse" },
+                        new { Name = "Standard", Icon = "fa-soap",       Color = "blue",   Price = "15.00", Desc = "Wash + dry"      },
+                        new { Name = "Full",     Icon = "fa-star",       Color = "purple", Price = "25.00", Desc = "Interior + exterior" },
+                        new { Name = "Premium",  Icon = "fa-crown",      Color = "amber",  Price = "35.00", Desc = "Full detail"     },
+                        })
+                        {
+                            var borderSel = $"border-{svc.Color}-500 bg-{svc.Color}-50 dark:bg-{svc.Color}-900/20";
+                            var borderNorm = "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50";
+                            <button type="button"
+                                    onclick="selectService('@svc.Name', '@svc.Price')"
+                                    data-service="@svc.Name"
+                                    class="service-btn relative flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 @borderNorm hover:border-@svc.Color-400 transition-all cursor-pointer group">
+                                <div class="w-8 h-8 rounded-lg bg-@svc.Color-100 dark:bg-@svc.Color-900/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i class="fas @svc.Icon text-@svc.Color-600 dark:text-@svc.Color-400 text-sm"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-gray-800 dark:text-gray-100">@svc.Name</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">$@svc.Price</span>
+                                <span class="text-xs text-gray-400 dark:text-gray-500 text-center leading-tight">@svc.Desc</span>
+                                <div class="hidden absolute top-1.5 right-1.5 w-4 h-4 bg-green-500 rounded-full items-center justify-center check-icon">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                            </button>
+                        }
+                    </div>
+                    <input asp-for="ServiceType" type="hidden" id="ServiceType" />
+                    <span asp-validation-for="ServiceType" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+
+                    <!-- Price -->
+                    <div class="mt-4">
+                        <label asp-for="Price" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 font-semibold text-sm">$</span>
+                            <input asp-for="Price"
+                                   type="number"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="0.00"
+                                   id="priceInput"
+                                   class="w-full pl-7 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 placeholder-gray-400 dark:placeholder-gray-500 transition-all" />
+                        </div>
+                        <span asp-validation-for="Price" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status & Payment Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+                    <div class="w-8 h-8 bg-green-100 dark:bg-green-900/40 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-credit-card text-green-600 dark:text-green-400 text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Status & Payment</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Set current status and payment details</p>
+                    </div>
+                </div>
+                <div class="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                    <!-- Status -->
+                    <div>
+                        <label asp-for="Status" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <div class="relative">
+                            <i class="fas fa-circle-dot absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                            <select asp-for="Status"
+                                    class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all appearance-none">
+                                <option value="Pending">Pending</option>
+                                <option value="InProgress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Status" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div>
+                        <label asp-for="PaymentMethod" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <div class="relative">
+                            <i class="fas fa-wallet absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                            @* In Create.cshtml — PaymentMethod select *@
+                            <select asp-for="PaymentMethod"
+                                    class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all appearance-none">
+                                <option value="EVC+">EVC+</option>
+                                <option value="E-Dahab">E-Dahab</option>
+                                <option value="JEEB">JEEB</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="PaymentMethod" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                    </div>
+
+                    <!-- Payment Status -->
+                    <div>
+                        <label asp-for="PaymentStatus" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <div class="relative">
+                            <i class="fas fa-money-bill absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                            <select asp-for="PaymentStatus"
+                                    class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all appearance-none">
+                                <option value="Unpaid">Unpaid</option>
+                                <option value="Paid">Paid</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="PaymentStatus" class="text-xs text-red-500 dark:text-red-400 mt-1 block"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignment & Notes Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20">
+                    <div class="w-8 h-8 bg-orange-100 dark:bg-orange-900/40 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-user-check text-orange-600 dark:text-orange-400 text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Assignment & Notes</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Assign staff and add any remarks</p>
+                    </div>
+                </div>
+                <div class="p-5 space-y-4">
+
+                    <!-- Assigned To -->
+                    <div>
+                        <label asp-for="AssignedTo" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <div class="relative">
+                            <i class="fas fa-user-tie absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
+                            <input asp-for="AssignedTo"
+                                   placeholder="e.g. Staff Member Name"
+                                   class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 placeholder-gray-400 dark:placeholder-gray-500 transition-all" />
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div>
+                        <label asp-for="Notes" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
+                        <textarea asp-for="Notes"
+                                  rows="3"
+                                  placeholder="Any special instructions or remarks..."
+                                  class="w-full px-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 placeholder-gray-400 dark:placeholder-gray-500 transition-all resize-none"></textarea>
+                    </div>
+
+                    <!-- Hidden fields -->
+                    <input asp-for="CreatedBy" type="hidden" value="@User.Identity?.Name" />
+                    <input asp-for="CreatedAt" type="hidden" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button type="submit"
+                        class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-sm rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+                    <i class="fas fa-save"></i>
+                    Save Car Wash Record
+                </button>
+                <a href="@Url.Action("Index")"
+                   class="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium text-sm rounded-xl transition-colors">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ===================== SIDEBAR SUMMARY ===================== -->
+    <div class="space-y-4">
+
+        <!-- Live Preview Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden sticky top-24">
+            <div class="bg-gradient-to-br from-cyan-500 to-blue-600 p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-soap text-white text-sm"></i>
+                    </div>
+                    <span class="text-white font-semibold text-sm">Record Preview</span>
+                </div>
+                <div id="previewPlate"
+                     class="text-2xl font-black text-white font-mono tracking-widest text-center bg-white/10 rounded-xl py-2 mb-2">
+                    ---
+                </div>
+                <div class="text-center">
+                    <p id="previewName" class="text-cyan-100 text-sm">Customer name will appear here</p>
+                    <p id="previewVehicle" class="text-cyan-200/70 text-xs mt-0.5">Vehicle type</p>
+                </div>
+            </div>
+
+            <div class="p-4 space-y-3">
+                <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Service</span>
+                    <span id="previewService" class="text-xs font-semibold text-gray-800 dark:text-gray-100">—</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Price</span>
+                    <span id="previewPrice" class="text-sm font-bold text-cyan-600 dark:text-cyan-400">$0.00</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Status</span>
+                    <span id="previewStatus" class="text-xs font-semibold text-gray-800 dark:text-gray-100">Pending</span>
+                </div>
+                <div class="flex items-center justify-between py-2">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Payment</span>
+                    <span id="previewPayment" class="text-xs font-semibold text-gray-800 dark:text-gray-100">Unpaid · Cash</span>
+                </div>
+            </div>
+
+            <!-- Price Services Reference -->
+            <div class="border-t border-gray-100 dark:border-gray-700 p-4">
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">Price Reference</p>
+                <div class="space-y-2">
+                    @foreach (var svc in new[]
+                    {
+                    new { Name = "Basic",    Price = "$10", Color = "gray"   },
+                    new { Name = "Standard", Price = "$15", Color = "blue"   },
+                    new { Name = "Full",     Price = "$25", Color = "purple" },
+                    new { Name = "Premium",  Price = "$35", Color = "amber"  },
+                    })
+                    {
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">@svc.Name</span>
+                            <span class="text-xs font-semibold text-gray-800 dark:text-gray-200">@svc.Price</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Card -->
+        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-2xl p-4">
+            <div class="flex items-center gap-2 mb-3">
+                <i class="fas fa-lightbulb text-amber-500 dark:text-amber-400 text-sm"></i>
+                <span class="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">Tips</span>
+            </div>
+            <ul class="space-y-1.5 text-xs text-amber-700 dark:text-amber-300/80">
+                <li class="flex items-start gap-1.5"><i class="fas fa-check text-amber-500 mt-0.5"></i>Click a service card to auto-fill the price</li>
+                <li class="flex items-start gap-1.5"><i class="fas fa-check text-amber-500 mt-0.5"></i>Vehicle plate auto-formats to uppercase</li>
+                <li class="flex items-start gap-1.5"><i class="fas fa-check text-amber-500 mt-0.5"></i>Set status to Completed if already done</li>
+                <li class="flex items-start gap-1.5"><i class="fas fa-check text-amber-500 mt-0.5"></i>Preview updates live as you type</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // ========== SERVICE CARD SELECTOR ==========
+        function selectService(name, price) {
+            document.getElementById('ServiceType').value = name;
+            document.getElementById('priceInput').value  = price;
+            updatePreview();
+
+            document.querySelectorAll('.service-btn').forEach(btn => {
+                const isSelected = btn.dataset.service === name;
+                btn.classList.toggle('ring-2',        isSelected);
+                btn.classList.toggle('ring-cyan-500', isSelected);
+                btn.querySelector('.check-icon').classList.toggle('hidden',    !isSelected);
+                btn.querySelector('.check-icon').classList.toggle('flex',       isSelected);
+            });
+        }
+
+        // ========== LIVE PREVIEW ==========
+        function updatePreview() {
+            const name    = document.getElementById('CustomerName')?.value  || '—';
+            const plate   = document.getElementById('VehiclePlate')?.value  || '---';
+            const vehicle = document.getElementById('VehicleType')?.value   || 'Vehicle type';
+            const service = document.getElementById('ServiceType')?.value   || '—';
+            const price   = parseFloat(document.getElementById('priceInput')?.value) || 0;
+            const status  = document.getElementById('Status')?.value        || 'Pending';
+            const method  = document.getElementById('PaymentMethod')?.value || 'Cash';
+            const payment = document.getElementById('PaymentStatus')?.value || 'Unpaid';
+
+            document.getElementById('previewName').textContent    = name;
+            document.getElementById('previewPlate').textContent   = plate.toUpperCase() || '---';
+            document.getElementById('previewVehicle').textContent = vehicle;
+            document.getElementById('previewService').textContent = service;
+            document.getElementById('previewPrice').textContent   = '$' + price.toFixed(2);
+            document.getElementById('previewStatus').textContent  = status;
+            document.getElementById('previewPayment').textContent = payment + ' · ' + method;
+        }
+
+        // Auto-uppercase plate
+        document.getElementById('VehiclePlate')?.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+            updatePreview();
+        });
+
+        // Wire all inputs to preview
+        ['CustomerName', 'VehicleType', 'priceInput',
+         'Status', 'PaymentMethod', 'PaymentStatus'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input',  updatePreview);
+            document.getElementById(id)?.addEventListener('change', updatePreview);
+        });
+
+        // Init preview
+        updatePreview();
+    </script>
+}

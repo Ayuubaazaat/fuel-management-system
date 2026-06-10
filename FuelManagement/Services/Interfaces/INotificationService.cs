@@ -74,5 +74,11 @@ namespace FuelManagement.Services.Interfaces
 
         // Notifies when a shift is deleted
         Task<NotificationViewModel> CreateShiftDeletedNotification(int shiftId, string shiftName, string assignedTo, string actionUrl);
+
+        // CAR WASH
+        Task<NotificationViewModel> CreateCarWashCreatedNotification(int washId, string customerName, string vehiclePlate, string serviceType, decimal price, string actionUrl);
+        Task<NotificationViewModel> CreateCarWashCompletedNotification(int washId, string customerName, string vehiclePlate, decimal price, string actionUrl);
+        Task<NotificationViewModel> CreateCarWashUpdatedNotification(int washId, string customerName, string vehiclePlate, string actionUrl);
+        Task<NotificationViewModel> CreateCarWashDeletedNotification(int washId, string customerName, string vehiclePlate, string actionUrl);
     }
 }

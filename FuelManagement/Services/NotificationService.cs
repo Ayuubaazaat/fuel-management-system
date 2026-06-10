@@ -479,5 +479,49 @@ namespace FuelManagement.Services
                 actionUrl,
                 // [ADDED] Button label for the notification action link
                 "View Shifts");
+
+        // ── CAR WASH notifications ───────────────────────────────────────
+
+        public async Task<NotificationViewModel> CreateCarWashCreatedNotification(
+            int washId, string customerName, string vehiclePlate,
+            string serviceType, decimal price, string actionUrl)
+            => await CreateNotificationAsync(
+                $"Car Wash Created: #{washId}",
+                $"{serviceType} wash for {customerName} ({vehiclePlate}) — ${price:F2}",
+                "Car Wash",
+                NotificationType.Success,
+                actionUrl,
+                "View Record");
+
+        public async Task<NotificationViewModel> CreateCarWashCompletedNotification(
+            int washId, string customerName, string vehiclePlate,
+            decimal price, string actionUrl)
+            => await CreateNotificationAsync(
+                $"Car Wash Completed: #{washId}",
+                $"Wash for {customerName} ({vehiclePlate}) completed — ${price:F2}",
+                "Car Wash",
+                NotificationType.Success,
+                actionUrl,
+                "View Details");
+
+        public async Task<NotificationViewModel> CreateCarWashUpdatedNotification(
+            int washId, string customerName, string vehiclePlate, string actionUrl)
+            => await CreateNotificationAsync(
+                $"Car Wash Updated: #{washId}",
+                $"Record for {customerName} ({vehiclePlate}) has been updated",
+                "Car Wash",
+                NotificationType.Info,
+                actionUrl,
+                "View Record");
+
+        public async Task<NotificationViewModel> CreateCarWashDeletedNotification(
+            int washId, string customerName, string vehiclePlate, string actionUrl)
+            => await CreateNotificationAsync(
+                $"Car Wash Deleted: #{washId}",
+                $"Record for {customerName} ({vehiclePlate}) has been permanently deleted",
+                "Car Wash",
+                NotificationType.Alert,
+                actionUrl,
+                "View Car Wash");
     }
 }

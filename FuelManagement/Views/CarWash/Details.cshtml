@@ -1,0 +1,531 @@
+﻿@model FuelManagement.Models.CarWash
+@{
+    ViewData["Title"] = "Car Wash Details";
+    var isPaid = Model.PaymentStatus == "Paid";
+    var isCompleted = Model.Status == "Completed";
+    var isCancelled = Model.Status == "Cancelled";
+}
+
+<!-- ===================== HEADER ===================== -->
+<div class="flex items-center gap-3 mb-6">
+    <a href="@Url.Action("Index")"
+       class="w-9 h-9 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+        <i class="fas fa-arrow-left text-sm"></i>
+    </a>
+    <div class="flex-1">
+        <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100">Car Wash Details</h1>
+            <span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded-full font-mono">#@Model.Id</span>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            Created @Model.CreatedAt.ToString("dddd, MMMM dd yyyy") at @Model.CreatedAt.ToString("hh:mm tt")
+            @if (!string.IsNullOrEmpty(Model.CreatedBy))
+            {
+                <span>· by <span class="font-medium text-gray-600 dark:text-gray-300">@Model.CreatedBy</span></span>
+            }
+        </p>
+    </div>
+    <!-- Action buttons -->
+    <div class="flex items-center gap-2">
+        <a href="@Url.Action("Edit", new { id = Model.Id })"
+           class="flex items-center gap-1.5 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold rounded-xl transition-colors shadow-sm">
+            <i class="fas fa-edit"></i>
+            <span class="hidden sm:inline">Edit</span>
+        </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <button onclick="confirmDelete(@Model.Id, '@Model.CustomerName', '@Model.VehiclePlate')"
+                    class="flex items-center gap-1.5 px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-xl transition-colors shadow-sm">
+                <i class="fas fa-trash"></i>
+                <span class="hidden sm:inline">Delete</span>
+            </button>
+        }
+    </div>
+</div>
+
+<!-- ===================== HERO CARD ===================== -->
+<div class="relative overflow-hidden rounded-2xl mb-6 shadow-lg
+            @(isCompleted ? "bg-gradient-to-br from-green-500 via-emerald-600 to-teal-700 dark:from-green-800 dark:via-emerald-900 dark:to-teal-950"
+            : isCancelled ? "bg-gradient-to-br from-gray-500 via-gray-600 to-gray-700 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900"
+            : "bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 dark:from-cyan-800 dark:via-blue-900 dark:to-indigo-950")">
+
+    <!-- Background decoration -->
+    <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
+    <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24"></div>
+
+    <div class="relative z-10 p-6 md:p-8">
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+
+            <!-- Left: Customer & Vehicle -->
+            <div class="flex items-start gap-4">
+                <!-- Avatar -->
+                <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-white text-2xl font-black flex-shrink-0">
+                    @Model.CustomerName.Substring(0, 1).ToUpper()
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white">@Model.CustomerName</h2>
+                    <div class="flex items-center gap-2 mt-1 flex-wrap">
+                        <span class="font-mono text-lg font-bold text-white/90 bg-white/10 px-3 py-0.5 rounded-lg tracking-widest">
+                            @Model.VehiclePlate
+                        </span>
+                        <span class="text-sm text-white/70">@Model.VehicleType</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.AssignedTo))
+                    {
+                        <div class="flex items-center gap-1.5 mt-2">
+                            <i class="fas fa-user-check text-white/60 text-xs"></i>
+                            <span class="text-xs text-white/70">Assigned to <span class="text-white font-medium">@Model.AssignedTo</span></span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right: Price & Status -->
+            <div class="flex flex-col items-start md:items-end gap-3">
+                <div class="text-right">
+                    <p class="text-xs text-white/60 uppercase tracking-wide">Total Price</p>
+                    <p class="text-4xl font-black text-white">$@Model.Price.ToString("F2")</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    @{
+                        var statusBadge = Model.Status switch
+                        {
+                            "Pending" => "bg-yellow-400/20 text-yellow-200 border border-yellow-400/30",
+                            "InProgress" => "bg-blue-400/20 text-blue-200 border border-blue-400/30",
+                            "Completed" => "bg-green-400/20 text-green-200 border border-green-400/30",
+                            "Cancelled" => "bg-gray-400/20 text-gray-200 border border-gray-400/30",
+                            _ => "bg-white/10 text-white/70"
+                        };
+                        var statusIcon = Model.Status switch
+                        {
+                            "Pending" => "fa-clock",
+                            "InProgress" => "fa-spinner fa-spin",
+                            "Completed" => "fa-check-circle",
+                            "Cancelled" => "fa-times-circle",
+                            _ => "fa-circle"
+                        };
+                    }
+                    <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold @statusBadge">
+                        <i class="fas @statusIcon"></i>
+                        @Model.Status
+                    </span>
+                    <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
+                                 @(isPaid ? "bg-green-400/20 text-green-200 border border-green-400/30"
+                                          : "bg-red-400/20 text-red-200 border border-red-400/30")">
+                        <i class="fas @(isPaid ? "fa-check" : "fa-exclamation-circle")"></i>
+                        @Model.PaymentStatus
+                    </span>
+                    <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/10 text-white/80">
+                        <i class="fas fa-soap"></i>
+                        @Model.ServiceType
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom strip: timeline -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-white/10">
+            <div>
+                <p class="text-xs text-white/50 uppercase tracking-wide mb-1">Created</p>
+                <p class="text-sm font-semibold text-white">@Model.CreatedAt.ToString("MMM dd, yyyy")</p>
+                <p class="text-xs text-white/60">@Model.CreatedAt.ToString("hh:mm tt")</p>
+            </div>
+            <div>
+                <p class="text-xs text-white/50 uppercase tracking-wide mb-1">Completed</p>
+                @if (Model.CompletedAt.HasValue)
+                {
+                    <p class="text-sm font-semibold text-white">@Model.CompletedAt.Value.ToString("MMM dd, yyyy")</p>
+                    <p class="text-xs text-white/60">@Model.CompletedAt.Value.ToString("hh:mm tt")</p>
+                }
+                else
+                {
+                    <p class="text-sm text-white/40 italic">Not yet</p>
+                }
+            </div>
+            <div>
+                <p class="text-xs text-white/50 uppercase tracking-wide mb-1">Duration</p>
+                @if (Model.CompletedAt.HasValue)
+                {
+                    var duration = Model.CompletedAt.Value - Model.CreatedAt;
+                    <p class="text-sm font-semibold text-white">
+                        @if (duration.TotalHours >= 1)
+                        {
+                            <text>@((int)duration.TotalHours)h @duration.Minutes}m</text>
+                        }
+                        else
+                        {
+                            <text>@duration.Minutes min</text>
+                        }
+                    </p>
+                }
+                else
+                {
+                    var elapsed = DateTime.Now - Model.CreatedAt;
+                    <p class="text-sm font-semibold text-white/70">
+                        @if (elapsed.TotalHours >= 1)
+                        {
+                            <text>@((int)elapsed.TotalHours)h @elapsed.Minutes m elapsed</text>
+                        }
+                        else
+                        {
+                            <text>@elapsed.Minutes min elapsed</text>
+                        }
+                    </p>
+                }
+            </div>
+            <div>
+                <p class="text-xs text-white/50 uppercase tracking-wide mb-1">Payment</p>
+                <p class="text-sm font-semibold text-white">@Model.PaymentMethod</p>
+                <p class="text-xs @(isPaid ? "text-green-300" : "text-red-300")">@Model.PaymentStatus</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== DETAIL SECTIONS ===================== -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Left: Full Details -->
+    <div class="lg:col-span-2 space-y-5">
+
+        <!-- Customer & Vehicle Details -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20">
+                <div class="w-8 h-8 bg-cyan-100 dark:bg-cyan-900/40 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user text-cyan-600 dark:text-cyan-400 text-sm"></i>
+                </div>
+                <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Customer & Vehicle</h2>
+            </div>
+            <div class="p-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    @{
+                        var detailItems = new[]
+                        {
+                    new { Label = "Customer Name",  Value = Model.CustomerName,  Icon = "fa-user",         Color = "blue"   },
+                    new { Label = "Vehicle Plate",  Value = Model.VehiclePlate,  Icon = "fa-id-card",      Color = "indigo" },
+                    new { Label = "Vehicle Type",   Value = Model.VehicleType,   Icon = "fa-car",          Color = "purple" },
+                    new { Label = "Assigned To",    Value = Model.AssignedTo ?? "Unassigned", Icon = "fa-user-check", Color = "teal" },
+                    };
+                    }
+                    @foreach (var item in detailItems)
+                    {
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                            <div class="w-8 h-8 rounded-lg bg-@item.Color-100 dark:bg-@item.Color-900/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i class="fas @item.Icon text-@item.Color-600 dark:text-@item.Color-400 text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide font-medium">@item.Label</p>
+                                <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 mt-0.5
+                                          @(item.Label == "Vehicle Plate" ? "font-mono tracking-widest" : "")">
+                                    @item.Value
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Service & Pricing Details -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
+                <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-soap text-purple-600 dark:text-purple-400 text-sm"></i>
+                </div>
+                <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Service & Pricing</h2>
+            </div>
+            <div class="p-5">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                    <!-- Service Type -->
+                    <div class="sm:col-span-1 flex flex-col items-center justify-center p-5 rounded-xl border-2
+                                @(Model.ServiceType switch {
+                                    "Basic"    => "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50",
+                                    "Standard" => "border-blue-200 dark:border-blue-800/40 bg-blue-50 dark:bg-blue-900/20",
+                                    "Full"     => "border-purple-200 dark:border-purple-800/40 bg-purple-50 dark:bg-purple-900/20",
+                                    "Premium"  => "border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-900/20",
+                                    _          => "border-gray-200 dark:border-gray-600"
+                                })">
+                        @{
+                            var svcIcon = Model.ServiceType switch { "Basic" => "fa-tint", "Standard" => "fa-soap", "Full" => "fa-star", "Premium" => "fa-crown", _ => "fa-soap" };
+                            var svcColor = Model.ServiceType switch { "Basic" => "gray", "Standard" => "blue", "Full" => "purple", "Premium" => "amber", _ => "gray" };
+                        }
+                        <div class="w-12 h-12 rounded-xl bg-@svcColor-100 dark:bg-@svcColor-900/40 flex items-center justify-center mb-2">
+                            <i class="fas @svcIcon text-@svcColor-600 dark:text-@svcColor-400 text-xl"></i>
+                        </div>
+                        <p class="text-lg font-bold text-gray-800 dark:text-gray-100">@Model.ServiceType</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Service Type</p>
+                    </div>
+
+                    <!-- Price Breakdown -->
+                    <div class="sm:col-span-2 space-y-3">
+                        <div class="flex items-center justify-between py-2.5 px-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Service Price</span>
+                            <span class="text-sm font-bold text-gray-800 dark:text-gray-100">$@Model.Price.ToString("F2")</span>
+                        </div>
+                        <div class="flex items-center justify-between py-2.5 px-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Payment Method</span>
+                            <span class="text-sm font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-1.5">
+                                <i class="fas @(Model.PaymentMethod == "EVC+" ? "fa-mobile-alt"
+                                    : Model.PaymentMethod == "E-Dahab" ? "fa-coins"
+                                       : "fa-wallet") text-gray-400 dark:text-gray-500 text-xs"></i>
+                                @Model.PaymentMethod
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between py-2.5 px-4 rounded-xl border-2
+                                    @(isPaid ? "border-green-200 dark:border-green-800/40 bg-green-50 dark:bg-green-900/20"
+                                             : "border-red-200 dark:border-red-800/40 bg-red-50 dark:bg-red-900/20")">
+                            <span class="text-sm @(isPaid ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400")">Payment Status</span>
+                            <span class="text-sm font-bold flex items-center gap-1.5
+                                         @(isPaid ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400")">
+                                <i class="fas @(isPaid ? "fa-check-circle" : "fa-times-circle") text-xs"></i>
+                                @Model.PaymentStatus
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl">
+                            <span class="text-sm text-white/80 font-medium">Total Due</span>
+                            <span class="text-xl font-black text-white">$@Model.Price.ToString("F2")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20">
+                    <div class="w-8 h-8 bg-orange-100 dark:bg-orange-900/40 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-sticky-note text-orange-600 dark:text-orange-400 text-sm"></i>
+                    </div>
+                    <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Notes & Remarks</h2>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-100 dark:border-amber-800/20">
+                        <i class="fas fa-quote-left text-amber-300 dark:text-amber-700 text-lg mt-0.5 flex-shrink-0"></i>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">@Model.Notes</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Quick Actions -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                <div class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-bolt text-gray-600 dark:text-gray-400 text-sm"></i>
+                </div>
+                <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-100">Quick Actions</h2>
+            </div>
+            <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                @foreach (var action in new[]
+                {
+                new { Status = "Pending",    Icon = "fa-clock",        Color = "yellow", Label = "Set Pending"    },
+                new { Status = "InProgress", Icon = "fa-spinner",      Color = "blue",   Label = "Start Washing"  },
+                new { Status = "Completed",  Icon = "fa-check-circle", Color = "green",  Label = "Mark Done"      },
+                new { Status = "Cancelled",  Icon = "fa-times-circle", Color = "red",    Label = "Cancel"         },
+                })
+                {
+                    var isActive = Model.Status == action.Status;
+                    <button onclick="quickUpdateStatus(@Model.Id, '@action.Status')"
+                            class="flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all text-xs font-medium
+                                   @(isActive
+                                       ? $"border-{action.Color}-400 bg-{action.Color}-50 dark:bg-{action.Color}-900/20 text-{action.Color}-700 dark:text-{action.Color}-400 cursor-default"
+                                       : "border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700/50")"
+                    @(isActive ? "disabled" : "")>
+                        <i class="fas @action.Icon text-lg"></i>
+                        @action.Label
+                        @if (isActive)
+                        {
+                            <span class="text-xs opacity-60">Current</span>
+                        }
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== RIGHT SIDEBAR ===================== -->
+    <div class="space-y-4">
+
+        <!-- Status Timeline -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                    <i class="fas fa-history text-gray-400 dark:text-gray-500"></i>
+                    Status Timeline
+                </h3>
+            </div>
+            <div class="p-5">
+                @{
+                    var allStatuses = new[]
+                    {
+                new { Name = "Pending",    Icon = "fa-clock",        Color = "yellow" },
+                new { Name = "InProgress", Icon = "fa-spinner",      Color = "blue"   },
+                new { Name = "Completed",  Icon = "fa-check-circle", Color = "green"  },
+                new { Name = "Cancelled",  Icon = "fa-times-circle", Color = "red"    },
+                };
+                    var currentIndex = Array.FindIndex(allStatuses, s => s.Name == Model.Status);
+                }
+                <div class="space-y-1">
+                    @for (int i = 0; i < allStatuses.Length; i++)
+                    {
+                        var st = allStatuses[i];
+                        var isDone = i < currentIndex || Model.Status == st.Name;
+                        var isCurr = Model.Status == st.Name;
+                        var isCanc = Model.Status == "Cancelled";
+
+                        <div class="flex items-center gap-3 @(i < allStatuses.Length - 1 ? "mb-1" : "")">
+                            <!-- Dot -->
+                            <div class="relative flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 z-10
+                                            @(isCurr  ? $"bg-{st.Color}-100 dark:bg-{st.Color}-900/40 border-2 border-{st.Color}-400"
+                                            : isDone && !isCanc ? "bg-green-100 dark:bg-green-900/40 border-2 border-green-400"
+                                            : "bg-gray-100 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600")">
+                                    <i class="fas @(isCurr ? st.Icon : isDone && !isCanc ? "fa-check" : st.Icon) text-xs
+                                               @(isCurr  ? $"text-{st.Color}-600 dark:text-{st.Color}-400"
+                                               : isDone && !isCanc ? "text-green-600 dark:text-green-400"
+                                               : "text-gray-300 dark:text-gray-600")"></i>
+                                </div>
+                                @if (i < allStatuses.Length - 1)
+                                {
+                                    <div class="w-0.5 h-4 @(isDone && !isCanc && i < currentIndex ? "bg-green-400" : "bg-gray-200 dark:bg-gray-700") mt-1"></div>
+                                }
+                            </div>
+                            <!-- Label -->
+                            <div class="flex-1 py-1">
+                                <p class="text-xs font-semibold
+                                          @(isCurr  ? $"text-{st.Color}-700 dark:text-{st.Color}-400"
+                                          : isDone && !isCanc ? "text-green-700 dark:text-green-400"
+                                          : "text-gray-400 dark:text-gray-500")">
+                                    @st.Name
+                                    @if (isCurr)
+                                    {
+                                        <span class="ml-1 text-xs opacity-60">(current)</span>
+                                    }
+                                </p>
+                                @if (isCurr && st.Name == "Completed" && Model.CompletedAt.HasValue)
+                                {
+                                    <p class="text-xs text-gray-400 dark:text-gray-500">@Model.CompletedAt.Value.ToString("MMM dd, hh:mm tt")</p>
+                                }
+                                @if (isCurr && st.Name == "Pending")
+                                {
+                                    <p class="text-xs text-gray-400 dark:text-gray-500">@Model.CreatedAt.ToString("MMM dd, hh:mm tt")</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Record Meta -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                    <i class="fas fa-info-circle text-gray-400 dark:text-gray-500"></i>
+                    Record Info
+                </h3>
+            </div>
+            <div class="p-5 space-y-3">
+                @foreach (var meta in new[]
+                {
+                new { Label = "Record ID",   Value = $"#{Model.Id}",                              Icon = "fa-hashtag"   },
+                new { Label = "Created by",  Value = Model.CreatedBy ?? "Unknown",                Icon = "fa-user"      },
+                new { Label = "Created at",  Value = Model.CreatedAt.ToString("MMM dd, yyyy"),    Icon = "fa-calendar"  },
+                new { Label = "Created time",Value = Model.CreatedAt.ToString("hh:mm tt"),        Icon = "fa-clock"     },
+                new { Label = "Assigned to", Value = Model.AssignedTo ?? "Unassigned",            Icon = "fa-user-check"},
+                })
+                {
+                    <div class="flex items-center justify-between py-2 border-b border-gray-50 dark:border-gray-700/50 last:border-0">
+                        <span class="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1.5">
+                            <i class="fas @meta.Icon text-gray-300 dark:text-gray-600 w-3"></i>
+                            @meta.Label
+                        </span>
+                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">@meta.Value</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 space-y-2">
+            <a href="@Url.Action("Edit", new { id = Model.Id })"
+               class="flex items-center gap-3 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-xl transition-colors text-sm font-medium border border-amber-200 dark:border-amber-800/40">
+                <i class="fas fa-edit w-4 text-center"></i>
+                Edit This Record
+            </a>
+            <a href="@Url.Action("Create")"
+               class="flex items-center gap-3 px-4 py-3 bg-cyan-50 dark:bg-cyan-900/20 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 text-cyan-700 dark:text-cyan-400 rounded-xl transition-colors text-sm font-medium border border-cyan-200 dark:border-cyan-800/40">
+                <i class="fas fa-plus w-4 text-center"></i>
+                New Car Wash Record
+            </a>
+            <a href="@Url.Action("Index")"
+               class="flex items-center gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl transition-colors text-sm font-medium">
+                <i class="fas fa-list w-4 text-center"></i>
+                Back to All Records
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== DELETE MODAL ===================== -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700 animate-scaleIn">
+        <div class="p-6">
+            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/40 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-trash text-red-500 dark:text-red-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 text-center mb-1">Delete Record</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-1">Are you sure you want to delete the record for</p>
+            <p id="deleteInfo" class="text-sm font-semibold text-gray-800 dark:text-gray-100 text-center mb-6"></p>
+            <div class="flex gap-3">
+                <button onclick="closeDeleteModal()"
+                        class="flex-1 px-4 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-xl transition-colors">
+                    Cancel
+                </button>
+                <form id="deleteForm" method="post" class="flex-1">
+                    @Html.AntiForgeryToken()
+                    <button type="submit"
+                            class="w-full px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-xl transition-colors">
+                        Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // ========== DELETE MODAL ==========
+        function confirmDelete(id, name, plate) {
+            document.getElementById('deleteInfo').textContent = name + ' (' + plate + ')';
+            document.getElementById('deleteForm').action = '/CarWash/Delete/' + id;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDeleteModal();
+        });
+
+        // ========== QUICK STATUS UPDATE ==========
+        async function quickUpdateStatus(id, status) {
+            try {
+                const token = document.querySelector('#deleteForm input[name="__RequestVerificationToken"]')?.value ?? '';
+                const res   = await fetch('/CarWash/UpdateStatus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${id}&status=${status}&__RequestVerificationToken=${encodeURIComponent(token)}`
+                });
+                const data = await res.json();
+                if (data.success) location.reload();
+            } catch(e) { console.error(e); }
+        }
+    </script>
+}

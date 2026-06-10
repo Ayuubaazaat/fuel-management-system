@@ -119,6 +119,48 @@ namespace FuelManagement.Controllers
             var activePumpCount = await _context.Pumps.CountAsync(p => p.Status == "Active");
             var activeSessions = fuelingNow + activePumpCount;
 
+            // ========== CAR WASH ==========
+            var todayCarWashes = await _context.CarWashes
+                .CountAsync(c => c.CreatedAt.Date == today);
+
+            var todayCarWashRevenue = await _context.CarWashes
+                .Where(c => c.CreatedAt.Date == today && c.PaymentStatus == "Paid")
+                .SumAsync(c => (decimal?)c.Price) ?? 0;
+
+            var totalCarWashes = await _context.CarWashes.CountAsync();
+
+            var totalCarWashRevenue = await _context.CarWashes
+                .Where(c => c.PaymentStatus == "Paid")
+                .SumAsync(c => (decimal?)c.Price) ?? 0;
+
+            var pendingCarWashes = await _context.CarWashes
+                .CountAsync(c => c.Status == "Pending" || c.Status == "InProgress");
+
+            // ========== FUEL CLIENTS ==========
+            var totalClients = await _context.FuelClients.CountAsync();
+
+            var activeClients = await _context.FuelClients
+                .CountAsync(c => c.IsActive == true);
+
+            var newClientsThisMonth = await _context.FuelClients
+                .CountAsync(c => c.CreatedAt.Month == today.Month
+                              && c.CreatedAt.Year == today.Year);
+
+            // ========== COMPENSATION ==========
+            var totalCompensationPaidThisMonth = await _context.Compensations
+                .Where(c => c.PaymentDate.Month == today.Month
+                         && c.PaymentDate.Year == today.Year
+                         && c.PaymentStatus == "Paid")
+                .SumAsync(c => (decimal?)c.NetSalary) ?? 0;
+
+            var totalEmployees = await _context.Compensations
+                .Select(c => c.EmployeeName)
+                .Distinct()
+                .CountAsync();
+
+            var pendingCompensations = await _context.Compensations
+                .CountAsync(c => c.PaymentStatus == "Pending");
+
             // ========== GROWTH PERCENTAGES ==========
             var lastMonth = today.AddMonths(-1);
             var lastMonthRevenue = await fuelSalesQuery
@@ -289,6 +331,23 @@ namespace FuelManagement.Controllers
                 TotalInventory = totalInventoryStock,
                 ActiveSessions = activeSessions,
                 FuelingNow = fuelingNow,
+
+                // Car Wash card data
+                TodayCarWashes = todayCarWashes,
+                TodayCarWashRevenue = todayCarWashRevenue,
+                TotalCarWashes = totalCarWashes,
+                TotalCarWashRevenue = totalCarWashRevenue,
+                PendingCarWashes = pendingCarWashes,
+
+                //  Fuel Clients card data
+                TotalClients = totalClients,
+                ActiveClients = activeClients,
+                NewClientsThisMonth = newClientsThisMonth,
+
+                // Compensation card data
+                TotalCompensationPaidThisMonth = totalCompensationPaidThisMonth,
+                TotalEmployees = totalEmployees,
+                PendingCompensations = pendingCompensations,
 
                 // Growth Percentages
                 RevenueGrowthPercentage = revenueGrowth,
