@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -57,7 +57,7 @@ namespace FuelManagement.Models
         [Required]
         [Display(Name = "Installation Date")]
         [DataType(DataType.Date)]
-        public DateTime InstallationDate { get; set; } = DateTime.Now;
+        public DateTime InstallationDate { get; set; } = DateTime.UtcNow;
 
         [StringLength(500)]
         [Display(Name = "Notes")]
@@ -66,7 +66,7 @@ namespace FuelManagement.Models
 
         // Timestamps
         [Display(Name = "Created At")]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Display(Name = "Updated At")]
         public DateTime? UpdatedAt { get; set; }

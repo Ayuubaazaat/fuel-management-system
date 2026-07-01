@@ -1,4 +1,4 @@
-ï»¿@model FuelManagement.Models.CarWash
+@model FuelManagement.Models.CarWash
 @{
     ViewData["Title"] = "New Car Wash Record";
 }
@@ -98,13 +98,13 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4" id="serviceSelector">
                         @foreach (var svc in new[]
                         {
-                        new { Name = "Basic",    Icon = "fa-tint",       Color = "gray",   Price = "10.00", Desc = "Exterior rinse" },
-                        new { Name = "Standard", Icon = "fa-soap",       Color = "blue",   Price = "15.00", Desc = "Wash + dry"      },
-                        new { Name = "Full",     Icon = "fa-star",       Color = "purple", Price = "25.00", Desc = "Interior + exterior" },
-                        new { Name = "Premium",  Icon = "fa-crown",      Color = "amber",  Price = "35.00", Desc = "Full detail"     },
+                            new { Name = "Basic",    Icon = "fa-tint",       Color = "gray",   Price = "10.00", Desc = "Exterior rinse" },
+                            new { Name = "Standard", Icon = "fa-soap",       Color = "blue",   Price = "15.00", Desc = "Wash + dry"      },
+                            new { Name = "Full",     Icon = "fa-star",       Color = "purple", Price = "25.00", Desc = "Interior + exterior" },
+                            new { Name = "Premium",  Icon = "fa-crown",      Color = "amber",  Price = "35.00", Desc = "Full detail"     },
                         })
                         {
-                            var borderSel = $"border-{svc.Color}-500 bg-{svc.Color}-50 dark:bg-{svc.Color}-900/20";
+                            var borderSel  = $"border-{svc.Color}-500 bg-{svc.Color}-50 dark:bg-{svc.Color}-900/20";
                             var borderNorm = "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50";
                             <button type="button"
                                     onclick="selectService('@svc.Name', '@svc.Price')"
@@ -177,9 +177,9 @@
                         <label asp-for="PaymentMethod" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1.5"></label>
                         <div class="relative">
                             <i class="fas fa-wallet absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
-                            @* In Create.cshtml â€” PaymentMethod select *@
+                            @* In Create.cshtml — PaymentMethod select *@
                             <select asp-for="PaymentMethod"
-                                    class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all appearance-none">
+                                class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all appearance-none">
                                 <option value="EVC+">EVC+</option>
                                 <option value="E-Dahab">E-Dahab</option>
                                 <option value="JEEB">JEEB</option>
@@ -285,7 +285,7 @@
             <div class="p-4 space-y-3">
                 <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
                     <span class="text-xs text-gray-500 dark:text-gray-400">Service</span>
-                    <span id="previewService" class="text-xs font-semibold text-gray-800 dark:text-gray-100">â€”</span>
+                    <span id="previewService" class="text-xs font-semibold text-gray-800 dark:text-gray-100">—</span>
                 </div>
                 <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
                     <span class="text-xs text-gray-500 dark:text-gray-400">Price</span>
@@ -297,7 +297,7 @@
                 </div>
                 <div class="flex items-center justify-between py-2">
                     <span class="text-xs text-gray-500 dark:text-gray-400">Payment</span>
-                    <span id="previewPayment" class="text-xs font-semibold text-gray-800 dark:text-gray-100">Unpaid Â· Cash</span>
+                    <span id="previewPayment" class="text-xs font-semibold text-gray-800 dark:text-gray-100">Unpaid · Cash</span>
                 </div>
             </div>
 
@@ -307,10 +307,10 @@
                 <div class="space-y-2">
                     @foreach (var svc in new[]
                     {
-                    new { Name = "Basic",    Price = "$10", Color = "gray"   },
-                    new { Name = "Standard", Price = "$15", Color = "blue"   },
-                    new { Name = "Full",     Price = "$25", Color = "purple" },
-                    new { Name = "Premium",  Price = "$35", Color = "amber"  },
+                        new { Name = "Basic",    Price = "$10", Color = "gray"   },
+                        new { Name = "Standard", Price = "$15", Color = "blue"   },
+                        new { Name = "Full",     Price = "$25", Color = "purple" },
+                        new { Name = "Premium",  Price = "$35", Color = "amber"  },
                     })
                     {
                         <div class="flex items-center justify-between">
@@ -339,59 +339,57 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script>
-        // ========== SERVICE CARD SELECTOR ==========
-        function selectService(name, price) {
-            document.getElementById('ServiceType').value = name;
-            document.getElementById('priceInput').value  = price;
-            updatePreview();
-
-            document.querySelectorAll('.service-btn').forEach(btn => {
-                const isSelected = btn.dataset.service === name;
-                btn.classList.toggle('ring-2',        isSelected);
-                btn.classList.toggle('ring-cyan-500', isSelected);
-                btn.querySelector('.check-icon').classList.toggle('hidden',    !isSelected);
-                btn.querySelector('.check-icon').classList.toggle('flex',       isSelected);
-            });
-        }
-
-        // ========== LIVE PREVIEW ==========
-        function updatePreview() {
-            const name    = document.getElementById('CustomerName')?.value  || 'â€”';
-            const plate   = document.getElementById('VehiclePlate')?.value  || '---';
-            const vehicle = document.getElementById('VehicleType')?.value   || 'Vehicle type';
-            const service = document.getElementById('ServiceType')?.value   || 'â€”';
-            const price   = parseFloat(document.getElementById('priceInput')?.value) || 0;
-            const status  = document.getElementById('Status')?.value        || 'Pending';
-            const method  = document.getElementById('PaymentMethod')?.value || 'Cash';
-            const payment = document.getElementById('PaymentStatus')?.value || 'Unpaid';
-
-            document.getElementById('previewName').textContent    = name;
-            document.getElementById('previewPlate').textContent   = plate.toUpperCase() || '---';
-            document.getElementById('previewVehicle').textContent = vehicle;
-            document.getElementById('previewService').textContent = service;
-            document.getElementById('previewPrice').textContent   = '$' + price.toFixed(2);
-            document.getElementById('previewStatus').textContent  = status;
-            document.getElementById('previewPayment').textContent = payment + ' Â· ' + method;
-        }
-
-        // Auto-uppercase plate
-        document.getElementById('VehiclePlate')?.addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-            updatePreview();
-        });
-
-        // Wire all inputs to preview
-        ['CustomerName', 'VehicleType', 'priceInput',
-         'Status', 'PaymentMethod', 'PaymentStatus'].forEach(id => {
-            document.getElementById(id)?.addEventListener('input',  updatePreview);
-            document.getElementById(id)?.addEventListener('change', updatePreview);
-        });
-
-        // Init preview
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    // ========== SERVICE CARD SELECTOR ==========
+    function selectService(name, price) {
+        document.getElementById('ServiceType').value = name;
+        document.getElementById('priceInput').value  = price;
         updatePreview();
-    </script>
+
+        document.querySelectorAll('.service-btn').forEach(btn => {
+            const isSelected = btn.dataset.service === name;
+            btn.classList.toggle('ring-2',        isSelected);
+            btn.classList.toggle('ring-cyan-500', isSelected);
+            btn.querySelector('.check-icon').classList.toggle('hidden',    !isSelected);
+            btn.querySelector('.check-icon').classList.toggle('flex',       isSelected);
+        });
+    }
+
+    // ========== LIVE PREVIEW ==========
+    function updatePreview() {
+        const name    = document.getElementById('CustomerName')?.value  || '—';
+        const plate   = document.getElementById('VehiclePlate')?.value  || '---';
+        const vehicle = document.getElementById('VehicleType')?.value   || 'Vehicle type';
+        const service = document.getElementById('ServiceType')?.value   || '—';
+        const price   = parseFloat(document.getElementById('priceInput')?.value) || 0;
+        const status  = document.getElementById('Status')?.value        || 'Pending';
+        const method  = document.getElementById('PaymentMethod')?.value || 'Cash';
+        const payment = document.getElementById('PaymentStatus')?.value || 'Unpaid';
+
+        document.getElementById('previewName').textContent    = name;
+        document.getElementById('previewPlate').textContent   = plate.toUpperCase() || '---';
+        document.getElementById('previewVehicle').textContent = vehicle;
+        document.getElementById('previewService').textContent = service;
+        document.getElementById('previewPrice').textContent   = '$' + price.toFixed(2);
+        document.getElementById('previewStatus').textContent  = status;
+        document.getElementById('previewPayment').textContent = payment + ' · ' + method;
+    }
+
+    // Auto-uppercase plate
+    document.getElementById('VehiclePlate')?.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+        updatePreview();
+    });
+
+    // Wire all inputs to preview
+    ['CustomerName', 'VehicleType', 'priceInput',
+     'Status', 'PaymentMethod', 'PaymentStatus'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input',  updatePreview);
+        document.getElementById(id)?.addEventListener('change', updatePreview);
+    });
+
+    // Init preview
+    updatePreview();
+</script>
 }

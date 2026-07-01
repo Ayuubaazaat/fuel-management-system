@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +29,7 @@ namespace FuelManagement.Models
         [Required(ErrorMessage = "Trip date is required")]
         [DataType(DataType.Date)]
         [Display(Name = "Trip Date")]
-        public DateTime TripDate { get; set; } = DateTime.Today;
+        public DateTime TripDate { get; set; } = DateTime.UtcNow.Date;
 
         [Required(ErrorMessage = "Distance is required")]
         [Range(0.1, 9999, ErrorMessage = "Distance must be between 0.1 and 9,999 km")]

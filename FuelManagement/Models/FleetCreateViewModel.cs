@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,7 +38,7 @@ namespace FuelManagement.Models
 
         [Required(ErrorMessage = "Last service date is required")]
         [Display(Name = "Last Service Date")]
-        public DateTime LastServiceDate { get; set; } = DateTime.Today;
+        public DateTime LastServiceDate { get; set; } = DateTime.UtcNow.Date;
 
         [Required(ErrorMessage = "Odometer reading is required")]
         [Range(0, 999999, ErrorMessage = "Odometer must be between 0 and 999,999")]
@@ -48,7 +48,7 @@ namespace FuelManagement.Models
         [Required(ErrorMessage = "Next service due date is required")]
         [Display(Name = "Next Service Due")]
         [DataType(DataType.Date)]
-        public DateTime NextServiceDue { get; set; } = DateTime.Today.AddMonths(1);
+        public DateTime NextServiceDue { get; set; } = DateTime.UtcNow.Date.AddMonths(1);
 
         [Display(Name = "Notes")]
         public string? Notes { get; set; }  // Made nullable with ?

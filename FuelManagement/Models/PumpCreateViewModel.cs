@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +37,7 @@ namespace FuelManagement.Models
         [Required(ErrorMessage = "Installation date is required")]
         [DataType(DataType.Date)]
         [Display(Name = "Installation Date")]
-        public DateTime InstallationDate { get; set; } = DateTime.Now;
+        public DateTime InstallationDate { get; set; } = DateTime.UtcNow;
 
         [DataType(DataType.Date)]
         [Display(Name = "Last Maintenance Date")]

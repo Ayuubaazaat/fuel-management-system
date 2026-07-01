@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FuelManagement.Models
 {
@@ -24,7 +24,7 @@ namespace FuelManagement.Models
         public string FormattedBonus => Bonus.ToString("C");
         public string FormattedDeductions => Deductions.ToString("C");
         public string FormattedNetSalary => NetSalary.ToString("C");
-        public int DaysUntilPayment => (PaymentDate - DateTime.Today).Days;
+        public int DaysUntilPayment => (PaymentDate - DateTime.UtcNow.Date).Days;
 
         public string StatusColor => Status switch
         {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,12 +57,12 @@ namespace FuelManagement.Models
         [Required(ErrorMessage = "Issue date is required")]
         [Display(Name = "Issue Date")]
         [DataType(DataType.Date)]
-        public DateTime IssueDate { get; set; } = DateTime.Today;
+        public DateTime IssueDate { get; set; } = DateTime.UtcNow.Date;
 
         [Required(ErrorMessage = "Due date is required")]
         [Display(Name = "Due Date")]
         [DataType(DataType.Date)]
-        public DateTime DueDate { get; set; } = DateTime.Today.AddDays(30);
+        public DateTime DueDate { get; set; } = DateTime.UtcNow.Date.AddDays(30);
 
         [Display(Name = "Notes")]
         [DataType(DataType.MultilineText)]

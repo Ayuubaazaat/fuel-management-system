@@ -2,10 +2,10 @@
 @using FuelManagement.Models.Enums
 @{
     ViewData["Title"] = "Records";
-    var tab = ViewBag.Tab as string ?? "activity";
+    var tab         = ViewBag.Tab as string ?? "activity";
     var currentPage = (int)(ViewBag.CurrentPage ?? 1);
-    var totalPages = (int)(ViewBag.TotalPages ?? 1);
-    var modules = ViewBag.Modules as List<string> ?? new List<string>();
+    var totalPages  = (int)(ViewBag.TotalPages  ?? 1);
+    var modules     = ViewBag.Modules as List<string> ?? new List<string>();
 }
 
 <!-- ===================== HERO BANNER ===================== -->
@@ -190,9 +190,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                        @{
-                            int rowNum = 0;
-                        }
+                        @{ int rowNum = 0; }
                         @foreach (var log in Model.ActivityLogs)
                         {
                             rowNum++;
@@ -201,27 +199,27 @@
                             switch (log.Type)
                             {
                                 case NotificationType.Success:
-                                    typeBg = "bg-green-100 dark:bg-green-900/40";
+                                    typeBg   = "bg-green-100 dark:bg-green-900/40";
                                     typeText = "text-green-700 dark:text-green-300";
                                     typeIcon = "fa-check-circle";
                                     break;
                                 case NotificationType.Warning:
-                                    typeBg = "bg-yellow-100 dark:bg-yellow-900/40";
+                                    typeBg   = "bg-yellow-100 dark:bg-yellow-900/40";
                                     typeText = "text-yellow-700 dark:text-yellow-300";
                                     typeIcon = "fa-exclamation-triangle";
                                     break;
                                 case NotificationType.Alert:
-                                    typeBg = "bg-orange-100 dark:bg-orange-900/40";
+                                    typeBg   = "bg-orange-100 dark:bg-orange-900/40";
                                     typeText = "text-orange-700 dark:text-orange-300";
                                     typeIcon = "fa-bell";
                                     break;
                                 case NotificationType.Error:
-                                    typeBg = "bg-red-100 dark:bg-red-900/40";
+                                    typeBg   = "bg-red-100 dark:bg-red-900/40";
                                     typeText = "text-red-700 dark:text-red-300";
                                     typeIcon = "fa-times-circle";
                                     break;
                                 default:
-                                    typeBg = "bg-blue-100 dark:bg-blue-900/40";
+                                    typeBg   = "bg-blue-100 dark:bg-blue-900/40";
                                     typeText = "text-blue-700 dark:text-blue-300";
                                     typeIcon = "fa-info-circle";
                                     break;
@@ -383,9 +381,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                        @{
-                            int sessionNum = 0;
-                        }
+                        @{ int sessionNum = 0; }
                         @foreach (var session in Model.LoginSessions)
                         {
                             sessionNum++;

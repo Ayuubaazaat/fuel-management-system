@@ -1,4 +1,4 @@
-﻿using FuelManagement.Models;
+using FuelManagement.Models;
 using FuelManagement.Services;
 using FuelManagement.Services.Interfaces; // [ADDED] Required to inject INotificationService
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +27,7 @@ namespace FuelManagement.Controllers
 
         public IActionResult Create()
         {
-            var shift = new Shift { StartTime = DateTime.Now };
+            var shift = new Shift { StartTime = DateTime.UtcNow };
             return View(shift);
         }
 
@@ -162,7 +162,7 @@ namespace FuelManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ── Helpers ──────────────────────────────────────────────────────────
+        // -- Helpers ----------------------------------------------------------
 
         private async Task<string> SaveAvatarAsync(IFormFile file)
         {

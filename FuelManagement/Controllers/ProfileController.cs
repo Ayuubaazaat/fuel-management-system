@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -173,7 +173,7 @@ namespace FuelManagement.Controllers
                 user.Email = model.Email;
                 user.Phone = model.Phone;
                 user.Bio = model.Bio;
-                user.UpdatedAt = DateTime.Now;
+                user.UpdatedAt = DateTime.UtcNow;
 
                 await _userService.UpdateUserAsync(user);
 
@@ -216,7 +216,7 @@ namespace FuelManagement.Controllers
                     return Json(new { success = false, message = "Current password is incorrect" });
 
                 user.PasswordHash = _authService.HashPassword(model.NewPassword);
-                user.UpdatedAt = DateTime.Now;
+                user.UpdatedAt = DateTime.UtcNow;
                 await _userService.UpdateUserAsync(user);
 
                 return Json(new { success = true, message = "Password changed successfully!" });
@@ -243,7 +243,7 @@ namespace FuelManagement.Controllers
                     return Json(new { success = false, message = "User not found" });
 
                 user.TwoFactorEnabled = enabled;
-                user.UpdatedAt = DateTime.Now;
+                user.UpdatedAt = DateTime.UtcNow;
                 await _userService.UpdateUserAsync(user);
 
                 return Json(new { success = true, enabled = enabled });

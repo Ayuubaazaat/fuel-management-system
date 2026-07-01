@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FuelManagement.Models
 {
@@ -36,7 +36,7 @@ namespace FuelManagement.Models
         public string FormattedDueDate => DueDate.ToString("MMM dd, yyyy");
         public string FormattedCreatedAt => CreatedAt.ToString("MMM dd, yyyy");
 
-        public int DaysUntilDue => (DueDate - DateTime.Today).Days;
+        public int DaysUntilDue => (DueDate - DateTime.UtcNow.Date).Days;
         public bool IsOverdue => DaysUntilDue < 0 && BalanceDue > 0;
 
         public string StatusColor => PaymentStatus switch

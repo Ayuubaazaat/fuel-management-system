@@ -1,4 +1,4 @@
-ï»¿using FuelManagement.Data;
+using FuelManagement.Data;
 using FuelManagement.Models;
 using FuelManagement.Services;
 using FuelManagement.Services.Interfaces;
@@ -64,8 +64,8 @@ namespace FuelManagement.Controllers
 
             ViewBag.TotalWashes = allRecords.Count;
             ViewBag.TotalRevenue = allRecords.Where(c => c.PaymentStatus == "Paid").Sum(c => c.Price);
-            ViewBag.TodayWashes = allRecords.Count(c => c.CreatedAt.Date == DateTime.Today);
-            ViewBag.TodayRevenue = allRecords.Where(c => c.CreatedAt.Date == DateTime.Today && c.PaymentStatus == "Paid").Sum(c => c.Price);
+            ViewBag.TodayWashes = allRecords.Count(c => c.CreatedAt.Date == DateTime.UtcNow.Date);
+            ViewBag.TodayRevenue = allRecords.Where(c => c.CreatedAt.Date == DateTime.UtcNow.Date && c.PaymentStatus == "Paid").Sum(c => c.Price);
             ViewBag.PendingCount = allRecords.Count(c => c.Status == "Pending");
             ViewBag.InProgressCount = allRecords.Count(c => c.Status == "InProgress");
             ViewBag.CompletedCount = allRecords.Count(c => c.Status == "Completed");
@@ -101,7 +101,7 @@ namespace FuelManagement.Controllers
             var model = new CarWash
             {
                 CreatedBy = User.Identity?.Name ?? "Unknown",
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 PaymentMethod = "EVC+"
             };
             return View(model);
@@ -125,11 +125,11 @@ namespace FuelManagement.Controllers
             if (ModelState.IsValid)
             {
                 model.VehiclePlate = model.VehiclePlate.ToUpper();
-                model.CreatedAt = DateTime.Now;
+                model.CreatedAt = DateTime.UtcNow;
                 model.CreatedBy = User.Identity?.Name ?? "Unknown";
 
                 if (model.Status == "Completed")
-                    model.CompletedAt = DateTime.Now;
+                    model.CompletedAt = DateTime.UtcNow;
 
                 _context.CarWashes.Add(model);
                 await _context.SaveChangesAsync();
@@ -173,7 +173,7 @@ namespace FuelManagement.Controllers
         {
             if (id != model.Id) return NotFound();
 
-            // Plate uniqueness â€” skip own record
+            // Plate uniqueness — skip own record
             var plateExists = await _context.CarWashes
                 .AnyAsync(c => c.VehiclePlate.ToUpper() == model.VehiclePlate.ToUpper()
                             && c.Id != model.Id);
@@ -195,7 +195,7 @@ namespace FuelManagement.Controllers
                         .FirstOrDefaultAsync();
 
                     if (model.Status == "Completed" && model.CompletedAt == null)
-                        model.CompletedAt = DateTime.Now;
+                        model.CompletedAt = DateTime.UtcNow;
 
                     if (model.Status != "Completed")
                         model.CompletedAt = null;
@@ -250,7 +250,7 @@ namespace FuelManagement.Controllers
             _context.CarWashes.Remove(carWash);
             await _context.SaveChangesAsync();
 
-            // Fire delete notification â€” points to index since record is gone
+            // Fire delete notification — points to index since record is gone
             var actionUrl = Url.Action("Index", "CarWash") ?? "/CarWash";
             await _notificationService.CreateCarWashDeletedNotification(
                 washId, customerName, vehiclePlate, actionUrl);
@@ -277,7 +277,7 @@ namespace FuelManagement.Controllers
             carWash.Status = status;
 
             if (status == "Completed")
-                carWash.CompletedAt = DateTime.Now;
+                carWash.CompletedAt = DateTime.UtcNow;
             else
                 carWash.CompletedAt = null;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FuelManagement.Models
 {
@@ -46,7 +46,7 @@ namespace FuelManagement.Models
             get
             {
                 if (!NextMaintenanceDue.HasValue) return 0;
-                return (NextMaintenanceDue.Value - DateTime.Today).Days;
+                return (NextMaintenanceDue.Value - DateTime.UtcNow.Date).Days;
             }
         }
 
@@ -59,7 +59,7 @@ namespace FuelManagement.Models
                 var daysUntilDue = DaysUntilMaintenance;
                 if (daysUntilDue <= 0) return 100;
 
-                var daysSinceLastMaintenance = (DateTime.Today - LastMaintenanceDate.Value).Days;
+                var daysSinceLastMaintenance = (DateTime.UtcNow.Date - LastMaintenanceDate.Value).Days;
                 var totalCycleDays = 90;
 
                 if (NextMaintenanceDue.HasValue && LastMaintenanceDate.HasValue)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FuelManagement.Models
@@ -27,14 +27,14 @@ namespace FuelManagement.Models
         [Display(Name = "Price per Liter")]
         public decimal PricePerLiter { get; set; }
 
-        // Calculated automatically — not stored in form
+        // Calculated automatically � not stored in form
         [Display(Name = "Amount")]
         public decimal Amount => Liters * PricePerLiter;
 
         [Required(ErrorMessage = "Date is required")]
         [Display(Name = "Date")]
         [DataType(DataType.Date)]
-        public DateTime Date { get; set; } = DateTime.Today;
+        public DateTime Date { get; set; } = DateTime.UtcNow.Date;
 
         [Required(ErrorMessage = "Pump number is required")]
         [Display(Name = "Pump Number")]

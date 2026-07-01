@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Data;
 using FuelManagement.Services.Interfaces;
@@ -73,7 +73,7 @@ namespace FuelManagement.Controllers
         {
             var query = _context.Inventories.AsQueryable();
 
-            // ✅ SAFE DATE FILTER
+            // ? SAFE DATE FILTER
             if (startDate.HasValue && startDate.Value != DateTime.MinValue)
             {
                 var start = startDate.Value.Date;
@@ -311,7 +311,7 @@ namespace FuelManagement.Controllers
                 Capacity = inventory.Capacity,
                 CurrentStock = inventory.CurrentStock,
                 Status = inventory.Status,
-                LastRefillDate = inventory.LastRefillDate ?? DateTime.Today,
+                LastRefillDate = inventory.LastRefillDate ?? DateTime.UtcNow.Date,
                 Notes = inventory.Notes
             });
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -72,7 +72,7 @@ namespace FuelManagement.Models
         {
             get
             {
-                var daysUntilDue = (NextServiceDue - DateTime.Today).Days;
+                var daysUntilDue = (NextServiceDue - DateTime.UtcNow.Date).Days;
                 if (daysUntilDue <= 0) return 100;
                 if (daysUntilDue >= 30) return 0;
                 return 100 - (int)((daysUntilDue / 30.0) * 100);

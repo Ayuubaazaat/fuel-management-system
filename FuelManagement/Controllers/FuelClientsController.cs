@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -112,7 +112,7 @@ namespace FuelManagement.Controllers
                 {
                     Total = g.Count(),
                     Active = g.Count(c => c.IsActive),
-                    NewThisMonth = g.Count(c => c.CreatedAt.Month == DateTime.Now.Month && c.CreatedAt.Year == DateTime.Now.Year),
+                    NewThisMonth = g.Count(c => c.CreatedAt.Month == DateTime.UtcNow.Month && c.CreatedAt.Year == DateTime.UtcNow.Year),
                     Fleet = g.Count(c => c.ClientType == "Fleet"),
                     Corporate = g.Count(c => c.ClientType == "Corporate"),
                     Individual = g.Count(c => c.ClientType == "Individual")
@@ -177,7 +177,7 @@ namespace FuelManagement.Controllers
                     Country = viewModel.Country,
                     IsActive = viewModel.IsActive,
                     Notes = viewModel.Notes?.Trim(),
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     CreatedBy = User.Identity?.Name ?? "System"
                 };
 
@@ -274,7 +274,7 @@ namespace FuelManagement.Controllers
                 client.Country = viewModel.Country;
                 client.IsActive = viewModel.IsActive;
                 client.Notes = viewModel.Notes?.Trim();
-                client.UpdatedAt = DateTime.Now;
+                client.UpdatedAt = DateTime.UtcNow;
                 client.UpdatedBy = User.Identity?.Name ?? "System";
 
                 await _context.SaveChangesAsync();

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
-
 namespace FuelManagement.Data
 {
     public class ApplicationDbContext : DbContext
@@ -16,30 +15,19 @@ namespace FuelManagement.Data
 
         // DbSets
         public DbSet<User> Users { get; set; }
-
         public DbSet<FuelSale> FuelSales { get; set; }
-
         public DbSet<Inventory> Inventories { get; set; }
-
         public DbSet<Fleet> Fleet { get; set; }
-
         public DbSet<Pump> Pumps { get; set; }
-
         public DbSet<Trip> Trips { get; set; }
-
         public DbSet<Compensation> Compensations { get; set; }
-
         public DbSet<Invoice> Invoices { get; set; }
-
         public DbSet<Receipt> Receipts { get; set; }
-
         public DbSet<FuelClient> FuelClients { get; set; }
-
         public DbSet<Notification> Notifications { get; set; }
-
         public DbSet<Shift> Shifts { get; set; }
-
         public DbSet<CarWash> CarWashes { get; set; }
+
         // Future DbSets for other modules
         // public DbSet<Vehicle> Vehicles { get; set; }
         // public DbSet<Compensation> Compensations { get; set; }
@@ -77,7 +65,7 @@ namespace FuelManagement.Data
             // Connection string should be in appsettings.json for runtime
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Name=ConnectionStrings:DefaultConnection");
+                optionsBuilder.UseNpgsql("Name=ConnectionStrings:DefaultConnection");
             }
         }
     }

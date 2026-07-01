@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FuelManagement.Data;
 using FuelManagement.Models;
@@ -33,7 +33,7 @@ namespace FuelManagement.Controllers
             string paymentMethod = null,
             string status = null)
         {
-            var today = DateTime.Today;
+            var today = DateTime.UtcNow.Date;
             var thirtyDaysAgo = today.AddDays(-30);
 
             // Use provided filters or defaults
@@ -337,7 +337,7 @@ namespace FuelManagement.Controllers
             var viewModel = new FuelSaleCreateViewModel
             {
                 InvoiceNumber = nextInvoiceNumber,
-                Date = DateTime.Today
+                Date = DateTime.UtcNow.Date
             };
 
             return View(viewModel);
@@ -597,7 +597,7 @@ namespace FuelManagement.Controllers
                     IssueDate = sale.Date,
                     DueDate = sale.Date.AddDays(30), // 30 days payment terms
                     CreatedBy = "System (Auto from Fuel Sale)",
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     Notes = $"Auto-generated from fuel sale. Payment method: {sale.PaymentMethod}, Pump: {sale.PumpNumber}",
                     FuelSaleId = sale.Id
                 };
@@ -605,12 +605,12 @@ namespace FuelManagement.Controllers
                 _context.Invoices.Add(invoice);
                 await _context.SaveChangesAsync();
 
-                Console.WriteLine($"✅ Invoice {invoice.InvoiceNumber} created automatically from fuel sale {sale.Id}");
+                Console.WriteLine($"? Invoice {invoice.InvoiceNumber} created automatically from fuel sale {sale.Id}");
             }
             catch (Exception ex)
             {
                 // Log error but don't fail the fuel sale creation
-                Console.WriteLine($"❌ Failed to create invoice from fuel sale: {ex.Message}");
+                Console.WriteLine($"? Failed to create invoice from fuel sale: {ex.Message}");
             }
         }
 
@@ -649,16 +649,16 @@ namespace FuelManagement.Controllers
                 invoice.AmountPaid = amountPaid;
                 invoice.BalanceDue = balanceDue;
                 invoice.PaymentStatus = paymentStatus;
-                invoice.UpdatedAt = DateTime.Now;
+                invoice.UpdatedAt = DateTime.UtcNow;
                 invoice.Notes = $"Updated from fuel sale. Payment method: {sale.PaymentMethod}, Pump: {sale.PumpNumber}";
 
                 await _context.SaveChangesAsync();
 
-                Console.WriteLine($"✅ Invoice {invoice.InvoiceNumber} updated from fuel sale {sale.Id}");
+                Console.WriteLine($"? Invoice {invoice.InvoiceNumber} updated from fuel sale {sale.Id}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Failed to update invoice from fuel sale: {ex.Message}");
+                Console.WriteLine($"? Failed to update invoice from fuel sale: {ex.Message}");
             }
         }
 

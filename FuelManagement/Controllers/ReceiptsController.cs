@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Data;
 using FuelManagement.Services.Interfaces;
@@ -63,7 +63,7 @@ namespace FuelManagement.Controllers
             var allReceipts = await query.ToListAsync();
 
             // Calculate previous month's data for percentage change
-            var firstDayOfThisMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            var firstDayOfThisMonth = new DateTime(DateTime.UtcNow.Date.Year, DateTime.UtcNow.Date.Month, 1, 0, 0, 0, DateTimeKind.Utc);
             var firstDayOfLastMonth = firstDayOfThisMonth.AddMonths(-1);
             var lastDayOfLastMonth = firstDayOfThisMonth.AddDays(-1);
 
@@ -133,8 +133,8 @@ namespace FuelManagement.Controllers
             {
                 Filter = filter ?? new ReceiptFilterViewModel
                 {
-                    StartDate = DateTime.Today.AddDays(-30),
-                    EndDate = DateTime.Today
+                    StartDate = DateTime.UtcNow.Date.AddDays(-30),
+                    EndDate = DateTime.UtcNow.Date
                 },
                 ReceiptItems = receiptItems,
                 TotalReceipts = allReceipts.Count,
@@ -211,7 +211,7 @@ namespace FuelManagement.Controllers
         {
             var viewModel = new ReceiptCreateViewModel
             {
-                PaymentDate = DateTime.Today,
+                PaymentDate = DateTime.UtcNow.Date,
                 CustomerType = "Walk-in",
                 PaymentStatus = "Pending",
                 Invoices = await GetInvoicesSelectList()
@@ -276,7 +276,7 @@ namespace FuelManagement.Controllers
                 var totalAmount = subtotal + vat;
 
                 // Generate receipt number
-                var receiptNo = $"RCP-{DateTime.Now:yyyyMMdd}-{new Random().Next(1000, 9999)}";
+                var receiptNo = $"RCP-{DateTime.UtcNow:yyyyMMdd}-{new Random().Next(1000, 9999)}";
 
                 var receipt = new Receipt
                 {
@@ -299,7 +299,7 @@ namespace FuelManagement.Controllers
                     PaymentDate = viewModel.PaymentDate,
                     Notes = viewModel.Notes,
                     CreatedBy = User.Identity.Name ?? "System",
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow
                 };
 
                 _context.Receipts.Add(receipt);
@@ -453,7 +453,7 @@ namespace FuelManagement.Controllers
                     receipt.PaymentStatus = viewModel.PaymentStatus;
                     receipt.PaymentDate = viewModel.PaymentDate;
                     receipt.Notes = viewModel.Notes;
-                    receipt.UpdatedAt = DateTime.Now;
+                    receipt.UpdatedAt = DateTime.UtcNow;
 
                     await _context.SaveChangesAsync();
 

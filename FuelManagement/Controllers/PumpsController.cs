@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Data;
 using FuelManagement.Services.Interfaces;
@@ -125,12 +125,12 @@ namespace FuelManagement.Controllers
 
                 PumpsDueForMaintenance = filteredPumpsList.Count(p =>
                     p.NextMaintenanceDue.HasValue &&
-                    p.NextMaintenanceDue.Value <= DateTime.Today.AddDays(7) &&
-                    p.NextMaintenanceDue.Value >= DateTime.Today),
+                    p.NextMaintenanceDue.Value <= DateTime.UtcNow.Date.AddDays(7) &&
+                    p.NextMaintenanceDue.Value >= DateTime.UtcNow.Date),
 
                 OverdueMaintenance = filteredPumpsList.Count(p =>
                     p.NextMaintenanceDue.HasValue &&
-                    p.NextMaintenanceDue.Value < DateTime.Today)
+                    p.NextMaintenanceDue.Value < DateTime.UtcNow.Date)
             };
 
             return View(viewModel);
@@ -177,7 +177,7 @@ namespace FuelManagement.Controllers
                         Status = viewModel.Status ?? "Active",
                         TotalFuelDispensed = 0,
                         TransactionCount = 0,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     };
 
                     _context.Pumps.Add(pump);
@@ -269,7 +269,7 @@ namespace FuelManagement.Controllers
                     pump.NextMaintenanceDue = viewModel.NextMaintenanceDue;
                     pump.Notes = viewModel.Notes;
                     pump.Status = viewModel.Status;
-                    pump.UpdatedAt = DateTime.Now;
+                    pump.UpdatedAt = DateTime.UtcNow;
 
                     await _context.SaveChangesAsync();
 
@@ -289,7 +289,7 @@ namespace FuelManagement.Controllers
                     // ===== CHECK FOR UPCOMING MAINTENANCE =====
                     if (pump.NextMaintenanceDue.HasValue)
                     {
-                        var daysUntilMaintenance = (pump.NextMaintenanceDue.Value - DateTime.Today).Days;
+                        var daysUntilMaintenance = (pump.NextMaintenanceDue.Value - DateTime.UtcNow.Date).Days;
 
                         // Notify if maintenance is within 7 days
                         if (daysUntilMaintenance <= 7 && daysUntilMaintenance >= 0)

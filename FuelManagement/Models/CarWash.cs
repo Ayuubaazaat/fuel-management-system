@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FuelManagement.Models
@@ -54,7 +54,7 @@ namespace FuelManagement.Models
         public string? Notes { get; set; }
 
         [Display(Name = "Created At")]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Display(Name = "Completed At")]
         public DateTime? CompletedAt { get; set; }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FuelManagement.Models
@@ -26,7 +26,7 @@ namespace FuelManagement.Models
         public decimal CurrentStock { get; set; }
 
         [Display(Name = "Last Refill Date")]
-        public DateTime LastRefillDate { get; set; } = DateTime.Today;
+        public DateTime LastRefillDate { get; set; } = DateTime.UtcNow.Date;
 
         [Display(Name = "Notes")]
         public string? Notes { get; set; }

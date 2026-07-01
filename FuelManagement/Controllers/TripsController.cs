@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Data;
 using FuelManagement.Services.Interfaces;
@@ -122,7 +122,7 @@ namespace FuelManagement.Controllers
                                     ? filteredTripsList.Average(t => t.Cost)
                                     : 0,
                 NewTripsThisMonth = filteredTripsList.Count(t =>
-                    t.TripDate >= DateTime.Today.AddMonths(-1))
+                    t.TripDate >= DateTime.UtcNow.Date.AddMonths(-1))
             };
 
             // Store pagination info in ViewBag for the view
@@ -141,7 +141,7 @@ namespace FuelManagement.Controllers
         {
             var viewModel = new TripCreateViewModel
             {
-                TripDate = DateTime.Today,
+                TripDate = DateTime.UtcNow.Date,
                 AvailableVehicles = await _context.Fleet
                     .OrderBy(f => f.VehicleId)
                     .Select(f => new SelectListItem
@@ -194,7 +194,7 @@ namespace FuelManagement.Controllers
                         FuelEfficiency = Math.Round(fuelEfficiency, 1),
                         Cost = viewModel.Cost,
                         Notes = viewModel.Notes,
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.UtcNow
                     };
 
                     // Start a transaction to ensure both operations succeed or fail together
@@ -366,7 +366,7 @@ namespace FuelManagement.Controllers
                     trip.FuelEfficiency = Math.Round(fuelEfficiency, 1);
                     trip.Cost = viewModel.Cost;
                     trip.Notes = viewModel.Notes;
-                    trip.UpdatedAt = DateTime.Now;
+                    trip.UpdatedAt = DateTime.UtcNow;
 
                     await using var transaction = await _context.Database.BeginTransactionAsync();
                     try
@@ -624,7 +624,7 @@ namespace FuelManagement.Controllers
                     fleetVehicle.FuelEfficiency = 0;
                 }
 
-                fleetVehicle.UpdatedAt = DateTime.Now;
+                fleetVehicle.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
         }

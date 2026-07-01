@@ -251,7 +251,7 @@ namespace FuelManagement.Controllers
             HttpContext.Session.SetString("UserRole", user.Role);
 
             // Update login stats
-            user.LastLoginAt = DateTime.Now;
+            user.LastLoginAt = DateTime.UtcNow;
             user.LastLoginIp = HttpContext.Connection.RemoteIpAddress?.ToString();
             user.LastLoginDevice = GetDeviceName();
             user.LoginCount += 1;
@@ -346,7 +346,7 @@ namespace FuelManagement.Controllers
             HttpContext.Session.SetString("UserEmail", user.Email);
             HttpContext.Session.SetString("UserRole", user.Role);
 
-            user.LastLoginAt = DateTime.Now;
+            user.LastLoginAt = DateTime.UtcNow;
             user.LastLoginIp = HttpContext.Connection.RemoteIpAddress?.ToString();
             user.LastLoginDevice = GetDeviceName();
             user.LoginCount += 1;

@@ -35,19 +35,19 @@
 @{
     var (bannerBg, bannerIcon, bannerText) = Model.Status switch
     {
-        "Pending" => ("bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800/40",
+        "Pending"    => ("bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800/40",
                          "fa-clock text-yellow-500 dark:text-yellow-400",
                          "text-yellow-700 dark:text-yellow-300"),
         "InProgress" => ("bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800/40",
                          "fa-spinner fa-spin text-blue-500 dark:text-blue-400",
                          "text-blue-700 dark:text-blue-300"),
-        "Completed" => ("bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800/40",
+        "Completed"  => ("bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800/40",
                          "fa-check-circle text-green-500 dark:text-green-400",
                          "text-green-700 dark:text-green-300"),
-        "Cancelled" => ("bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/40",
+        "Cancelled"  => ("bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/40",
                          "fa-times-circle text-red-500 dark:text-red-400",
                          "text-red-700 dark:text-red-300"),
-        _ => ("bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600",
+        _            => ("bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600",
                          "fa-circle text-gray-400",
                          "text-gray-600 dark:text-gray-400")
     };
@@ -152,10 +152,10 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                         @foreach (var svc in new[]
                         {
-                        new { Name = "Basic",    Icon = "fa-tint",  Price = "10.00", Desc = "Exterior rinse"      },
-                        new { Name = "Standard", Icon = "fa-soap",  Price = "15.00", Desc = "Wash + dry"           },
-                        new { Name = "Full",     Icon = "fa-star",  Price = "25.00", Desc = "Interior + exterior"  },
-                        new { Name = "Premium",  Icon = "fa-crown", Price = "35.00", Desc = "Full detail"          },
+                            new { Name = "Basic",    Icon = "fa-tint",  Price = "10.00", Desc = "Exterior rinse"      },
+                            new { Name = "Standard", Icon = "fa-soap",  Price = "15.00", Desc = "Wash + dry"           },
+                            new { Name = "Full",     Icon = "fa-star",  Price = "25.00", Desc = "Interior + exterior"  },
+                            new { Name = "Premium",  Icon = "fa-crown", Price = "35.00", Desc = "Full detail"          },
                         })
                         {
                             var isSelected = Model.ServiceType == svc.Name;
@@ -214,10 +214,10 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
                         @foreach (var st in new[]
                         {
-                        new { Val = "Pending",    Icon = "fa-clock",        Color = "yellow" },
-                        new { Val = "InProgress", Icon = "fa-spinner",      Color = "blue"   },
-                        new { Val = "Completed",  Icon = "fa-check-circle", Color = "green"  },
-                        new { Val = "Cancelled",  Icon = "fa-times-circle", Color = "red"    },
+                            new { Val = "Pending",    Icon = "fa-clock",        Color = "yellow" },
+                            new { Val = "InProgress", Icon = "fa-spinner",      Color = "blue"   },
+                            new { Val = "Completed",  Icon = "fa-check-circle", Color = "green"  },
+                            new { Val = "Cancelled",  Icon = "fa-times-circle", Color = "red"    },
                         })
                         {
                             var isActive = Model.Status == st.Val;
@@ -243,15 +243,15 @@
                             <div class="relative">
                                 <i class="fas fa-wallet absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm"></i>
                                 @* In Edit.cshtml — PaymentMethod select *@
-                                <select asp-for="PaymentMethod"
-                                        id="PaymentMethod"
-                                        onchange="updatePreview()"
-                                        class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all appearance-none">
-                                    @foreach (var m in new[] { "EVC+", "E-Dahab", "JEEB" })
-                                    {
-                                        <option value="@m" selected="@(Model.PaymentMethod == m ? "selected" : null)">@m</option>
+                              <select asp-for="PaymentMethod"
+                                      id="PaymentMethod"
+                                      onchange="updatePreview()"
+                                      class="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all appearance-none">
+                                      @foreach (var m in new[] { "EVC+", "E-Dahab", "JEEB" })
+                                   {
+                                     <option value="@m" selected="@(Model.PaymentMethod == m ? "selected" : null)">@m</option>
                                     }
-                                </select>
+                              </select>
                             </div>
                         </div>
 
@@ -416,121 +416,119 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    // ========== SERVICE SELECTOR ==========
+    function selectService(name, price) {
+        document.getElementById('ServiceType').value = name;
+        document.getElementById('priceInput').value  = price;
+        updatePreview();
+
+        document.querySelectorAll('.service-btn').forEach(btn => {
+            const isSelected = btn.dataset.service === name;
+            btn.classList.toggle('ring-2',          isSelected);
+            btn.classList.toggle('ring-amber-500',  isSelected);
+            btn.classList.toggle('border-amber-400', isSelected);
+            btn.classList.toggle('bg-amber-50',      isSelected);
+            const check = btn.querySelector('.check-icon');
+            if (check) {
+                check.classList.toggle('hidden', !isSelected);
+                check.classList.toggle('flex',    isSelected);
+            }
+        });
     }
-    <script>
-        // ========== SERVICE SELECTOR ==========
-        function selectService(name, price) {
-            document.getElementById('ServiceType').value = name;
-            document.getElementById('priceInput').value  = price;
-            updatePreview();
 
-            document.querySelectorAll('.service-btn').forEach(btn => {
-                const isSelected = btn.dataset.service === name;
-                btn.classList.toggle('ring-2',          isSelected);
-                btn.classList.toggle('ring-amber-500',  isSelected);
-                btn.classList.toggle('border-amber-400', isSelected);
-                btn.classList.toggle('bg-amber-50',      isSelected);
-                const check = btn.querySelector('.check-icon');
-                if (check) {
-                    check.classList.toggle('hidden', !isSelected);
-                    check.classList.toggle('flex',    isSelected);
-                }
-            });
-        }
+    // ========== STATUS SELECTOR ==========
+    function selectStatus(val) {
+        document.getElementById('Status').value = val;
+        updatePreview();
 
-        // ========== STATUS SELECTOR ==========
-        function selectStatus(val) {
-            document.getElementById('Status').value = val;
-            updatePreview();
-
-            document.querySelectorAll('.status-btn').forEach(btn => {
-                const isSelected = btn.dataset.status === val;
-                btn.classList.toggle('border-gray-200',       !isSelected);
-                btn.classList.toggle('dark:border-gray-600',  !isSelected);
-                btn.classList.toggle('text-gray-500',         !isSelected);
-                btn.classList.toggle('dark:text-gray-400',    !isSelected);
-                if (isSelected) {
-                    const colorMap = {
-                        Pending: 'yellow', InProgress: 'blue',
-                        Completed: 'green', Cancelled: 'red'
-                    };
-                    const c = colorMap[val] || 'gray';
-                    btn.className = btn.className
-                        .replace(/border-\w+-400/g, '')
-                        .replace(/bg-\w+-50/g, '')
-                        .replace(/dark:bg-\w+-900\/30/g, '')
-                        .replace(/text-\w+-700/g, '')
-                        .replace(/dark:text-\w+-300/g, '');
-                    btn.classList.add(
-                        `border-${c}-400`,
-                        `bg-${c}-50`,
-                        `dark:bg-${c}-900/30`,
-                        `text-${c}-700`,
-                        `dark:text-${c}-300`
-                    );
-                }
-            });
-        }
-
-        // ========== PAYMENT SELECTOR ==========
-        function selectPayment(val) {
-            document.getElementById('PaymentStatus').value = val;
-            updatePreview();
-
-            const unpaidBtn = document.getElementById('btnUnpaid');
-            const paidBtn   = document.getElementById('btnPaid');
-
-            // Reset both
-            [unpaidBtn, paidBtn].forEach(b => {
-                b.className = b.className
-                    .replace(/border-\w+-400/g, 'border-gray-200')
+        document.querySelectorAll('.status-btn').forEach(btn => {
+            const isSelected = btn.dataset.status === val;
+            btn.classList.toggle('border-gray-200',       !isSelected);
+            btn.classList.toggle('dark:border-gray-600',  !isSelected);
+            btn.classList.toggle('text-gray-500',         !isSelected);
+            btn.classList.toggle('dark:text-gray-400',    !isSelected);
+            if (isSelected) {
+                const colorMap = {
+                    Pending: 'yellow', InProgress: 'blue',
+                    Completed: 'green', Cancelled: 'red'
+                };
+                const c = colorMap[val] || 'gray';
+                btn.className = btn.className
+                    .replace(/border-\w+-400/g, '')
                     .replace(/bg-\w+-50/g, '')
                     .replace(/dark:bg-\w+-900\/30/g, '')
-                    .replace(/text-\w+-700/g, 'text-gray-500')
-                    .replace(/dark:text-\w+-300/g, 'dark:text-gray-400');
-            });
-
-            if (val === 'Paid') {
-                paidBtn.classList.add('border-green-400', 'bg-green-50', 'dark:bg-green-900/30', 'text-green-700', 'dark:text-green-300');
-                paidBtn.classList.remove('border-gray-200', 'text-gray-500', 'dark:text-gray-400');
-            } else {
-                unpaidBtn.classList.add('border-red-400', 'bg-red-50', 'dark:bg-red-900/30', 'text-red-700', 'dark:text-red-300');
-                unpaidBtn.classList.remove('border-gray-200', 'text-gray-500', 'dark:text-gray-400');
+                    .replace(/text-\w+-700/g, '')
+                    .replace(/dark:text-\w+-300/g, '');
+                btn.classList.add(
+                    `border-${c}-400`,
+                    `bg-${c}-50`,
+                    `dark:bg-${c}-900/30`,
+                    `text-${c}-700`,
+                    `dark:text-${c}-300`
+                );
             }
-        }
+        });
+    }
 
-        // ========== LIVE PREVIEW ==========
-        function updatePreview() {
-            const name    = document.getElementById('CustomerName')?.value  || '—';
-            const plate   = document.getElementById('VehiclePlate')?.value  || '---';
-            const vehicle = document.getElementById('VehicleType')?.value   || '—';
-            const service = document.getElementById('ServiceType')?.value   || '—';
-            const price   = parseFloat(document.getElementById('priceInput')?.value) || 0;
-            const status  = document.getElementById('Status')?.value        || '—';
-            const method  = document.getElementById('PaymentMethod')?.value || '—';
-            const payment = document.getElementById('PaymentStatus')?.value || '—';
+    // ========== PAYMENT SELECTOR ==========
+    function selectPayment(val) {
+        document.getElementById('PaymentStatus').value = val;
+        updatePreview();
 
-            document.getElementById('previewName').textContent    = name;
-            document.getElementById('previewPlate').textContent   = plate.toUpperCase();
-            document.getElementById('previewVehicle').textContent = vehicle;
-            document.getElementById('previewService').textContent = service;
-            document.getElementById('previewPrice').textContent   = '$' + price.toFixed(2);
-            document.getElementById('previewStatus').textContent  = status;
-            document.getElementById('previewPayment').textContent = payment + ' · ' + method;
-        }
+        const unpaidBtn = document.getElementById('btnUnpaid');
+        const paidBtn   = document.getElementById('btnPaid');
 
-        // Auto-uppercase plate
-        document.getElementById('VehiclePlate')?.addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-            updatePreview();
+        // Reset both
+        [unpaidBtn, paidBtn].forEach(b => {
+            b.className = b.className
+                .replace(/border-\w+-400/g, 'border-gray-200')
+                .replace(/bg-\w+-50/g, '')
+                .replace(/dark:bg-\w+-900\/30/g, '')
+                .replace(/text-\w+-700/g, 'text-gray-500')
+                .replace(/dark:text-\w+-300/g, 'dark:text-gray-400');
         });
 
-        // Wire inputs to live preview
-        ['CustomerName', 'VehicleType', 'priceInput', 'PaymentMethod'].forEach(id => {
-            document.getElementById(id)?.addEventListener('input',  updatePreview);
-            document.getElementById(id)?.addEventListener('change', updatePreview);
-        });
-    </script>
+        if (val === 'Paid') {
+            paidBtn.classList.add('border-green-400', 'bg-green-50', 'dark:bg-green-900/30', 'text-green-700', 'dark:text-green-300');
+            paidBtn.classList.remove('border-gray-200', 'text-gray-500', 'dark:text-gray-400');
+        } else {
+            unpaidBtn.classList.add('border-red-400', 'bg-red-50', 'dark:bg-red-900/30', 'text-red-700', 'dark:text-red-300');
+            unpaidBtn.classList.remove('border-gray-200', 'text-gray-500', 'dark:text-gray-400');
+        }
+    }
+
+    // ========== LIVE PREVIEW ==========
+    function updatePreview() {
+        const name    = document.getElementById('CustomerName')?.value  || '—';
+        const plate   = document.getElementById('VehiclePlate')?.value  || '---';
+        const vehicle = document.getElementById('VehicleType')?.value   || '—';
+        const service = document.getElementById('ServiceType')?.value   || '—';
+        const price   = parseFloat(document.getElementById('priceInput')?.value) || 0;
+        const status  = document.getElementById('Status')?.value        || '—';
+        const method  = document.getElementById('PaymentMethod')?.value || '—';
+        const payment = document.getElementById('PaymentStatus')?.value || '—';
+
+        document.getElementById('previewName').textContent    = name;
+        document.getElementById('previewPlate').textContent   = plate.toUpperCase();
+        document.getElementById('previewVehicle').textContent = vehicle;
+        document.getElementById('previewService').textContent = service;
+        document.getElementById('previewPrice').textContent   = '$' + price.toFixed(2);
+        document.getElementById('previewStatus').textContent  = status;
+        document.getElementById('previewPayment').textContent = payment + ' · ' + method;
+    }
+
+    // Auto-uppercase plate
+    document.getElementById('VehiclePlate')?.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+        updatePreview();
+    });
+
+    // Wire inputs to live preview
+    ['CustomerName', 'VehicleType', 'priceInput', 'PaymentMethod'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input',  updatePreview);
+        document.getElementById(id)?.addEventListener('change', updatePreview);
+    });
+</script>
 }

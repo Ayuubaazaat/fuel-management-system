@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +22,7 @@ namespace FuelManagement.Models
         [Display(Name = "Phone Number")]
         [StringLength(20, ErrorMessage = "Phone number cannot exceed 20 characters")]
         [RegularExpression(@"^\+?[0-9\s\-\(\)]{7,20}$", ErrorMessage = "Please enter a valid phone number")]
-        // Remote validation — calls CheckPhoneNumber on the server as user types
+        // Remote validation � calls CheckPhoneNumber on the server as user types
         [Remote(action: "CheckPhoneNumber", controller: "Compensation", ErrorMessage = "Phone number already exists")]
         public string PhoneNumber { get; set; }
 
@@ -52,7 +52,7 @@ namespace FuelManagement.Models
         [Display(Name = "Payment Date")]
         [DataType(DataType.Date)]
         [FutureDate(ErrorMessage = "Payment date cannot be in the past")]
-        public DateTime PaymentDate { get; set; } = DateTime.Today;
+        public DateTime PaymentDate { get; set; } = DateTime.UtcNow.Date;
 
         [Required(ErrorMessage = "Payment method is required")]
         [Display(Name = "Payment Method")]
@@ -76,7 +76,7 @@ namespace FuelManagement.Models
         {
             if (value is DateTime date)
             {
-                return date >= DateTime.Today;
+                return date >= DateTime.UtcNow.Date;
             }
             return false;
         }

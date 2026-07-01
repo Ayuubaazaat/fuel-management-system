@@ -1,7 +1,7 @@
-﻿@model FuelManagement.Models.CarWash
+@model FuelManagement.Models.CarWash
 @{
     ViewData["Title"] = "Car Wash Details";
-    var isPaid = Model.PaymentStatus == "Paid";
+    var isPaid      = Model.PaymentStatus == "Paid";
     var isCompleted = Model.Status == "Completed";
     var isCancelled = Model.Status == "Cancelled";
 }
@@ -21,7 +21,7 @@
             Created @Model.CreatedAt.ToString("dddd, MMMM dd yyyy") at @Model.CreatedAt.ToString("hh:mm tt")
             @if (!string.IsNullOrEmpty(Model.CreatedBy))
             {
-                <span>· by <span class="font-medium text-gray-600 dark:text-gray-300">@Model.CreatedBy</span></span>
+                <span>� by <span class="font-medium text-gray-600 dark:text-gray-300">@Model.CreatedBy</span></span>
             }
         </p>
     </div>
@@ -90,19 +90,19 @@
                     @{
                         var statusBadge = Model.Status switch
                         {
-                            "Pending" => "bg-yellow-400/20 text-yellow-200 border border-yellow-400/30",
+                            "Pending"    => "bg-yellow-400/20 text-yellow-200 border border-yellow-400/30",
                             "InProgress" => "bg-blue-400/20 text-blue-200 border border-blue-400/30",
-                            "Completed" => "bg-green-400/20 text-green-200 border border-green-400/30",
-                            "Cancelled" => "bg-gray-400/20 text-gray-200 border border-gray-400/30",
-                            _ => "bg-white/10 text-white/70"
+                            "Completed"  => "bg-green-400/20 text-green-200 border border-green-400/30",
+                            "Cancelled"  => "bg-gray-400/20 text-gray-200 border border-gray-400/30",
+                            _            => "bg-white/10 text-white/70"
                         };
                         var statusIcon = Model.Status switch
                         {
-                            "Pending" => "fa-clock",
+                            "Pending"    => "fa-clock",
                             "InProgress" => "fa-spinner fa-spin",
-                            "Completed" => "fa-check-circle",
-                            "Cancelled" => "fa-times-circle",
-                            _ => "fa-circle"
+                            "Completed"  => "fa-check-circle",
+                            "Cancelled"  => "fa-times-circle",
+                            _            => "fa-circle"
                         };
                     }
                     <span class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold @statusBadge">
@@ -201,11 +201,11 @@
                     @{
                         var detailItems = new[]
                         {
-                    new { Label = "Customer Name",  Value = Model.CustomerName,  Icon = "fa-user",         Color = "blue"   },
-                    new { Label = "Vehicle Plate",  Value = Model.VehiclePlate,  Icon = "fa-id-card",      Color = "indigo" },
-                    new { Label = "Vehicle Type",   Value = Model.VehicleType,   Icon = "fa-car",          Color = "purple" },
-                    new { Label = "Assigned To",    Value = Model.AssignedTo ?? "Unassigned", Icon = "fa-user-check", Color = "teal" },
-                    };
+                            new { Label = "Customer Name",  Value = Model.CustomerName,  Icon = "fa-user",         Color = "blue"   },
+                            new { Label = "Vehicle Plate",  Value = Model.VehiclePlate,  Icon = "fa-id-card",      Color = "indigo" },
+                            new { Label = "Vehicle Type",   Value = Model.VehicleType,   Icon = "fa-car",          Color = "purple" },
+                            new { Label = "Assigned To",    Value = Model.AssignedTo ?? "Unassigned", Icon = "fa-user-check", Color = "teal" },
+                        };
                     }
                     @foreach (var item in detailItems)
                     {
@@ -247,7 +247,7 @@
                                     _          => "border-gray-200 dark:border-gray-600"
                                 })">
                         @{
-                            var svcIcon = Model.ServiceType switch { "Basic" => "fa-tint", "Standard" => "fa-soap", "Full" => "fa-star", "Premium" => "fa-crown", _ => "fa-soap" };
+                            var svcIcon  = Model.ServiceType switch { "Basic" => "fa-tint", "Standard" => "fa-soap", "Full" => "fa-star", "Premium" => "fa-crown", _ => "fa-soap" };
                             var svcColor = Model.ServiceType switch { "Basic" => "gray", "Standard" => "blue", "Full" => "purple", "Premium" => "amber", _ => "gray" };
                         }
                         <div class="w-12 h-12 rounded-xl bg-@svcColor-100 dark:bg-@svcColor-900/40 flex items-center justify-center mb-2">
@@ -266,10 +266,10 @@
                         <div class="flex items-center justify-between py-2.5 px-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                             <span class="text-sm text-gray-500 dark:text-gray-400">Payment Method</span>
                             <span class="text-sm font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-1.5">
-                                <i class="fas @(Model.PaymentMethod == "EVC+" ? "fa-mobile-alt"
+                                    <i class="fas @(Model.PaymentMethod == "EVC+" ? "fa-mobile-alt"
                                     : Model.PaymentMethod == "E-Dahab" ? "fa-coins"
                                        : "fa-wallet") text-gray-400 dark:text-gray-500 text-xs"></i>
-                                @Model.PaymentMethod
+                                      @Model.PaymentMethod
                             </span>
                         </div>
                         <div class="flex items-center justify-between py-2.5 px-4 rounded-xl border-2
@@ -321,10 +321,10 @@
             <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
                 @foreach (var action in new[]
                 {
-                new { Status = "Pending",    Icon = "fa-clock",        Color = "yellow", Label = "Set Pending"    },
-                new { Status = "InProgress", Icon = "fa-spinner",      Color = "blue",   Label = "Start Washing"  },
-                new { Status = "Completed",  Icon = "fa-check-circle", Color = "green",  Label = "Mark Done"      },
-                new { Status = "Cancelled",  Icon = "fa-times-circle", Color = "red",    Label = "Cancel"         },
+                    new { Status = "Pending",    Icon = "fa-clock",        Color = "yellow", Label = "Set Pending"    },
+                    new { Status = "InProgress", Icon = "fa-spinner",      Color = "blue",   Label = "Start Washing"  },
+                    new { Status = "Completed",  Icon = "fa-check-circle", Color = "green",  Label = "Mark Done"      },
+                    new { Status = "Cancelled",  Icon = "fa-times-circle", Color = "red",    Label = "Cancel"         },
                 })
                 {
                     var isActive = Model.Status == action.Status;
@@ -333,7 +333,7 @@
                                    @(isActive
                                        ? $"border-{action.Color}-400 bg-{action.Color}-50 dark:bg-{action.Color}-900/20 text-{action.Color}-700 dark:text-{action.Color}-400 cursor-default"
                                        : "border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700/50")"
-                    @(isActive ? "disabled" : "")>
+                            @(isActive ? "disabled" : "")>
                         <i class="fas @action.Icon text-lg"></i>
                         @action.Label
                         @if (isActive)
@@ -361,20 +361,20 @@
                 @{
                     var allStatuses = new[]
                     {
-                new { Name = "Pending",    Icon = "fa-clock",        Color = "yellow" },
-                new { Name = "InProgress", Icon = "fa-spinner",      Color = "blue"   },
-                new { Name = "Completed",  Icon = "fa-check-circle", Color = "green"  },
-                new { Name = "Cancelled",  Icon = "fa-times-circle", Color = "red"    },
-                };
+                        new { Name = "Pending",    Icon = "fa-clock",        Color = "yellow" },
+                        new { Name = "InProgress", Icon = "fa-spinner",      Color = "blue"   },
+                        new { Name = "Completed",  Icon = "fa-check-circle", Color = "green"  },
+                        new { Name = "Cancelled",  Icon = "fa-times-circle", Color = "red"    },
+                    };
                     var currentIndex = Array.FindIndex(allStatuses, s => s.Name == Model.Status);
                 }
                 <div class="space-y-1">
                     @for (int i = 0; i < allStatuses.Length; i++)
                     {
-                        var st = allStatuses[i];
-                        var isDone = i < currentIndex || Model.Status == st.Name;
-                        var isCurr = Model.Status == st.Name;
-                        var isCanc = Model.Status == "Cancelled";
+                        var st      = allStatuses[i];
+                        var isDone  = i < currentIndex || Model.Status == st.Name;
+                        var isCurr  = Model.Status == st.Name;
+                        var isCanc  = Model.Status == "Cancelled";
 
                         <div class="flex items-center gap-3 @(i < allStatuses.Length - 1 ? "mb-1" : "")">
                             <!-- Dot -->
@@ -400,10 +400,7 @@
                                           : isDone && !isCanc ? "text-green-700 dark:text-green-400"
                                           : "text-gray-400 dark:text-gray-500")">
                                     @st.Name
-                                    @if (isCurr)
-                                    {
-                                        <span class="ml-1 text-xs opacity-60">(current)</span>
-                                    }
+                                    @if (isCurr) { <span class="ml-1 text-xs opacity-60">(current)</span> }
                                 </p>
                                 @if (isCurr && st.Name == "Completed" && Model.CompletedAt.HasValue)
                                 {
@@ -431,11 +428,11 @@
             <div class="p-5 space-y-3">
                 @foreach (var meta in new[]
                 {
-                new { Label = "Record ID",   Value = $"#{Model.Id}",                              Icon = "fa-hashtag"   },
-                new { Label = "Created by",  Value = Model.CreatedBy ?? "Unknown",                Icon = "fa-user"      },
-                new { Label = "Created at",  Value = Model.CreatedAt.ToString("MMM dd, yyyy"),    Icon = "fa-calendar"  },
-                new { Label = "Created time",Value = Model.CreatedAt.ToString("hh:mm tt"),        Icon = "fa-clock"     },
-                new { Label = "Assigned to", Value = Model.AssignedTo ?? "Unassigned",            Icon = "fa-user-check"},
+                    new { Label = "Record ID",   Value = $"#{Model.Id}",                              Icon = "fa-hashtag"   },
+                    new { Label = "Created by",  Value = Model.CreatedBy ?? "Unknown",                Icon = "fa-user"      },
+                    new { Label = "Created at",  Value = Model.CreatedAt.ToString("MMM dd, yyyy"),    Icon = "fa-calendar"  },
+                    new { Label = "Created time",Value = Model.CreatedAt.ToString("hh:mm tt"),        Icon = "fa-clock"     },
+                    new { Label = "Assigned to", Value = Model.AssignedTo ?? "Unassigned",            Icon = "fa-user-check"},
                 })
                 {
                     <div class="flex items-center justify-between py-2 border-b border-gray-50 dark:border-gray-700/50 last:border-0">
@@ -498,34 +495,34 @@
 </div>
 
 @section Scripts {
-    <script>
-        // ========== DELETE MODAL ==========
-        function confirmDelete(id, name, plate) {
-            document.getElementById('deleteInfo').textContent = name + ' (' + plate + ')';
-            document.getElementById('deleteForm').action = '/CarWash/Delete/' + id;
-            document.getElementById('deleteModal').classList.remove('hidden');
-        }
+<script>
+    // ========== DELETE MODAL ==========
+    function confirmDelete(id, name, plate) {
+        document.getElementById('deleteInfo').textContent = name + ' (' + plate + ')';
+        document.getElementById('deleteForm').action = '/CarWash/Delete/' + id;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
 
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-        }
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
 
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) closeDeleteModal();
-        });
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
 
-        // ========== QUICK STATUS UPDATE ==========
-        async function quickUpdateStatus(id, status) {
-            try {
-                const token = document.querySelector('#deleteForm input[name="__RequestVerificationToken"]')?.value ?? '';
-                const res   = await fetch('/CarWash/UpdateStatus', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${id}&status=${status}&__RequestVerificationToken=${encodeURIComponent(token)}`
-                });
-                const data = await res.json();
-                if (data.success) location.reload();
-            } catch(e) { console.error(e); }
-        }
-    </script>
+    // ========== QUICK STATUS UPDATE ==========
+    async function quickUpdateStatus(id, status) {
+        try {
+            const token = document.querySelector('#deleteForm input[name="__RequestVerificationToken"]')?.value ?? '';
+            const res   = await fetch('/CarWash/UpdateStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}&status=${status}&__RequestVerificationToken=${encodeURIComponent(token)}`
+            });
+            const data = await res.json();
+            if (data.success) location.reload();
+        } catch(e) { console.error(e); }
+    }
+</script>
 }

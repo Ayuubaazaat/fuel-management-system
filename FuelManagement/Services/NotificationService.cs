@@ -1,4 +1,4 @@
-﻿using FuelManagement.Data;
+using FuelManagement.Data;
 using FuelManagement.Models;
 using FuelManagement.Models.Enums;
 using FuelManagement.Models.ViewModels;
@@ -33,7 +33,8 @@ namespace FuelManagement.Services
             { "Receipts",     "fa-receipt" },
             { "Reports",      "fa-chart-line" },
             { "Settings",     "fa-cog" },
-            { "Shifts",       "fa-clock" } // [ADDED] Icon for the Shifts module
+            { "Shifts",       "fa-clock" }, // [ADDED] Icon for the Shifts module
+            { "Car Wash",     "fa-soap" },
         };
 
         public NotificationService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
@@ -147,7 +148,7 @@ namespace FuelManagement.Services
                 Description = description,
                 Module = module,
                 ModuleIcon = ModuleIcons.ContainsKey(module) ? ModuleIcons[module] : "fa-bell",
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 Status = NotificationStatus.Unread,
                 Type = type,
                 ActionUrl = actionUrl,
@@ -236,7 +237,7 @@ namespace FuelManagement.Services
             return await query.CountAsync();
         }
 
-        // ── Module-specific helpers ──────────────────────────────────────
+        // -- Module-specific helpers --------------------------------------
 
         public async Task<NotificationViewModel> CreateFuelSaleNotification(
             string invoiceNumber, string customerName, decimal liters, decimal amount, string actionUrl)
@@ -296,7 +297,7 @@ namespace FuelManagement.Services
         public async Task<NotificationViewModel> CreatePumpMaintenanceDueNotification(
             string pumpId, string pumpName, DateTime dueDate, string actionUrl)
         {
-            var days = (dueDate - DateTime.Today).Days;
+            var days = (dueDate - DateTime.UtcNow.Date).Days;
             return await CreateNotificationAsync(
                 $"Maintenance Due: {pumpId}",
                 $"{pumpName} requires maintenance in {days} days (Due: {dueDate:MMM dd, yyyy})",
@@ -350,7 +351,7 @@ namespace FuelManagement.Services
         public async Task<NotificationViewModel> CreateFleetMaintenanceDueNotification(
             string vehicleId, string vehicleName, DateTime dueDate, string actionUrl)
         {
-            var days = (dueDate - DateTime.Today).Days;
+            var days = (dueDate - DateTime.UtcNow.Date).Days;
             return await CreateNotificationAsync(
                 $"Service Due: {vehicleId}",
                 $"{vehicleName} requires service in {days} days (Due: {dueDate:MMM dd, yyyy})",
@@ -401,7 +402,7 @@ namespace FuelManagement.Services
                 Description = description,
                 Module = "Settings",
                 ModuleIcon = "fa-cog",
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 Status = NotificationStatus.Unread,
                 Type = type,
                 ActionUrl = actionUrl,
@@ -414,7 +415,7 @@ namespace FuelManagement.Services
             return MapToViewModel(notification);
         }
 
-        // ── SHIFTS notifications (newly added) ───────────────────────────
+        // -- SHIFTS notifications (newly added) ---------------------------
 
         // [ADDED] Fired when a new shift is created/started by a user
         public async Task<NotificationViewModel> CreateShiftStartedNotification(
@@ -441,7 +442,7 @@ namespace FuelManagement.Services
                 $"Shift Updated: {shiftName}",
                 // [ADDED] Description shows who the shift belongs to so admins know at a glance
                 $"Shift '{shiftName}' assigned to {assignedTo} has been updated",
-                // [ADDED] Same module string used throughout — must be consistent
+                // [ADDED] Same module string used throughout � must be consistent
                 "Shifts",
                 // [ADDED] Info type because an update is neutral, not critical
                 NotificationType.Info,
@@ -455,10 +456,10 @@ namespace FuelManagement.Services
             => await CreateNotificationAsync(
                 // [ADDED] Title shows the shift name so it's easy to identify in the list
                 $"Shift Closed: {shiftName}",
-                // [ADDED] Description includes closing meter and cash — key financial data from CloseShift action
+                // [ADDED] Description includes closing meter and cash � key financial data from CloseShift action
                 $"Shift '{shiftName}' by {assignedTo} closed. Meter: {closingMeter:N1}, Cash: {cashCollected:C}",
                 "Shifts",
-                // [ADDED] Warning type to draw attention — closing a shift is an important financial event
+                // [ADDED] Warning type to draw attention � closing a shift is an important financial event
                 NotificationType.Warning,
                 actionUrl,
                 // [ADDED] Button label for the notification action link
@@ -479,15 +480,14 @@ namespace FuelManagement.Services
                 actionUrl,
                 // [ADDED] Button label for the notification action link
                 "View Shifts");
-
-        // ── CAR WASH notifications ───────────────────────────────────────
+        // -- CAR WASH notifications ---------------------------------------
 
         public async Task<NotificationViewModel> CreateCarWashCreatedNotification(
             int washId, string customerName, string vehiclePlate,
             string serviceType, decimal price, string actionUrl)
             => await CreateNotificationAsync(
                 $"Car Wash Created: #{washId}",
-                $"{serviceType} wash for {customerName} ({vehiclePlate}) — ${price:F2}",
+                $"{serviceType} wash for {customerName} ({vehiclePlate}) � ${price:F2}",
                 "Car Wash",
                 NotificationType.Success,
                 actionUrl,
@@ -498,7 +498,7 @@ namespace FuelManagement.Services
             decimal price, string actionUrl)
             => await CreateNotificationAsync(
                 $"Car Wash Completed: #{washId}",
-                $"Wash for {customerName} ({vehiclePlate}) completed — ${price:F2}",
+                $"Wash for {customerName} ({vehiclePlate}) completed � ${price:F2}",
                 "Car Wash",
                 NotificationType.Success,
                 actionUrl,

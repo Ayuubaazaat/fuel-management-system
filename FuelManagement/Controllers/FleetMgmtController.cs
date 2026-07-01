@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Data;
 using FuelManagement.Services.Interfaces;
@@ -91,10 +91,10 @@ namespace FuelManagement.Controllers
             var totalVehicles = allFilteredItems.Count;
             var activeVehicles = allFilteredItems.Count(f => f.Status == "Active");
             var maintenanceVehicles = allFilteredItems.Count(f => f.Status == "Maintenance");
-            var vehiclesDueForService = allFilteredItems.Count(f => (f.NextServiceDue - DateTime.Today).Days <= 7);
+            var vehiclesDueForService = allFilteredItems.Count(f => (f.NextServiceDue - DateTime.UtcNow.Date).Days <= 7);
             var totalFuelConsumption = allFilteredItems.Sum(f => f.TotalFuelConsumed);
             var avgFuelEfficiency = allFilteredItems.Any() ? allFilteredItems.Average(f => f.FuelEfficiency) : 0;
-            var newVehiclesThisMonth = allFilteredItems.Count(f => f.CreatedAt >= DateTime.Now.AddMonths(-1));
+            var newVehiclesThisMonth = allFilteredItems.Count(f => f.CreatedAt >= DateTime.UtcNow.AddMonths(-1));
 
             var filter = new FleetFilterViewModel
             {
@@ -304,9 +304,9 @@ namespace FuelManagement.Controllers
             }
 
             // ===== NOTIFICATION: Fleet Maintenance Due =====
-            if (fleet.NextServiceDue <= DateTime.Today.AddDays(7) && fleet.NextServiceDue >= DateTime.Today)
+            if (fleet.NextServiceDue <= DateTime.UtcNow.Date.AddDays(7) && fleet.NextServiceDue >= DateTime.UtcNow.Date)
             {
-                var daysUntilDue = (fleet.NextServiceDue - DateTime.Today).Days;
+                var daysUntilDue = (fleet.NextServiceDue - DateTime.UtcNow.Date).Days;
                 await _notificationService.CreateNotificationAsync(
                     title: $"Maintenance Due: {fleet.VehicleId}",
                     description: $"Vehicle {fleet.VehicleName} requires maintenance in {daysUntilDue} days (Due: {fleet.NextServiceDue:MMM dd, yyyy})",

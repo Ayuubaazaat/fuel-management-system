@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
@@ -66,7 +66,7 @@ namespace FuelManagement.Models
         [Display(Name = "Payment Date")]
         [Required(ErrorMessage = "Payment date is required")]
         [DataType(DataType.Date)]
-        public DateTime PaymentDate { get; set; } = DateTime.Today;
+        public DateTime PaymentDate { get; set; } = DateTime.UtcNow.Date;
 
         [Display(Name = "Notes")]
         [DataType(DataType.MultilineText)]
@@ -79,7 +79,7 @@ namespace FuelManagement.Models
         public decimal Subtotal => Quantity * UnitPrice;
         public decimal VAT => Subtotal * VAT_RATE;
         public decimal TotalAmount => Subtotal + VAT;
-        public string ReceiptNo => $"RCP-{DateTime.Now:yyyyMMdd}-{new Random().Next(1000, 9999)}";
+        public string ReceiptNo => $"RCP-{DateTime.UtcNow:yyyyMMdd}-{new Random().Next(1000, 9999)}";
     }
 }
 

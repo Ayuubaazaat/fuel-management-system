@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FuelManagement.Models.CarWash>
+@model IEnumerable<FuelManagement.Models.CarWash>
 @{
     ViewData["Title"] = "Car Wash";
     var isAdmin = ViewBag.IsAdmin ?? false;
@@ -158,7 +158,7 @@
                     onchange="document.getElementById('filterForm').submit()"
                     class="py-2.5 px-3 text-sm border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-xl focus:outline-none focus:border-blue-500">
                 <option value="">All Payments</option>
-                <option value="Paid" selected="@(ViewBag.PaymentFilter == "Paid"   ? "selected" : null)">Paid</option>
+                <option value="Paid"   selected="@(ViewBag.PaymentFilter == "Paid"   ? "selected" : null)">Paid</option>
                 <option value="Unpaid" selected="@(ViewBag.PaymentFilter == "Unpaid" ? "selected" : null)">Unpaid</option>
             </select>
 
@@ -275,11 +275,11 @@
                                 @{
                                     var serviceColor = item.ServiceType switch
                                     {
-                                        "Basic" => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300",
+                                        "Basic"    => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300",
                                         "Standard" => "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
-                                        "Full" => "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300",
-                                        "Premium" => "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
-                                        _ => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                        "Full"     => "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300",
+                                        "Premium"  => "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
+                                        _          => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
                                     };
                                 }
                                 <span class="px-2 py-0.5 rounded-lg text-xs font-medium @serviceColor">@item.ServiceType</span>
@@ -295,11 +295,11 @@
                                 @{
                                     var (statusColor, statusIcon) = item.Status switch
                                     {
-                                        "Pending" => ("bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300", "fa-clock"),
-                                        "InProgress" => ("bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300", "fa-spinner fa-spin"),
-                                        "Completed" => ("bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300", "fa-check-circle"),
-                                        "Cancelled" => ("bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300", "fa-times-circle"),
-                                        _ => ("bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300", "fa-circle")
+                                        "Pending"    => ("bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300", "fa-clock"),
+                                        "InProgress" => ("bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",   "fa-spinner fa-spin"),
+                                        "Completed"  => ("bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300", "fa-check-circle"),
+                                        "Cancelled"  => ("bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300",     "fa-times-circle"),
+                                        _            => ("bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300",     "fa-circle")
                                     };
                                 }
                                 <div class="flex items-center gap-1">
@@ -331,9 +331,9 @@
                             <td class="px-4 py-3">
                                 @{
                                     var payColor = item.PaymentStatus == "Paid"
-                                    ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
-                                    : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300";
-                                    var payIcon = item.PaymentStatus == "Paid" ? "fa-check" : "fa-exclamation";
+                                        ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
+                                        : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300";
+                                    var payIcon  = item.PaymentStatus == "Paid" ? "fa-check" : "fa-exclamation";
                                 }
                                 <button onclick="quickUpdatePayment(@item.Id, '@(item.PaymentStatus == "Paid" ? "Unpaid" : "Paid")')"
                                         class="px-2 py-0.5 rounded-lg text-xs font-medium flex items-center gap-1 @payColor hover:opacity-80 transition-opacity cursor-pointer"
@@ -408,7 +408,7 @@
                             </div>
                             <div>
                                 <p class="font-semibold text-gray-800 dark:text-gray-100 text-sm">@item.CustomerName</p>
-                                <p class="text-xs font-mono text-gray-500 dark:text-gray-400">@item.VehiclePlate · @item.VehicleType</p>
+                                <p class="text-xs font-mono text-gray-500 dark:text-gray-400">@item.VehiclePlate � @item.VehicleType</p>
                             </div>
                         </div>
                         <span class="font-bold text-gray-800 dark:text-gray-100 text-sm">$@item.Price.ToString("F2")</span>
@@ -418,23 +418,23 @@
                         @{
                             var mServiceColor = item.ServiceType switch
                             {
-                                "Basic" => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300",
+                                "Basic"    => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300",
                                 "Standard" => "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
-                                "Full" => "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300",
-                                "Premium" => "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
-                                _ => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                "Full"     => "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300",
+                                "Premium"  => "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
+                                _          => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
                             };
                             var mStatusColor = item.Status switch
                             {
-                                "Pending" => "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300",
+                                "Pending"    => "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300",
                                 "InProgress" => "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
-                                "Completed" => "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300",
-                                "Cancelled" => "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300",
-                                _ => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                "Completed"  => "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300",
+                                "Cancelled"  => "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300",
+                                _            => "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
                             };
                             var mPayColor = item.PaymentStatus == "Paid"
-                            ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
-                            : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300";
+                                ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
+                                : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300";
                         }
                         <span class="px-2 py-0.5 rounded-lg text-xs font-medium @mServiceColor">@item.ServiceType</span>
                         <span class="px-2 py-0.5 rounded-lg text-xs font-medium @mStatusColor">@item.Status</span>
@@ -449,9 +449,7 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <button onclick="confirmDelete(@item.Id, '@item.CustomerName', '@item.VehiclePlate')"
-                                        class="text-red-500 dark:text-red-400 hover:underline">
-                                    Delete
-                                </button>
+                                        class="text-red-500 dark:text-red-400 hover:underline">Delete</button>
                             }
                         </div>
                     </div>
@@ -489,66 +487,66 @@
 </div>
 
 @section Scripts {
-    <script>
-        // ========== DELETE MODAL ==========
-        function confirmDelete(id, name, plate) {
-            document.getElementById('deleteInfo').textContent = name + ' (' + plate + ')';
-            document.getElementById('deleteForm').action = '/CarWash/Delete/' + id;
-            document.getElementById('deleteModal').classList.remove('hidden');
-        }
+<script>
+    // ========== DELETE MODAL ==========
+    function confirmDelete(id, name, plate) {
+        document.getElementById('deleteInfo').textContent = name + ' (' + plate + ')';
+        document.getElementById('deleteForm').action = '/CarWash/Delete/' + id;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
 
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-        }
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
 
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) closeDeleteModal();
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
+
+    // ========== STATUS QUICK MENU ==========
+    function toggleStatusMenu(id) {
+        const menu = document.getElementById('statusMenu-' + id);
+        document.querySelectorAll('[id^="statusMenu-"]').forEach(m => {
+            if (m !== menu) m.classList.add('hidden');
         });
+        menu.classList.toggle('hidden');
+    }
 
-        // ========== STATUS QUICK MENU ==========
-        function toggleStatusMenu(id) {
-            const menu = document.getElementById('statusMenu-' + id);
-            document.querySelectorAll('[id^="statusMenu-"]').forEach(m => {
-                if (m !== menu) m.classList.add('hidden');
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('[id^="statusMenu-"]') && !e.target.closest('button[onclick^="toggleStatusMenu"]')) {
+            document.querySelectorAll('[id^="statusMenu-"]').forEach(m => m.classList.add('hidden'));
+        }
+    });
+
+    // ========== QUICK STATUS UPDATE (AJAX) ==========
+    async function quickUpdateStatus(id, status) {
+        try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+            const res = await fetch('/CarWash/UpdateStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}&status=${status}&__RequestVerificationToken=${encodeURIComponent(token)}`
             });
-            menu.classList.toggle('hidden');
-        }
+            const data = await res.json();
+            if (data.success) location.reload();
+        } catch (e) { console.error(e); }
+    }
 
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('[id^="statusMenu-"]') && !e.target.closest('button[onclick^="toggleStatusMenu"]')) {
-                document.querySelectorAll('[id^="statusMenu-"]').forEach(m => m.classList.add('hidden'));
-            }
-        });
+    // ========== QUICK PAYMENT TOGGLE (AJAX) ==========
+    async function quickUpdatePayment(id, paymentStatus) {
+        try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+            const res = await fetch('/CarWash/UpdatePayment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}&paymentStatus=${paymentStatus}&__RequestVerificationToken=${encodeURIComponent(token)}`
+            });
+            const data = await res.json();
+            if (data.success) location.reload();
+        } catch (e) { console.error(e); }
+    }
 
-        // ========== QUICK STATUS UPDATE (AJAX) ==========
-        async function quickUpdateStatus(id, status) {
-            try {
-                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
-                const res = await fetch('/CarWash/UpdateStatus', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${id}&status=${status}&__RequestVerificationToken=${encodeURIComponent(token)}`
-                });
-                const data = await res.json();
-                if (data.success) location.reload();
-            } catch (e) { console.error(e); }
-        }
-
-        // ========== QUICK PAYMENT TOGGLE (AJAX) ==========
-        async function quickUpdatePayment(id, paymentStatus) {
-            try {
-                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
-                const res = await fetch('/CarWash/UpdatePayment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${id}&paymentStatus=${paymentStatus}&__RequestVerificationToken=${encodeURIComponent(token)}`
-                });
-                const data = await res.json();
-                if (data.success) location.reload();
-            } catch (e) { console.error(e); }
-        }
-
-        // Hidden CSRF token for AJAX calls
-    </script>
-    <input type="hidden" name="__RequestVerificationToken" value="@Html.AntiForgeryToken()" />
+    // Hidden CSRF token for AJAX calls
+</script>
+<input type="hidden" name="__RequestVerificationToken" value="@Html.AntiForgeryToken()" />
 }

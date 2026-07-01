@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FuelManagement.Models
 {
@@ -24,7 +24,7 @@ namespace FuelManagement.Models
             get
             {
                 if (LastLoginAt == null) return "Never";
-                var diff = DateTime.Now - LastLoginAt.Value;
+                var diff = DateTime.UtcNow - LastLoginAt.Value;
                 if (diff.TotalMinutes < 1) return "Just now";
                 if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes}m ago";
                 if (diff.TotalHours < 24) return $"{(int)diff.TotalHours}h ago";

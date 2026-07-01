@@ -1,4 +1,4 @@
-ï»¿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Data;
 using FuelManagement.Services.Interfaces;
@@ -140,7 +140,7 @@ namespace FuelManagement.Controllers
         {
             var viewModel = new CompensationCreateViewModel
             {
-                PaymentDate = DateTime.Today
+                PaymentDate = DateTime.UtcNow.Date
             };
             return View(viewModel);
         }
@@ -164,7 +164,7 @@ namespace FuelManagement.Controllers
                     return View(viewModel);
                 }
 
-                // Check if Phone Number already exists (server-side guard â€” uniqueness enforced here)
+                // Check if Phone Number already exists (server-side guard — uniqueness enforced here)
                 var existingPhone = await _context.Compensations
                     .FirstOrDefaultAsync(c => c.PhoneNumber == viewModel.PhoneNumber);
 
@@ -206,7 +206,7 @@ namespace FuelManagement.Controllers
                     PaymentMethod = viewModel.PaymentMethod,
                     PaymentStatus = viewModel.Status ?? "Pending",
                     Notes = viewModel.Notes,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow
                 };
 
                 _context.Compensations.Add(compensation);
@@ -242,7 +242,7 @@ namespace FuelManagement.Controllers
             return View(viewModel);
         }
         // =========================
-        // REMOTE VALIDATION â€” Check if Phone Number already exists
+        // REMOTE VALIDATION — Check if Phone Number already exists
         // Called by [Remote] attribute on PhoneNumber field as user types
         // =========================
         [AcceptVerbs("GET", "POST")]
@@ -253,11 +253,11 @@ namespace FuelManagement.Controllers
 
             if (existingPhone != null)
             {
-                // Return error message string â€” jQuery Validate treats any string as an error
+                // Return error message string — jQuery Validate treats any string as an error
                 return Json($"Phone number {phoneNumber} already exists.");
             }
 
-            // Return true â€” jQuery Validate treats true as valid
+            // Return true — jQuery Validate treats true as valid
             return Json(true);
         }
 
@@ -340,12 +340,12 @@ namespace FuelManagement.Controllers
                     compensation.PaymentMethod = viewModel.PaymentMethod;
                     compensation.PaymentStatus = viewModel.Status;
                     compensation.Notes = viewModel.Notes;
-                    compensation.UpdatedAt = DateTime.Now;
+                    compensation.UpdatedAt = DateTime.UtcNow;
 
                     // If status changed to Paid, set ProcessedAt
                     if (viewModel.Status == "Paid" && oldPaymentStatus != "Paid")
                     {
-                        compensation.ProcessedAt = DateTime.Now;
+                        compensation.ProcessedAt = DateTime.UtcNow;
 
                         // ===== CREATE NOTIFICATION FOR COMPENSATION PAID =====
                         await _notificationService.CreateCompensationPaidNotification(

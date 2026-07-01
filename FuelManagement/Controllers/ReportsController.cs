@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Data;
 using System;
@@ -27,8 +27,8 @@ namespace FuelManagement.Controllers
             {
                 filter = new ReportFilterViewModel
                 {
-                    StartDate = DateTime.Today.AddMonths(-12),
-                    EndDate = DateTime.Today,
+                    StartDate = DateTime.UtcNow.Date.AddMonths(-12),
+                    EndDate = DateTime.UtcNow.Date,
                     ReportType = "Revenue by Month"
                 };
             }
@@ -227,7 +227,7 @@ namespace FuelManagement.Controllers
                     var bytes = System.Text.Encoding.UTF8.GetBytes(csv);
 
                     // Create filename with timestamp
-                    var fileName = $"Report_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+                    var fileName = $"Report_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
 
                     // Return file for download
                     return File(bytes, "text/csv", fileName);

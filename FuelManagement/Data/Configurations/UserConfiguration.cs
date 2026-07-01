@@ -47,7 +47,7 @@ namespace FuelManagement.Data.Configurations
             // CreatedAt
             builder.Property(u => u.CreatedAt)
                    .IsRequired()
-                   .HasDefaultValueSql("GETUTCDATE()");
+                   .HasDefaultValueSql("now() at time zone 'utc'");
 
             // Unique Email index
             builder.HasIndex(u => u.Email)
@@ -57,10 +57,8 @@ namespace FuelManagement.Data.Configurations
             // Performance indexes
             builder.HasIndex(u => u.Role)
                    .HasDatabaseName("IX_Users_Role");
-
             builder.HasIndex(u => u.IsActive)
                    .HasDatabaseName("IX_Users_IsActive");
-
             builder.HasIndex(u => u.CreatedAt)
                    .HasDatabaseName("IX_Users_CreatedAt");
 

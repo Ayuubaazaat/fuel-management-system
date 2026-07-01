@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace FuelManagement.Models
@@ -55,7 +55,7 @@ namespace FuelManagement.Models
         public string FormattedAmountPaid => AmountPaid.ToString("C");
         public string FormattedBalanceDue => BalanceDue.ToString("C");
 
-        public int DaysUntilDue => (DueDate - DateTime.Today).Days;
+        public int DaysUntilDue => (DueDate - DateTime.UtcNow.Date).Days;
         public bool IsOverdue => DaysUntilDue < 0 && BalanceDue > 0;
 
         public string StatusColor => PaymentStatus switch

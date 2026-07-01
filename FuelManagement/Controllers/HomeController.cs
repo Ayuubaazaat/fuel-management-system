@@ -43,8 +43,8 @@ namespace FuelManagement.Controllers
             ViewBag.SearchTerm = searchTerm;
             ViewBag.UserRole = userRole; // Pass role to view
 
-            var today = DateTime.Today;
-            var now = DateTime.Now;
+            var today = DateTime.UtcNow.Date;
+            var now = DateTime.UtcNow;
 
             // Apply search filter if provided
             var fuelSalesQuery = _context.FuelSales.AsQueryable();

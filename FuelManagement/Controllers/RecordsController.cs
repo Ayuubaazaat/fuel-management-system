@@ -1,4 +1,4 @@
-﻿using FuelManagement.Data;
+using FuelManagement.Data;
 using FuelManagement.Models;
 using FuelManagement.Models.Enums;
 using FuelManagement.Models.ViewModels;
@@ -40,7 +40,7 @@ namespace FuelManagement.Controllers
             const int pageSize = 20;
             tab ??= "activity";
 
-            // ── ACTIVITY LOG ──────────────────────────────
+            // -- ACTIVITY LOG ------------------------------
             var activityQuery = _context.Notifications.AsQueryable();
 
             if (!string.IsNullOrEmpty(moduleFilter))
@@ -72,7 +72,7 @@ namespace FuelManagement.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            // ── LOGIN SESSIONS ────────────────────────────
+            // -- LOGIN SESSIONS ----------------------------
             var loginQuery = _context.Users.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchTerm))
@@ -104,8 +104,8 @@ namespace FuelManagement.Controllers
                 })
                 .ToListAsync();
 
-            // ── SUMMARY STATS ─────────────────────────────
-            var today = DateTime.Today;
+            // -- SUMMARY STATS -----------------------------
+            var today = DateTime.UtcNow.Date;
 
             ViewBag.Tab = tab;
             ViewBag.ModuleFilter = moduleFilter;

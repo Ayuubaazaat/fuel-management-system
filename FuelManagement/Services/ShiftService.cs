@@ -1,4 +1,4 @@
-﻿using FuelManagement.Data;
+using FuelManagement.Data;
 using FuelManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +21,7 @@ namespace FuelManagement.Services
 
         public async Task CreateAsync(Shift shift)
         {
-            shift.CreatedAt = DateTime.Now;
+            shift.CreatedAt = DateTime.UtcNow;
             _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
         }
@@ -64,7 +64,7 @@ namespace FuelManagement.Services
             var shift = await _context.Shifts.FindAsync(id);
             if (shift != null)
             {
-                shift.EndTime = DateTime.Now;
+                shift.EndTime = DateTime.UtcNow;
                 shift.ClosingMeter = closingMeter;
                 shift.CashCollected = cashCollected;
                 shift.Status = "Closed";

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using FuelManagement.Models;
 using FuelManagement.Data;
 using FuelManagement.Services.Interfaces;
@@ -202,8 +202,8 @@ namespace FuelManagement.Controllers
         {
             var viewModel = new InvoiceCreateViewModel
             {
-                IssueDate = DateTime.Today,
-                DueDate = DateTime.Today.AddDays(30)
+                IssueDate = DateTime.UtcNow.Date,
+                DueDate = DateTime.UtcNow.Date.AddDays(30)
             };
             return View(viewModel);
         }
@@ -268,7 +268,7 @@ namespace FuelManagement.Controllers
                     IssueDate = viewModel.IssueDate,
                     DueDate = viewModel.DueDate,
                     CreatedBy = viewModel.CreatedBy ?? "Admin",
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     Notes = viewModel.Notes
                 };
 
@@ -390,7 +390,7 @@ namespace FuelManagement.Controllers
                     invoice.IssueDate = viewModel.IssueDate;
                     invoice.DueDate = viewModel.DueDate;
                     invoice.Notes = viewModel.Notes;
-                    invoice.UpdatedAt = DateTime.Now;
+                    invoice.UpdatedAt = DateTime.UtcNow;
 
                     await _context.SaveChangesAsync();
 
@@ -450,9 +450,9 @@ namespace FuelManagement.Controllers
                 return NotFound();
 
             // ===== CHECK IF INVOICE IS OVERDUE =====
-            if (invoice.PaymentStatus != "Paid" && invoice.DueDate < DateTime.Today)
+            if (invoice.PaymentStatus != "Paid" && invoice.DueDate < DateTime.UtcNow.Date)
             {
-                var daysOverdue = (DateTime.Today - invoice.DueDate).Days;
+                var daysOverdue = (DateTime.UtcNow.Date - invoice.DueDate).Days;
 
                 // You might want to trigger this from a background job instead of on every page view
                 // But for now, we can check if it's newly overdue

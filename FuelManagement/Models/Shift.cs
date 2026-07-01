@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
 
@@ -41,12 +41,12 @@ namespace FuelManagement.Models
         public string? Notes { get; set; }
 
         [Display(Name = "Created At")]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Avatar stored path (saved in DB)
         public string? AvatarPath { get; set; }
 
-        // File upload — NOT mapped to DB
+        // File upload � NOT mapped to DB
         [NotMapped]
         public IFormFile? AvatarFile { get; set; }
     }
