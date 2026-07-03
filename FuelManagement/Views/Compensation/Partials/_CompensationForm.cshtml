@@ -201,10 +201,8 @@
                     class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all duration-200 outline-none appearance-none @((ViewData.ModelState["PaymentMethod"]?.Errors.Count > 0) ? "border-red-500" : "")">
                 <option value="" disabled selected class="dark:bg-gray-700">Select payment method</option>
                 <option value="EVC+" selected="@(Model.PaymentMethod == "EVC+")" class="dark:bg-gray-700">EVC +</option>
-                <option value="Waafi" selected="@(Model.PaymentMethod == "Waafi")" class="dark:bg-gray-700">Waafi</option>
-                <option value="Somtel" selected="@(Model.PaymentMethod == "Somtel")" class="dark:bg-gray-700">Somtel</option>
-                <option value="Somnet" selected="@(Model.PaymentMethod == "Somnet")" class="dark:bg-gray-700">Somnet</option>
-                <option value="E-Dahab" selected="@(Model.PaymentMethod == "E-Dahab")" class="dark:bg-gray-700">E-Dahab</option>
+                 <option value="JEEB" selected="@(Model.PaymentMethod == "JEEB")" class="dark:bg-gray-700">JEEB</option>
+                 <option value="E-Dahab" selected="@(Model.PaymentMethod == "E-Dahab")" class="dark:bg-gray-700">E-Dahab</option>
             </select>
             <label for="PaymentMethod"
                    class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">

@@ -139,8 +139,28 @@ namespace FuelManagement.Controllers
         // GET: Pumps/Create
         public async Task<IActionResult> Create()
         {
+            // Generate next pump ID
+            var existingIds = await _context.Pumps
+                .Select(p => p.PumpId)
+                .ToListAsync();
+
+            int nextNumber = 1;
+            if (existingIds.Any())
+            {
+                var maxNumber = existingIds
+                    .Select(id =>
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(id, @"\d+");
+                        return match.Success && int.TryParse(match.Value, out int num) ? num : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
+                nextNumber = maxNumber + 1;
+            }
+
             var viewModel = new PumpCreateViewModel
             {
+                PumpId = $"PMP-{nextNumber:D3}",
                 FuelTypes = await GetFuelTypesSelectList(),
                 Tanks = await GetTanksSelectList(),
                 StatusOptions = GetStatusSelectList()
@@ -170,9 +190,13 @@ namespace FuelManagement.Controllers
                         FuelType = viewModel.FuelType,
                         TankId = viewModel.TankId,
                         FlowRate = viewModel.FlowRate,
-                        InstallationDate = viewModel.InstallationDate,
-                        LastMaintenanceDate = viewModel.LastMaintenanceDate,
-                        NextMaintenanceDue = viewModel.NextMaintenanceDue,
+                        InstallationDate = DateTime.SpecifyKind(viewModel.InstallationDate, DateTimeKind.Utc),
+                        LastMaintenanceDate = viewModel.LastMaintenanceDate.HasValue
+                        ? DateTime.SpecifyKind(viewModel.LastMaintenanceDate.Value, DateTimeKind.Utc)
+                        : (DateTime?)null,
+                        NextMaintenanceDue = viewModel.NextMaintenanceDue.HasValue
+                        ? DateTime.SpecifyKind(viewModel.NextMaintenanceDue.Value, DateTimeKind.Utc)
+                        : (DateTime?)null,
                         Notes = viewModel.Notes,
                         Status = viewModel.Status ?? "Active",
                         TotalFuelDispensed = 0,
@@ -264,9 +288,13 @@ namespace FuelManagement.Controllers
                     pump.FuelType = viewModel.FuelType;
                     pump.TankId = viewModel.TankId;
                     pump.FlowRate = viewModel.FlowRate;
-                    pump.InstallationDate = viewModel.InstallationDate;
-                    pump.LastMaintenanceDate = viewModel.LastMaintenanceDate;
-                    pump.NextMaintenanceDue = viewModel.NextMaintenanceDue;
+                    pump.InstallationDate = DateTime.SpecifyKind(viewModel.InstallationDate, DateTimeKind.Utc);
+                    pump.LastMaintenanceDate = viewModel.LastMaintenanceDate.HasValue
+                        ? DateTime.SpecifyKind(viewModel.LastMaintenanceDate.Value, DateTimeKind.Utc)
+                        : (DateTime?)null;
+                    pump.NextMaintenanceDue = viewModel.NextMaintenanceDue.HasValue
+                        ? DateTime.SpecifyKind(viewModel.NextMaintenanceDue.Value, DateTimeKind.Utc)
+                        : (DateTime?)null;
                     pump.Notes = viewModel.Notes;
                     pump.Status = viewModel.Status;
                     pump.UpdatedAt = DateTime.UtcNow;
@@ -451,30 +479,29 @@ namespace FuelManagement.Controllers
 
         private async Task<List<SelectListItem>> GetTanksSelectList(string? selected = null)
         {
-            var tanks = await _context.Pumps
-                .Select(p => p.TankId)
-                .Distinct()
-                .OrderBy(t => t)
+            var tanks = await _context.Inventories
+                .Select(i => new { i.TankId, i.FuelType })
+                .OrderBy(t => t.TankId)
                 .ToListAsync();
 
             var items = tanks.Select(t => new SelectListItem
             {
-                Value = t,
-                Text = t,
-                Selected = t == selected
+                Value = t.TankId,
+                Text = $"{t.TankId} ({t.FuelType})",
+                Selected = t.TankId == selected
             }).ToList();
 
-            // Add default options if no tanks exist
+            // Add default options if no tanks exist yet
             if (!items.Any())
             {
                 items = new List<SelectListItem>
-                {
-                    new() { Value = "TNK-001", Text = "TNK-001 - Diesel Tank" },
-                    new() { Value = "TNK-002", Text = "TNK-002 - Premium Gasoline" },
-                    new() { Value = "TNK-003", Text = "TNK-003 - Regular Gasoline" },
-                    new() { Value = "TNK-004", Text = "TNK-004 - Premium Diesel" },
-                    new() { Value = "TNK-005", Text = "TNK-005 - Ethanol" }
-                };
+        {
+            new() { Value = "TNK-001", Text = "TNK-001 - Diesel Tank" },
+            new() { Value = "TNK-002", Text = "TNK-002 - Premium Gasoline" },
+            new() { Value = "TNK-003", Text = "TNK-003 - Regular Gasoline" },
+            new() { Value = "TNK-004", Text = "TNK-004 - Premium Diesel" },
+            new() { Value = "TNK-005", Text = "TNK-005 - Ethanol" }
+        };
             }
 
             return items;

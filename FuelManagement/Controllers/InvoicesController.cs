@@ -198,10 +198,30 @@ namespace FuelManagement.Controllers
         // =========================
         // CREATE (GET)
         // =========================
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            // Generate next invoice number
+            var existingNumbers = await _context.Invoices
+                .Select(i => i.InvoiceNumber)
+                .ToListAsync();
+
+            int nextNumber = 1;
+            if (existingNumbers.Any())
+            {
+                var maxNumber = existingNumbers
+                    .Select(num =>
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(num, @"\d+");
+                        return match.Success && int.TryParse(match.Value, out int n) ? n : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
+                nextNumber = maxNumber + 1;
+            }
+
             var viewModel = new InvoiceCreateViewModel
             {
+                InvoiceNumber = $"INV-{nextNumber:D3}",
                 IssueDate = DateTime.UtcNow.Date,
                 DueDate = DateTime.UtcNow.Date.AddDays(30)
             };
@@ -265,8 +285,8 @@ namespace FuelManagement.Controllers
                     AmountPaid = viewModel.AmountPaid,
                     BalanceDue = balanceDue,
                     PaymentStatus = paymentStatus,
-                    IssueDate = viewModel.IssueDate,
-                    DueDate = viewModel.DueDate,
+                    IssueDate = DateTime.SpecifyKind(viewModel.IssueDate, DateTimeKind.Utc),
+                    DueDate = DateTime.SpecifyKind(viewModel.DueDate, DateTimeKind.Utc),
                     CreatedBy = viewModel.CreatedBy ?? "Admin",
                     CreatedAt = DateTime.UtcNow,
                     Notes = viewModel.Notes
@@ -387,8 +407,8 @@ namespace FuelManagement.Controllers
                     invoice.AmountPaid = viewModel.AmountPaid;
                     invoice.BalanceDue = balanceDue;
                     invoice.PaymentStatus = paymentStatus;
-                    invoice.IssueDate = viewModel.IssueDate;
-                    invoice.DueDate = viewModel.DueDate;
+                    invoice.IssueDate = DateTime.SpecifyKind(viewModel.IssueDate, DateTimeKind.Utc);
+                    invoice.DueDate = DateTime.SpecifyKind(viewModel.DueDate, DateTimeKind.Utc);
                     invoice.Notes = viewModel.Notes;
                     invoice.UpdatedAt = DateTime.UtcNow;
 

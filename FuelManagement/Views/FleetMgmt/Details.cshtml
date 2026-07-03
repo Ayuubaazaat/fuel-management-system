@@ -126,7 +126,7 @@
                 <h2 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">Service Due Status</h2>
                 <div class="space-y-2">
                     <div class="flex justify-between text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-                        <span>Service Due in @((Model.NextServiceDue - DateTime.Today).Days) days</span>
+                        <span>Service Due in @((Model.NextServiceDue - DateTime.UtcNow.Date).Days) days</span>
                         <span>@Model.ServiceDuePercentage%</span>
                     </div>
                     <div class="w-full h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -139,7 +139,7 @@
 
         <!-- Actions -->
         <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 animate-fadeIn">
-            <a href="@Url.Action("Edit", new { id = Model.Id })"
+            <a href="@Url.Action("Edit", new { vehicleId = Model.VehicleId })"
                class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-pink-500 to-rose-500 dark:from-pink-600 dark:to-rose-700 text-white font-medium rounded-lg hover:from-pink-600 dark:hover:from-pink-700 hover:to-rose-600 dark:hover:to-rose-800 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-center">
                 Edit Vehicle
             </a>

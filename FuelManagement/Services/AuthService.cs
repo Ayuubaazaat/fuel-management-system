@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace FuelManagement.Services
         private const string SessionKeyAuth = "IsAuthenticated";
         private const string SessionKeyTheme = "UserTheme";
         private const string SessionKeyUserId = "UserId";
-        private const string SessionKeyUserRole = "UserRole"; // ADD THIS
+        private const string SessionKeyUserRole = "UserRole";
 
         public AuthService(IHttpContextAccessor httpContextAccessor, UserService userService)
         {
@@ -35,11 +36,6 @@ namespace FuelManagement.Services
             if (user == null)
                 return false;
 
-            // For debugging - remove after fixing
-            Console.WriteLine($"Input password: {password}");
-            Console.WriteLine($"Stored hash: {user.PasswordHash}");
-            Console.WriteLine($"Calculated hash: {HashPassword(password)}");
-
             return VerifyPassword(password, user.PasswordHash);
         }
 
@@ -51,12 +47,11 @@ namespace FuelManagement.Services
                 session.SetString(SessionKeyUser, username);
                 session.SetString(SessionKeyAuth, "true");
 
-                // Get user from database to store ID and ROLE
                 var user = await _userService.GetUserByEmailAsync(username);
                 if (user != null)
                 {
                     session.SetInt32(SessionKeyUserId, user.Id);
-                    session.SetString(SessionKeyUserRole, user.Role); // ADD THIS - Store user role
+                    session.SetString(SessionKeyUserRole, user.Role);
                 }
 
                 // Store the current theme in session
@@ -84,7 +79,7 @@ namespace FuelManagement.Services
                 session.Remove(SessionKeyAuth);
                 session.Remove(SessionKeyTheme);
                 session.Remove(SessionKeyUserId);
-                session.Remove(SessionKeyUserRole); // ADD THIS
+                session.Remove(SessionKeyUserRole);
                 session.Clear();
             }
 
@@ -93,40 +88,38 @@ namespace FuelManagement.Services
             response?.Cookies.Delete(".FuelMS.Theme");
         }
 
+        // ===== Identity reads now come from the auth cookie's claims, =====
+        // ===== not Session — claims survive app restarts, Session does not =====
+
         public bool IsAuthenticated()
         {
-            var session = _httpContextAccessor.HttpContext?.Session;
-            if (session == null) return false;
-
-            var auth = session.GetString(SessionKeyAuth);
-            return auth == "true";
+            return _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated == true;
         }
 
         public string? GetCurrentUser()
         {
-            var session = _httpContextAccessor.HttpContext?.Session;
-            return session?.GetString(SessionKeyUser);
+            return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value
+                ?? _httpContextAccessor.HttpContext?.User?.Identity?.Name;
         }
 
         public int? GetCurrentUserId()
         {
-            var session = _httpContextAccessor.HttpContext?.Session;
-            return session?.GetInt32(SessionKeyUserId);
+            var idClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return int.TryParse(idClaim, out var id) ? id : null;
         }
 
-        // ADD THIS METHOD - Get current user role
         public string? GetCurrentUserRole()
         {
-            var session = _httpContextAccessor.HttpContext?.Session;
-            return session?.GetString(SessionKeyUserRole);
+            return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
         }
 
-        // ADD THIS METHOD - Check if current user is Admin
         public bool IsAdmin()
         {
             var role = GetCurrentUserRole();
             return role == "Admin";
         }
+
+        // ===== Theme stays session-based — it's a UI preference, not identity =====
 
         public string? GetUserTheme()
         {

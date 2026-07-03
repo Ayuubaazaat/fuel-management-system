@@ -76,11 +76,10 @@
                     required
                     class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-amber-500 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-800 transition-all duration-200 outline-none appearance-none">
                 <option value="" disabled selected class="dark:bg-gray-700">Select connected tank</option>
-                <option value="TNK-001" selected="@(Model.TankId == "TNK-001")" class="dark:bg-gray-700">TNK-001 (Diesel)</option>
-                <option value="TNK-002" selected="@(Model.TankId == "TNK-002")" class="dark:bg-gray-700">TNK-002 (Premium Gasoline)</option>
-                <option value="TNK-003" selected="@(Model.TankId == "TNK-003")" class="dark:bg-gray-700">TNK-003 (Regular Gasoline)</option>
-                <option value="TNK-004" selected="@(Model.TankId == "TNK-004")" class="dark:bg-gray-700">TNK-004 (Premium Diesel)</option>
-                <option value="TNK-005" selected="@(Model.TankId == "TNK-005")" class="dark:bg-gray-700">TNK-005 (Ethanol)</option>
+                @foreach (var tank in (IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)Model.Tanks)
+                {
+                    <option value="@tank.Value" selected="@(Model.TankId == tank.Value)" class="dark:bg-gray-700">@tank.Text</option>
+                }
             </select>
             <label for="TankId"
                    class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-amber-600 dark:peer-focus:text-amber-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">

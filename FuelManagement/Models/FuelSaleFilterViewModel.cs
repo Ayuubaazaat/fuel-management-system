@@ -15,7 +15,7 @@ namespace FuelManagement.Models
         public List<string> AvailablePumps => new List<string> { "P-01", "P-02", "P-03", "P-04", "P-05", "P-06" };
 
         // FIXED: Your actual payment methods from the system
-        public List<string> AvailablePaymentMethods => new List<string> { "EvcPlus", "Waafi", "Somtel", "Somnet", "EDahab" };
+        public List<string> AvailablePaymentMethods => new List<string> { "EvcPlus", "JEEB", "EDahab" };
 
         public List<string> AvailableStatuses => new List<string> { "Paid", "Pending", "Cancelled" };
     }

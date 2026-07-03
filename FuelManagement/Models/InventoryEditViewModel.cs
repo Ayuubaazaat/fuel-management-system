@@ -25,6 +25,11 @@ namespace FuelManagement.Models
         [Display(Name = "Current Stock (Liters)")]
         public decimal CurrentStock { get; set; }
 
+        [Required(ErrorMessage = "Price per liter is required")]
+        [Range(0.01, 1000, ErrorMessage = "Price per liter must be between 0.01 and 1,000")]
+        [Display(Name = "Price Per Liter ($)")]
+        public decimal PricePerLiter { get; set; }
+
         [Display(Name = "Last Refill Date")]
         public DateTime LastRefillDate { get; set; }
 

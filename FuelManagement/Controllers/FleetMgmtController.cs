@@ -131,9 +131,33 @@ namespace FuelManagement.Controllers
         // =========================
         // CREATE (GET)
         // =========================
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new FleetCreateViewModel());
+            // Generate next vehicle ID
+            var existingIds = await _context.Fleet
+                .Select(f => f.VehicleId)
+                .ToListAsync();
+
+            int nextNumber = 1;
+            if (existingIds.Any())
+            {
+                var maxNumber = existingIds
+                    .Select(id =>
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(id, @"\d+");
+                        return match.Success && int.TryParse(match.Value, out int num) ? num : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
+                nextNumber = maxNumber + 1;
+            }
+
+            var viewModel = new FleetCreateViewModel
+            {
+                VehicleId = $"VH-{nextNumber:D3}"
+            };
+
+            return View(viewModel);
         }
 
         // =========================
@@ -165,9 +189,9 @@ namespace FuelManagement.Controllers
                 TotalFuelConsumed = 0,
                 FuelEfficiency = 0,
                 Status = viewModel.Status,
-                LastServiceDate = viewModel.LastServiceDate,
+                LastServiceDate = DateTime.SpecifyKind(viewModel.LastServiceDate, DateTimeKind.Utc),
                 Odometer = viewModel.Odometer,
-                NextServiceDue = viewModel.NextServiceDue,
+                NextServiceDue = DateTime.SpecifyKind(viewModel.NextServiceDue, DateTimeKind.Utc),
                 Notes = viewModel.Notes,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -268,9 +292,9 @@ namespace FuelManagement.Controllers
             }
 
             fleet.Status = viewModel.Status;
-            fleet.LastServiceDate = viewModel.LastServiceDate;
+            fleet.LastServiceDate = DateTime.SpecifyKind(viewModel.LastServiceDate, DateTimeKind.Utc);
             fleet.Odometer = viewModel.Odometer;
-            fleet.NextServiceDue = viewModel.NextServiceDue;
+            fleet.NextServiceDue = DateTime.SpecifyKind(viewModel.NextServiceDue, DateTimeKind.Utc);
             fleet.Notes = viewModel.Notes;
             fleet.UpdatedAt = DateTime.UtcNow;
 

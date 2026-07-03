@@ -5,13 +5,12 @@ namespace FuelManagement.Models.Enums
     public enum PaymentMethod
     {
         [Display(Name = "Evc +")]
-        EvcPlus,
+        EvcPlus = 0,
 
-        Waafi,
-        Somtel,
-        Somnet,
+        [Display(Name = "JEEB")]
+        JEEB = 3,
 
         [Display(Name = "E-Dahab")]
-        EDahab
+        EDahab = 4
     }
 }

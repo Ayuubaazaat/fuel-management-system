@@ -136,10 +136,30 @@ namespace FuelManagement.Controllers
         // =========================
         // CREATE (GET)
         // =========================
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            // Generate next employee ID
+            var existingIds = await _context.Compensations
+                .Select(c => c.EmployeeId)
+                .ToListAsync();
+
+            int nextNumber = 1;
+            if (existingIds.Any())
+            {
+                var maxNumber = existingIds
+                    .Select(id =>
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(id, @"\d+");
+                        return match.Success && int.TryParse(match.Value, out int num) ? num : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
+                nextNumber = maxNumber + 1;
+            }
+
             var viewModel = new CompensationCreateViewModel
             {
+                EmployeeId = $"EMP-{nextNumber:D3}",
                 PaymentDate = DateTime.UtcNow.Date
             };
             return View(viewModel);
@@ -202,7 +222,7 @@ namespace FuelManagement.Controllers
                     Bonus = viewModel.Bonus,
                     Deductions = viewModel.Deductions,
                     NetSalary = netSalary,
-                    PaymentDate = viewModel.PaymentDate,
+                    PaymentDate = DateTime.SpecifyKind(viewModel.PaymentDate, DateTimeKind.Utc),
                     PaymentMethod = viewModel.PaymentMethod,
                     PaymentStatus = viewModel.Status ?? "Pending",
                     Notes = viewModel.Notes,
@@ -336,7 +356,7 @@ namespace FuelManagement.Controllers
                     compensation.Bonus = viewModel.Bonus;
                     compensation.Deductions = viewModel.Deductions;
                     compensation.NetSalary = netSalary;
-                    compensation.PaymentDate = viewModel.PaymentDate;
+                    compensation.PaymentDate = DateTime.SpecifyKind(viewModel.PaymentDate, DateTimeKind.Utc);
                     compensation.PaymentMethod = viewModel.PaymentMethod;
                     compensation.PaymentStatus = viewModel.Status;
                     compensation.Notes = viewModel.Notes;

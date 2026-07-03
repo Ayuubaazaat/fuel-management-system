@@ -35,11 +35,9 @@ namespace FuelManagement.Models
         // Updated to Somali Mobile Money only
         public List<string> AvailablePaymentMethods => new List<string>
         {
-            "EVC+",
-            "Waafi",
-            "Somtel",
-            "Somnet",
-            "E-Dahab"
+           "EVC+",
+           "JEEB",
+           "E-Dahab"
         };
 
         public List<string> AvailableFuelTypes => new List<string>

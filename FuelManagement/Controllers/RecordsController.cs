@@ -40,6 +40,13 @@ namespace FuelManagement.Controllers
             const int pageSize = 20;
             tab ??= "activity";
 
+            // Ensure filter dates are UTC-kind before use in Postgres queries
+            if (dateFrom.HasValue)
+                dateFrom = DateTime.SpecifyKind(dateFrom.Value, DateTimeKind.Utc);
+
+            if (dateTo.HasValue)
+                dateTo = DateTime.SpecifyKind(dateTo.Value, DateTimeKind.Utc);
+
             // -- ACTIVITY LOG ------------------------------
             var activityQuery = _context.Notifications.AsQueryable();
 

@@ -20,6 +20,10 @@ namespace FuelManagement.Models
         [Required]
         public decimal CurrentStock { get; set; }
 
+        [Required]
+        [Column(TypeName = "decimal(18,3)")]
+        public decimal PricePerLiter { get; set; } = 3.50m;
+
         public DateTime LastUpdated { get; set; }
 
         [StringLength(20)]
@@ -33,5 +37,8 @@ namespace FuelManagement.Models
         [NotMapped]
         public decimal FillLevelPercentage =>
             Capacity > 0 ? (CurrentStock / Capacity) * 100 : 0;
+
+        [NotMapped]
+        public decimal StockValue => CurrentStock * PricePerLiter;
     }
 }

@@ -33,6 +33,13 @@ namespace FuelManagement.Controllers
                 };
             }
 
+            // Ensure filter dates are UTC-kind before use in Postgres queries
+            if (filter.StartDate.HasValue)
+                filter.StartDate = DateTime.SpecifyKind(filter.StartDate.Value, DateTimeKind.Utc);
+
+            if (filter.EndDate.HasValue)
+                filter.EndDate = DateTime.SpecifyKind(filter.EndDate.Value, DateTimeKind.Utc);
+
             // Get all invoices
             var allInvoices = await _context.Invoices.ToListAsync();
 

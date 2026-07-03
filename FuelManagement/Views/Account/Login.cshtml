@@ -55,9 +55,9 @@
             min-height: 100%;
         }
 
-            html.dark body {
-                background-color: #111827 !important;
-            }
+        html.dark body {
+            background-color: #111827 !important;
+        }
 
         * {
             transition-property: background-color, border-color, color, fill, stroke;
@@ -69,33 +69,33 @@
             transition: all 0.3s ease;
         }
 
-            .form-input:focus {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.2);
-            }
+        .form-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.2);
+        }
 
         .btn-primary {
             position: relative;
             overflow: hidden;
         }
 
-            .btn-primary::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 0;
-                height: 0;
-                border-radius: 50%;
-                background: rgba(255,255,255,0.3);
-                transform: translate(-50%, -50%);
-                transition: width 0.6s, height 0.6s;
-            }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
 
-            .btn-primary:hover::after {
-                width: 300px;
-                height: 300px;
-            }
+        .btn-primary:hover::after {
+            width: 300px;
+            height: 300px;
+        }
 
         .float-animation {
             animation: float 3s ease-in-out infinite;
@@ -131,11 +131,14 @@
         .left-panel {
             display: flex;
             flex-direction: column;
-            /* Single solid purple — no gradient direction change that creates a different color at bottom */
             background-color: #7c3aed;
         }
 
-        /* Team photo fills remaining bottom space, flush to all edges */
+        .dark .left-panel {
+            background-color: #4c1d95;
+        }
+
+        /* Team photo — no gradient, no overlay, flush to all edges */
         .team-photo-fill {
             flex: 1;
             position: relative;
@@ -144,42 +147,20 @@
             margin-right: -1.5rem;
             margin-bottom: -1.5rem;
             overflow: hidden;
-            /* Same purple as panel — guaranteed no color mismatch */
             background-color: #7c3aed;
-        }
-
-            .team-photo-fill img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                object-position: center 25%;
-                display: block;
-            }
-
-            /* Fade from exact same purple into photo */
-            .team-photo-fill::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 120px;
-                background: linear-gradient(to bottom, #7c3aed 0%, #7c3aed 20%, rgba(124,58,237,0) 100%);
-                z-index: 1;
-                pointer-events: none;
-            }
-
-        .dark .left-panel {
-            background-color: #4c1d95;
         }
 
         .dark .team-photo-fill {
             background-color: #4c1d95;
         }
 
-            .dark .team-photo-fill::before {
-                background: linear-gradient(to bottom, #4c1d95 0%, #4c1d95 20%, rgba(76,29,149,0) 100%);
-            }
+        .team-photo-fill img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
 
         @@media (max-width: 1023px) {
             .right-panel {
@@ -254,9 +235,9 @@
                 </p>
             </div>
 
-            <!-- ── Team Photo — same purple bg, no box, flush to all edges ── -->
+            <!-- ── Team Photo — no overlay, full color, flush to all edges ── -->
             <div class="team-photo-fill">
-                <img src="~/images/bbyu.png"
+                <img src="~/images/yuke.png"
                      alt="Team Photo"
                      onerror="this.closest('.team-photo-fill').style.visibility='hidden';" />
             </div>
@@ -303,7 +284,7 @@
                 <!-- Email / Username -->
                 <div class="animate-fadeIn" style="animation-delay: 0.1s;">
                     <label asp-for="Username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
-                        Email 
+                        Email
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

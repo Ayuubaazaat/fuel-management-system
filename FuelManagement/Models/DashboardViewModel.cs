@@ -50,6 +50,10 @@ namespace FuelManagement.Models
         // Recent Transactions
         public List<RecentTransactionViewModel> RecentTransactions { get; set; } = new();
 
+        // Recent Car Wash & Compensation Activity
+        public List<RecentCarWashViewModel> RecentCarWashes { get; set; } = new();
+        public List<RecentCompensationViewModel> RecentCompensations { get; set; } = new();
+
         // Distribution List (Vendor/Client Payments)
         public List<DistributionItemViewModel> DistributionItems { get; set; } = new();
 

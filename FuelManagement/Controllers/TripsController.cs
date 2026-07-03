@@ -137,10 +137,33 @@ namespace FuelManagement.Controllers
         // =========================
         // CREATE (GET) - WITH VEHICLE DROPDOWN
         // =========================
+        // =========================
+        // CREATE (GET) - WITH VEHICLE DROPDOWN
+        // =========================
         public async Task<IActionResult> Create()
         {
+            // Generate next trip ID
+            var existingIds = await _context.Trips
+                .Select(t => t.TripId)
+                .ToListAsync();
+
+            int nextNumber = 1;
+            if (existingIds.Any())
+            {
+                var maxNumber = existingIds
+                    .Select(id =>
+                    {
+                        var match = System.Text.RegularExpressions.Regex.Match(id, @"\d+");
+                        return match.Success && int.TryParse(match.Value, out int num) ? num : 0;
+                    })
+                    .DefaultIfEmpty(0)
+                    .Max();
+                nextNumber = maxNumber + 1;
+            }
+
             var viewModel = new TripCreateViewModel
             {
+                TripId = $"TRP-{nextNumber:D3}",
                 TripDate = DateTime.UtcNow.Date,
                 AvailableVehicles = await _context.Fleet
                     .OrderBy(f => f.VehicleId)
@@ -188,7 +211,7 @@ namespace FuelManagement.Controllers
                         VehicleName = viewModel.VehicleName,
                         LicensePlate = viewModel.LicensePlate,
                         DriverName = viewModel.DriverName,
-                        TripDate = viewModel.TripDate,
+                        TripDate = DateTime.SpecifyKind(viewModel.TripDate, DateTimeKind.Utc),
                         Distance = viewModel.Distance,
                         FuelUsed = viewModel.FuelUsed,
                         FuelEfficiency = Math.Round(fuelEfficiency, 1),
@@ -360,7 +383,7 @@ namespace FuelManagement.Controllers
                     trip.VehicleName = viewModel.VehicleName;
                     trip.LicensePlate = viewModel.LicensePlate;
                     trip.DriverName = viewModel.DriverName;
-                    trip.TripDate = viewModel.TripDate;
+                    trip.TripDate = DateTime.SpecifyKind(viewModel.TripDate, DateTimeKind.Utc);
                     trip.Distance = viewModel.Distance;
                     trip.FuelUsed = viewModel.FuelUsed;
                     trip.FuelEfficiency = Math.Round(fuelEfficiency, 1);

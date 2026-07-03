@@ -367,7 +367,7 @@ namespace FuelManagement.Controllers
                 Liters = viewModel.Liters,
                 PricePerLiter = viewModel.PricePerLiter,
                 Amount = viewModel.Amount,
-                Date = viewModel.Date,
+                Date = DateTime.SpecifyKind(viewModel.Date, DateTimeKind.Utc),
                 PumpNumber = viewModel.PumpNumber,
                 PaymentMethod = Enum.Parse<PaymentMethod>(viewModel.PaymentMethod),
                 Status = FuelSaleStatus.Pending,
@@ -452,7 +452,7 @@ namespace FuelManagement.Controllers
             sale.Liters = viewModel.Liters;
             sale.PricePerLiter = viewModel.PricePerLiter;
             sale.Amount = viewModel.Amount;
-            sale.Date = viewModel.Date;
+            sale.Date = DateTime.SpecifyKind(viewModel.Date, DateTimeKind.Utc);
             sale.PumpNumber = viewModel.PumpNumber;
             sale.PaymentMethod = Enum.Parse<PaymentMethod>(viewModel.PaymentMethod);
             sale.Status = Enum.Parse<FuelSaleStatus>(viewModel.Status);

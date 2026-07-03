@@ -296,7 +296,7 @@ namespace FuelManagement.Controllers
                     AmountPaid = viewModel.AmountPaid,
                     PaymentMethod = viewModel.PaymentMethod,
                     PaymentStatus = viewModel.PaymentStatus,
-                    PaymentDate = viewModel.PaymentDate,
+                    PaymentDate = DateTime.SpecifyKind(viewModel.PaymentDate, DateTimeKind.Utc),
                     Notes = viewModel.Notes,
                     CreatedBy = User.Identity.Name ?? "System",
                     CreatedAt = DateTime.UtcNow
@@ -451,7 +451,7 @@ namespace FuelManagement.Controllers
                     receipt.AmountPaid = viewModel.AmountPaid;
                     receipt.PaymentMethod = viewModel.PaymentMethod;
                     receipt.PaymentStatus = viewModel.PaymentStatus;
-                    receipt.PaymentDate = viewModel.PaymentDate;
+                    receipt.PaymentDate = DateTime.SpecifyKind(viewModel.PaymentDate, DateTimeKind.Utc);
                     receipt.Notes = viewModel.Notes;
                     receipt.UpdatedAt = DateTime.UtcNow;
 

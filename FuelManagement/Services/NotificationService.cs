@@ -90,6 +90,13 @@ namespace FuelManagement.Services
         {
             var userId = GetCurrentUserId();
 
+            // Ensure filter dates are UTC-kind before use in Postgres queries
+            if (filter.DateFrom.HasValue)
+                filter.DateFrom = DateTime.SpecifyKind(filter.DateFrom.Value, DateTimeKind.Utc);
+
+            if (filter.DateTo.HasValue)
+                filter.DateTo = DateTime.SpecifyKind(filter.DateTo.Value, DateTimeKind.Utc);
+
             var query = _context.Notifications
                 .Where(n => n.UserId == userId || n.IsGlobal)
                 .AsQueryable();
@@ -210,6 +217,14 @@ namespace FuelManagement.Services
         public async Task<int> GetTotalCountAsync(NotificationFilterViewModel filter)
         {
             var userId = GetCurrentUserId();
+
+            // Ensure filter dates are UTC-kind before use in Postgres queries
+            if (filter.DateFrom.HasValue)
+                filter.DateFrom = DateTime.SpecifyKind(filter.DateFrom.Value, DateTimeKind.Utc);
+
+            if (filter.DateTo.HasValue)
+                filter.DateTo = DateTime.SpecifyKind(filter.DateTo.Value, DateTimeKind.Utc);
+
             var query = _context.Notifications
                 .Where(n => n.UserId == userId || n.IsGlobal)
                 .AsQueryable();

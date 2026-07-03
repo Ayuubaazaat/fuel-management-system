@@ -135,24 +135,25 @@ namespace FuelManagement.Controllers
 
             // Get all items for summary calculations
             var allItemsForSummary = await query
-                .Select(i => new
-                {
-                    i.CurrentStock,
-                    i.Capacity,
-                    i.Status,
-                    FillLevel = i.FillLevelPercentage
-                })
-                .ToListAsync();
+                 .Select(i => new
+                 {
+                     i.CurrentStock,
+                     i.Capacity,
+                     i.Status,
+                     i.PricePerLiter,
+                     FillLevel = i.FillLevelPercentage
+                 })
+                  .ToListAsync();
 
             // ========== DYNAMIC PERCENTAGE CALCULATIONS ==========
 
             // Get total inventory (unfiltered) for baseline comparison
-            var totalInventory = await _context.Inventories
-                .Select(i => i.CurrentStock)
-                .ToListAsync();
+            var totalInventoryData = await _context.Inventories
+                  .Select(i => new { i.CurrentStock, i.PricePerLiter })
+                  .ToListAsync();
 
-            var totalStockAll = totalInventory.Sum();
-            var totalValueAll = totalInventory.Sum(stock => stock * 3.50m);
+            var totalStockAll = totalInventoryData.Sum(i => i.CurrentStock);
+            var totalValueAll = totalInventoryData.Sum(i => i.CurrentStock * i.PricePerLiter);
 
             // Current totals (filtered)
             var currentTotalStock = allItemsForSummary.Sum(i => i.CurrentStock);
@@ -175,7 +176,7 @@ namespace FuelManagement.Controllers
             var lowStockItems = allItemsForSummary.Count(i => i.Status == "Low" || i.Status == "Critical");
             var totalCapacity = allItemsForSummary.Sum(i => i.Capacity);
             var averageFillLevel = allItemsForSummary.Any() ? allItemsForSummary.Average(i => i.FillLevel) : 0;
-            var inventoryValue = allItemsForSummary.Sum(i => i.CurrentStock * 3.50m);
+            var inventoryValue = allItemsForSummary.Sum(i => i.CurrentStock * i.PricePerLiter);
 
             // ====================================================
 
@@ -215,9 +216,30 @@ namespace FuelManagement.Controllers
         // =========================
         // CREATE (GET)
         // =========================
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new InventoryCreateViewModel());
+            // Generate next tank ID
+            var lastTank = await _context.Inventories
+                .Select(i => i.TankId)
+                .ToListAsync();
+
+            int nextNumber = 1;
+            if (lastTank.Any())
+            {
+                var maxNumber = lastTank
+                    .Select(id => ExtractTankNumber(id))
+                    .DefaultIfEmpty(0)
+                    .Max();
+                nextNumber = maxNumber + 1;
+            }
+
+            var viewModel = new InventoryCreateViewModel
+            {
+                TankId = $"TANK-{nextNumber:D3}",
+                LastRefillDate = DateTime.UtcNow.Date
+            };
+
+            return View(viewModel);
         }
 
         // =========================
@@ -255,9 +277,10 @@ namespace FuelManagement.Controllers
                 FuelType = viewModel.FuelType,
                 Capacity = viewModel.Capacity,
                 CurrentStock = viewModel.CurrentStock,
+                PricePerLiter = viewModel.PricePerLiter,
                 LastUpdated = DateTime.UtcNow,
                 Status = status,
-                LastRefillDate = viewModel.LastRefillDate,
+                LastRefillDate = DateTime.SpecifyKind(viewModel.LastRefillDate, DateTimeKind.Utc),
                 Notes = viewModel.Notes
             };
 
@@ -310,6 +333,7 @@ namespace FuelManagement.Controllers
                 FuelType = inventory.FuelType,
                 Capacity = inventory.Capacity,
                 CurrentStock = inventory.CurrentStock,
+                PricePerLiter = inventory.PricePerLiter,
                 Status = inventory.Status,
                 LastRefillDate = inventory.LastRefillDate ?? DateTime.UtcNow.Date,
                 Notes = inventory.Notes
@@ -354,9 +378,10 @@ namespace FuelManagement.Controllers
             inventory.FuelType = viewModel.FuelType;
             inventory.Capacity = viewModel.Capacity;
             inventory.CurrentStock = viewModel.CurrentStock;
+            inventory.PricePerLiter = viewModel.PricePerLiter;
             inventory.LastUpdated = DateTime.UtcNow;
             inventory.Status = status;
-            inventory.LastRefillDate = viewModel.LastRefillDate;
+            inventory.LastRefillDate = DateTime.SpecifyKind(viewModel.LastRefillDate, DateTimeKind.Utc);
             inventory.Notes = viewModel.Notes;
 
             await _context.SaveChangesAsync();

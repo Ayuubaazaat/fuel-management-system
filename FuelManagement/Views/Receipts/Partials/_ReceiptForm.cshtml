@@ -227,7 +227,7 @@
     <!-- Calculation Preview -->
     <div class="bg-gradient-to-r from-slate-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-4 sm:p-6 border border-indigo-100 dark:border-indigo-800">
         <h4 class="text-xs sm:text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-3 sm:mb-4">Receipt Calculation Preview</h4>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4">
             <div class="bg-white dark:bg-gray-700 rounded-lg p-2 sm:p-3">
                 <span class="text-xs text-gray-500 dark:text-gray-400">Subtotal</span>
                 <p id="subtotalPreview" class="text-sm sm:text-lg font-semibold text-slate-900 dark:text-indigo-100">$0.00</p>
@@ -239,6 +239,10 @@
             <div class="bg-white dark:bg-gray-700 rounded-lg p-2 sm:p-3">
                 <span class="text-xs text-gray-500 dark:text-gray-400">Total Amount</span>
                 <p id="totalPreview" class="text-sm sm:text-lg font-bold text-indigo-600 dark:text-indigo-400">$0.00</p>
+            </div>
+            <div class="bg-white dark:bg-gray-700 rounded-lg p-2 sm:p-3 border-2 border-transparent" id="balanceDueBox">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Balance Due</span>
+                <p id="balanceDuePreview" class="text-sm sm:text-lg font-bold text-red-600 dark:text-red-400">$0.00</p>
             </div>
         </div>
     </div>
@@ -252,9 +256,7 @@
                 class="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border @(ViewData.ModelState["PaymentMethod"]?.Errors.Any() == true ? "border-red-500 dark:border-red-500" : "border-gray-200 dark:border-gray-600") bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200 outline-none appearance-none">
             <option value="" disabled selected class="dark:bg-gray-700">Select payment method</option>
             <option value="EVC+" selected="@(Model.PaymentMethod == "EVC+")" class="dark:bg-gray-700">EVC+</option>
-            <option value="Waafi" selected="@(Model.PaymentMethod == "Waafi")" class="dark:bg-gray-700">Waafi</option>
-            <option value="Somtel" selected="@(Model.PaymentMethod == "Somtel")" class="dark:bg-gray-700">Somtel</option>
-            <option value="Somnet" selected="@(Model.PaymentMethod == "Somnet")" class="dark:bg-gray-700">Somnet</option>
+            <option value="JEEB" selected="@(Model.PaymentMethod == "JEEB")" class="dark:bg-gray-700">JEEB</option>
             <option value="E-Dahab" selected="@(Model.PaymentMethod == "E-Dahab")" class="dark:bg-gray-700">E-Dahab</option>
         </select>
         @if (ViewData.ModelState["PaymentMethod"]?.Errors.Any() == true)
@@ -285,18 +287,20 @@
 
         <!-- Amount Paid -->
         <div class="floating-input-group relative">
+            <span class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm pointer-events-none z-10">$</span>
             <input type="number"
                    id="AmountPaid"
                    name="AmountPaid"
                    value="@(Model.AmountPaid ?? 0)"
                    step="0.01"
                    min="0"
-                   class="peer w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm rounded-xl border @(ViewData.ModelState["AmountPaid"]?.Errors.Any() == true ? "border-red-500 dark:border-red-500" : "border-gray-200 dark:border-gray-600") bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200 outline-none"
+                   class="peer w-full pl-7 sm:pl-8 pr-3 sm:pr-4 py-2.5 sm:py-3 text-sm rounded-xl border @(ViewData.ModelState["AmountPaid"]?.Errors.Any() == true ? "border-red-500 dark:border-red-500" : "border-gray-200 dark:border-gray-600") bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all duration-200 outline-none"
                    placeholder=" " />
             <label for="AmountPaid"
-                   class="absolute left-3 sm:left-4 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-indigo-600 dark:peer-focus:text-indigo-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
+                   class="absolute left-7 sm:left-8 -top-2 sm:-top-2.5 bg-white dark:bg-gray-800 px-1.5 sm:px-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 transition-all duration-200 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 sm:peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent dark:peer-placeholder-shown:bg-transparent peer-focus:-top-2 sm:peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-indigo-600 dark:peer-focus:text-indigo-400 peer-focus:bg-white dark:peer-focus:bg-gray-800">
                 Amount Paid
             </label>
+            <span id="amountPaidWarning" class="text-amber-600 dark:text-amber-400 text-xs mt-1 hidden">Amount paid cannot exceed the total amount.</span>
             @if (ViewData.ModelState["AmountPaid"]?.Errors.Any() == true)
             {
                 <p class="text-red-500 text-xs mt-1">@ViewData.ModelState["AmountPaid"]?.Errors.First().ErrorMessage</p>
@@ -364,10 +368,16 @@
     document.addEventListener('DOMContentLoaded', function() {
         const quantityInput = document.getElementById('Quantity');
         const priceInput = document.getElementById('UnitPrice');
+        const amountPaidInput = document.getElementById('AmountPaid');
         const subtotalSpan = document.getElementById('subtotalPreview');
         const vatSpan = document.getElementById('vatPreview');
         const totalSpan = document.getElementById('totalPreview');
+        const balanceSpan = document.getElementById('balanceDuePreview');
+        const balanceBox = document.getElementById('balanceDueBox');
+        const warningSpan = document.getElementById('amountPaidWarning');
         const vatRate = 0.05; // 5%
+
+        let currentTotal = 0;
 
         // Invoice selection dropdown
         const invoiceSelect = document.getElementById('SelectedInvoiceId');
@@ -401,6 +411,7 @@
             const subtotal = quantity * price;
             const vat = subtotal * vatRate;
             const total = subtotal + vat;
+            currentTotal = total;
 
             if (subtotalSpan) {
                 subtotalSpan.textContent = subtotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -411,13 +422,56 @@
             if (totalSpan) {
                 totalSpan.textContent = total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             }
+
+            updateAmountPaidConstraints();
+            updateBalance();
+        }
+
+        function updateAmountPaidConstraints() {
+            if (amountPaidInput) {
+                // Cap the max attribute so the browser's own spinner/validation respects it
+                amountPaidInput.setAttribute('max', currentTotal.toFixed(2));
+            }
+        }
+
+        function updateBalance() {
+            let amountPaid = parseFloat(amountPaidInput?.value) || 0;
+
+            // Clamp on the client side: never let it exceed total
+            if (amountPaid > currentTotal) {
+                amountPaid = currentTotal;
+                if (amountPaidInput) amountPaidInput.value = currentTotal.toFixed(2);
+                if (warningSpan) warningSpan.classList.remove('hidden');
+            } else {
+                if (warningSpan) warningSpan.classList.add('hidden');
+            }
+
+            const balance = currentTotal - amountPaid;
+
+            if (balanceSpan) {
+                balanceSpan.textContent = balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            }
+
+            // Visual feedback: green when fully paid, red/amber when balance remains
+            if (balanceBox && balanceSpan) {
+                if (balance <= 0) {
+                    balanceSpan.className = 'text-sm sm:text-lg font-bold text-emerald-600 dark:text-emerald-400';
+                } else {
+                    balanceSpan.className = 'text-sm sm:text-lg font-bold text-red-600 dark:text-red-400';
+                }
+            }
         }
 
         if (quantityInput && priceInput) {
             quantityInput.addEventListener('input', updateTotals);
             priceInput.addEventListener('input', updateTotals);
-            updateTotals(); // Initial calculation
         }
+
+        if (amountPaidInput) {
+            amountPaidInput.addEventListener('input', updateBalance);
+        }
+
+        updateTotals(); // Initial calculation
     });
 </script>
 

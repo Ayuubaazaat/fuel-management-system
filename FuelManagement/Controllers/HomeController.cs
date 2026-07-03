@@ -315,7 +315,39 @@ namespace FuelManagement.Controllers
                 });
             }
 
+            // ========== RECENT CAR WASH ACTIVITY ==========
+            var recentCarWashes = await _context.CarWashes
+                .OrderByDescending(c => c.CreatedAt)
+                .Take(5)
+                .Select(c => new RecentCarWashViewModel
+                {
+                    Id = c.Id,
+                    VehiclePlate = c.VehiclePlate,
+                    Service = c.ServiceType,
+                    Amount = c.Price,
+                    Status = c.Status,
+                    CreatedAt = c.CreatedAt
+                })
+                .ToListAsync();
+
+            // ========== RECENT COMPENSATION RECORDS ==========
+            var recentCompensations = await _context.Compensations
+                .OrderByDescending(c => c.PaymentDate)
+                .Take(5)
+                .Select(c => new RecentCompensationViewModel
+                {
+                    Id = c.Id,
+                    EmployeeId = c.EmployeeId,
+                    EmployeeName = c.EmployeeName,
+                    Amount = c.NetSalary,
+                    Status = c.PaymentStatus,
+                    PaymentDate = c.PaymentDate
+                })
+                .ToListAsync();
+
             var viewModel = new DashboardViewModel
+
+            
             {
                 // Summary Cards - All users see these
                 TotalRevenue = totalRevenue,
@@ -361,8 +393,13 @@ namespace FuelManagement.Controllers
                 // Recent Transactions
                 RecentTransactions = recentTransactions,
 
+                // Recent Car Wash & Compensation Activity
+                RecentCarWashes = recentCarWashes,
+                RecentCompensations = recentCompensations,
+
                 // Distribution Items
                 DistributionItems = distributionItems,
+
 
                 TotalTransactions = totalTransactions,
                 TodaysTrend = todaysVsAverage > 0 ? "Upward trend" : "Downward trend",

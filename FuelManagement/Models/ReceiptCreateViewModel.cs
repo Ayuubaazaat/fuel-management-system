@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FuelManagement.Models
 {
-    public class ReceiptCreateViewModel
+    public class ReceiptCreateViewModel : IValidatableObject
     {
         private const decimal VAT_RATE = 0.05m;
 
@@ -79,7 +79,18 @@ namespace FuelManagement.Models
         public decimal Subtotal => Quantity * UnitPrice;
         public decimal VAT => Subtotal * VAT_RATE;
         public decimal TotalAmount => Subtotal + VAT;
+        public decimal BalanceDue => TotalAmount - (AmountPaid ?? 0);
         public string ReceiptNo => $"RCP-{DateTime.UtcNow:yyyyMMdd}-{new Random().Next(1000, 9999)}";
+
+        // Cross-field validation: Amount Paid cannot exceed Total Amount
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (AmountPaid.HasValue && AmountPaid.Value > TotalAmount)
+            {
+                yield return new ValidationResult(
+                    $"Amount paid (${AmountPaid.Value:N2}) cannot exceed the total amount (${TotalAmount:N2}).",
+                    new[] { nameof(AmountPaid) });
+            }
+        }
     }
 }
-

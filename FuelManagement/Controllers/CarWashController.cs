@@ -187,6 +187,7 @@ namespace FuelManagement.Controllers
                 try
                 {
                     model.VehiclePlate = model.VehiclePlate.ToUpper();
+                    model.CreatedAt = DateTime.SpecifyKind(model.CreatedAt, DateTimeKind.Utc);
 
                     var previousStatus = await _context.CarWashes
                         .AsNoTracking()

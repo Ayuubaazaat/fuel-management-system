@@ -37,6 +37,8 @@ namespace FuelManagement.Controllers
         {
             if (!ModelState.IsValid) return View(shift);
 
+            shift.StartTime = DateTime.SpecifyKind(shift.StartTime, DateTimeKind.Utc);
+
             // Save avatar if uploaded
             if (shift.AvatarFile != null && shift.AvatarFile.Length > 0)
                 shift.AvatarPath = await SaveAvatarAsync(shift.AvatarFile);
@@ -63,12 +65,13 @@ namespace FuelManagement.Controllers
             if (shift == null) return NotFound();
             return View(shift);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Shift shift)
         {
             if (!ModelState.IsValid) return View(shift);
+
+            shift.StartTime = DateTime.SpecifyKind(shift.StartTime, DateTimeKind.Utc);
 
             // Keep existing avatar if no new file uploaded
             if (shift.AvatarFile != null && shift.AvatarFile.Length > 0)
